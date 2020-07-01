@@ -1,0 +1,70 @@
+.container {
+  max-width: 100vw;
+  min-height: 100vh;
+  padding: 0 5rem;
+  margin: 0rem auto;
+}
+
+/* .flexCenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flexColumn {
+  flex-direction: column;
+}
+
+.flexRow {
+  flex-direction: row;
+} */
+
+/* .headingLg {
+  margin: 0 0 1.5rem 0;
+}
+.headingMd {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.5em;
+} */
+
+.headingSm {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.25em;
+}
+
+.greenBG_100 {
+  background-color: rgb(0, 58, 58);
+}
+.greenBG_80 {
+  background-color: rgb(30, 90, 90);
+}
+.greenBG_60 {
+  background-color: rgb(56, 115, 115);
+}
+.greenBG_40 {
+  background-color: rgb(97, 150, 150);
+}
+.greenBG_20 {
+  background-color: rgb(144, 188, 187);
+}
+.greenBG_10 {
+  background-color: rgb(196, 220, 218);
+}
+
+.grayBG_100 {
+  background-color: rgb(158, 158, 158);
+}
+.grayBG_50 {
+  background-color: rgb(236, 236, 236);
+}
+.grayBG_25 {
+  background-color: rgb(244, 244, 244);
+}
+
+.yellowText {
+  color: rgb(255, 255, 51);
+}
+
+.redText {
+  color: rgb(255, 50, 50);
+}

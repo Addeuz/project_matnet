@@ -1,6 +1,12 @@
 {
   "extends": ["wesbos"],
   "rules": {
-    "react/prop-types": 0
+    "react/prop-types": 0,
+    "no-undef": "off",
+    "no-use-before-define": "off",
+    "no-shadow": "off",
+    "no-plusplus": "off",
+    "global-require": "off",
+    "class-methods-use-this": "off"
   }
 }

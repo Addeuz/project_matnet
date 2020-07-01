@@ -4,7 +4,7 @@
   "description": "A full-stack system that was created for Assemblin",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon -w server/*",
+    "dev": "nodemon -w server/ server/server.js",
     "build": "next build",
     "start": "NODE_ENV=production node server.js"
   },
@@ -25,6 +25,7 @@
   "homepage": "https://github.com/Addeuz/project_matnet#readme",
   "devDependencies": {
     "babel-eslint": "^9.0.0",
+    "babel-plugin-styled-components": "^1.10.7",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.1",
     "eslint-config-prettier": "^4.3.0",
@@ -39,10 +40,23 @@
     "prettier": "^1.19.1"
   },
   "dependencies": {
+    "axios": "^0.19.2",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "bootstrap": "^4.5.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "isomorphic-unfetch": "^3.0.0",
+    "formik": "^2.1.4",
+    "jsonwebtoken": "^8.5.1",
+    "mysql2": "^2.1.0",
     "next": "^9.4.4",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-bootstrap": "^1.0.1",
+    "react-dom": "^16.13.1",
+    "react-icons": "^3.10.0",
+    "sequelize": "^5.21.13",
+    "styled-components": "^5.1.1",
+    "yup": "^0.29.1"
   }
 }

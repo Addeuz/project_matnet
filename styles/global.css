@@ -1,0 +1,45 @@
+:root {
+  --green_100: rgb(0, 58, 58);
+  --green_80: rgb(30, 90, 90);
+  --green_60: rgb(65, 115, 115);
+  --green_40: rgb(97, 150, 150);
+  --green_20: rgb(144, 188, 187);
+  --green_10: rgb(196, 220, 218);
+
+  --yellow: rgb(255, 227, 51);
+
+  --menu_color: rgb(100, 100, 100);
+
+  --link_color: rgb(244, 244, 222);
+  --link_color_hover: rgb(158, 158, 158);
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  /* font-family: Calibri, Helvetica Neue, -apple-system, BlinkMacSystemFont,
+    sans-serif, Fira Sans; */
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  line-height: 1.6;
+  font-size: 18px;
+  background-color: rgb(244, 244, 244);
+}
+
+p {
+  margin: 0;
+}
+
+ul {
+  margin: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+* {
+  box-sizing: border-box;
+}

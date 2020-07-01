@@ -1,8 +1,9 @@
+// TODO: remove this
 module.exports = {
   host: 'localhost',
   user: 'root',
   password: 'caroandr97',
-  db: 'test-matnet',
+  db: 'test_matnet',
   dialect: 'mysql',
   pool: {
     max: 5,
