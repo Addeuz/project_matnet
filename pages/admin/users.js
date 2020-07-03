@@ -1,12 +1,21 @@
 import { useRouter } from 'next/router';
 import { BsSearch } from 'react-icons/bs';
-import { Accordion, Row, Col, InputGroup, FormControl } from 'react-bootstrap';
+import {
+  Accordion,
+  Row,
+  Col,
+  InputGroup,
+  FormControl,
+  Spinner,
+} from 'react-bootstrap';
 import styled from 'styled-components';
 
 import Layout from '../../components/Layout';
-import adminService from '../../services/admin.service';
+// import adminService from '../../services/admin.service';
 import Sidebar from '../../components/Navigation/Sidebar';
 import UserCard from '../../components/Admin/UserCard';
+
+import useFetch from '../../utils/hooks/useFetch';
 
 const SRow = styled(Row)`
   @media only screen and (max-width: 768px) {
@@ -33,32 +42,37 @@ const SAccordion = styled(Accordion)`
   }
 `;
 
-const HandleUsers = () => {
-  const [users, setUsers] = React.useState([]);
-  const [filter, setFilter] = React.useState('');
-  // const [selectedUser, setSelectedUser] = React.useState(null);
-  const [page, setPage] = React.useState('');
+const SSpinner = styled(Spinner)`
+  color: var(--yellow);
+  display: flex;
+  margin: 2rem auto;
 
+  span {
+    -webkit-tap-highlight-color: transparent;
+
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+`;
+
+const HandleUsers = () => {
   const router = useRouter();
+  const { response, isLoading, isError } = useFetch(
+    `http://localhost:3000/api/admin/users`
+  );
+
+  const [filter, setFilter] = React.useState('');
+  const [page, setPage] = React.useState('');
 
   React.useEffect(() => {
     if (router.pathname.includes('/admin')) setPage('/admin');
-
-    adminService.getUsers().then(
-      response => {
-        console.log(response.data);
-        setUsers(response.data);
-      },
-      error => {
-        setUsers(
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-            error.message ||
-            error.toString()
-        );
-      }
-    );
   }, [router.pathname]);
 
   return (
@@ -87,9 +101,16 @@ const HandleUsers = () => {
           </SCol>
         </SRow>
         <SAccordion>
-          {users.map(user => (
-            <UserCard filter={filter} user={user} key={user.id} />
-          ))}
+          {isError && <div>{isError}</div>}
+          {isLoading ? (
+            <SSpinner animation="border">
+              <span>Loading...</span>
+            </SSpinner>
+          ) : (
+            response.map(user => (
+              <UserCard filter={filter} user={user} key={user.id} />
+            ))
+          )}
         </SAccordion>
       </Sidebar>
     </Layout>

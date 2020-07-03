@@ -73,7 +73,7 @@ const {
 // Only used in development to create roles
 // function initial() {
 //   Role.create({
-//     name: 'user',
+//     name: 'kund',
 //   });
 
 //   Role.create({

@@ -20,8 +20,8 @@ const SButton = styled(Button)`
   }
 
   :focus {
-    background-color: var(--green_80) !important;
-    color: var(--yellow) !important;
+    background-color: var(--yellow);
+    color: var(--green_100);
   }
 `;
 

@@ -1,22 +1,32 @@
 import { Table } from 'react-bootstrap';
-
+import styled from 'styled-components';
 import SButton from '../../styles/SButton';
 import EditUserModal from './EditUserModal';
+
+const Div = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const RightButton = styled(SButton)`
+  align-self: flex-end;
+  margin: 0.5rem 0.5rem 0.5rem 0;
+`;
 
 const UserData = ({ user }) => {
   const [modalShow, setModalShow] = React.useState(false);
 
-  React.useEffect(() => {
-    console.log(user);
-  }, [user]);
+  React.useEffect(() => {}, []);
 
   return (
-    <div className="d-flex flex-column">
+    <Div>
       <Table responsive size="sm">
         <thead>
           <tr>
             <th>ID</th>
             <th>Användarnamn</th>
+            <th>E-mail</th>
+            <th>E-mail</th>
             <th>E-mail</th>
           </tr>
         </thead>
@@ -25,21 +35,23 @@ const UserData = ({ user }) => {
             <td>{user.id}</td>
             <td>{user.username}</td>
             <td>{user.email}</td>
+            <td>{user.email}</td>
+            <td>{user.email}</td>
           </tr>
         </tbody>
       </Table>
-      <SButton
-        className="align-self-end mr-2 mb-2"
+      <RightButton
+        // TODO: extend this to a styled component
         onClick={() => setModalShow(true)}
       >
         Redigera
-      </SButton>
+      </RightButton>
       <EditUserModal
         show={modalShow}
         onHide={() => setModalShow(false)}
         user={user}
       />
-    </div>
+    </Div>
   );
 };
 export default UserData;

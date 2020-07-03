@@ -46,7 +46,6 @@ export default function Navigation() {
   const [admin, setAdmin] = React.useState(false);
 
   React.useEffect(() => {
-    console.log(user);
     if (user) {
       if (user.roles.includes('ROLE_ADMIN')) {
         setAdmin(true);

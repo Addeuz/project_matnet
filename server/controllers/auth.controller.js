@@ -16,6 +16,7 @@ exports.signUp = (req, res) => {
     firstname: req.body.firstname,
     lastname: req.body.lastname,
     email: req.body.email,
+    authorisation: req.body.authorities,
     password: bcrypt.hashSync(req.body.password),
   })
     .then(user => {
@@ -27,6 +28,7 @@ exports.signUp = (req, res) => {
             },
           },
         }).then(roles => {
+          console.log(`roles: ${JSON.stringify(roles, null, 2)}`);
           user.setRoles(roles).then(() => {
             res.status(201).send({ message: 'Användaren skapad!' });
           });
@@ -50,6 +52,7 @@ exports.signIn = (req, res) => {
     },
   })
     .then(user => {
+      console.log(user);
       if (!user) {
         return res.status(404).send({ message: 'Ingen användare hittad.' });
       }
@@ -82,6 +85,7 @@ exports.signIn = (req, res) => {
           firstname: user.firstname,
           lastname: user.lastname,
           email: user.email,
+          authorities: user.authorisation,
           roles: authorities,
           accessToken: token,
         });
@@ -91,3 +95,5 @@ exports.signIn = (req, res) => {
       res.status(500).send({ message: err.message });
     });
 };
+
+// TODO: add a update controller here

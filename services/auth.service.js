@@ -12,6 +12,7 @@ class AuthService {
         password,
       })
       .then(response => {
+        console.log(response.data);
         // if there is an accessToken, the user successfully logged in
         if (response.data.accessToken) {
           localStorage.setItem('user', JSON.stringify(response.data));
@@ -27,11 +28,14 @@ class AuthService {
     localStorage.removeItem('user');
   }
 
-  register(username, email, password) {
+  register(data) {
     return axios.post(`${AUTH_URL}/signup`, {
-      username,
-      email,
-      password,
+      username: data.username,
+      email: data.email,
+      password: data.password,
+      firstname: data.firstname,
+      lastname: data.lastname,
+      authorities: data.authorities,
     });
   }
 

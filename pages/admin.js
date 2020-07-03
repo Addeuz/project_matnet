@@ -18,6 +18,8 @@ import Sidebar from '../components/Navigation/Sidebar';
 //   };
 // }
 
+// TODO: add back check for if user is logged in
+
 const Admin = () => {
   const router = useRouter();
 
