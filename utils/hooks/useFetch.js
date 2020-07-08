@@ -8,6 +8,13 @@ const fetcher = url =>
 export default function useFetch(url) {
   const { data, error } = useSWR(url, fetcher);
 
+  if (error) {
+    console.log(
+      (error.response && error.response.data && error.response.data.message) ||
+        error.message ||
+        error.toString()
+    );
+  }
   console.log(data);
 
   return {

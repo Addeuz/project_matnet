@@ -1,15 +1,53 @@
 import { useRouter } from 'next/router';
 import { Form, Row, Col } from 'react-bootstrap';
 import { Formik } from 'formik';
-import Layout from '../../components/Layout';
-import Sidebar from '../../components/Navigation/Sidebar';
-import SButton from '../../styles/SButton';
-import authHeader from '../../services/auth-header';
+import Layout from '../../../components/Layout';
+import Sidebar from '../../../components/Navigation/Sidebar';
+import { SButton, SSpinner } from '../../../styles/styled';
+// import authHeader from '../../services/auth-header';
+import useFetch from '../../../utils/hooks/useFetch';
 
-const Register = () => {
+// FIXME: kanske spara i en databas, gör såhär just nu
+// const authoritiesItems = [
+//   'Motormon',
+//   'Baker',
+//   'Tan-delta',
+//   'Spm De',
+//   'Spm Nde',
+//   'Vibration',
+//   'Meggning stator',
+//   'Meggning rotor',
+//   'Pol-index',
+//   'Lind-temp',
+//   'Lager temp De',
+//   'Lager temp Nde',
+//   'Okulär intern',
+//   'Okulär extern',
+//   'Varvtalsgivare',
+//   'Kylpaket',
+//   'Driftström',
+//   'Komm/Släp yta',
+//   'Renhet',
+//   'Kolborstar',
+//   'Lager kond De',
+//   'Lager kond Nde',
+//   'Lager isolering',
+//   'Smörjning',
+//   'Kollektot temp',
+//   'Mantel temp',
+//   'Driftservice',
+//   'Stoppservice',
+// ];
+
+const RegisterUser = () => {
   // const { user, setUser } = React.useContext(UserContext);
   const router = useRouter();
   const [page, setPage] = React.useState('');
+
+  const { response, isLoading, isError } = useFetch(
+    `http://localhost:3000/api/admin/roles`
+  );
+
   React.useEffect(() => {
     if (router.pathname.includes('/admin')) setPage('/admin');
   }, [router.pathname]);
@@ -19,42 +57,42 @@ const Register = () => {
         <h3>Registrera ny användare</h3>
         <Formik
           enableReinitialize
-          validate={values => {
-            const errors = {};
+          // validate={values => {
+          //   const errors = {};
 
-            if (!values.username) {
-              errors.username = 'Detta fältet krävs';
-            }
-            if (!values.email) {
-              errors.email = 'Detta fältet krävs';
-            }
-            if (
-              !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
-            ) {
-              errors.email = 'E-mailadressen måste vara en giltig e-mail';
-            }
-            if (!values.firstname) {
-              errors.firstname = 'Detta fältet krävs';
-            }
-            if (!values.lastname) {
-              errors.lastname = 'Detta fältet krävs';
-            }
-            if (values.password.length < 8) {
-              errors.password = 'Lösenordet är för kort';
-            }
-            if (!values.password) {
-              errors.password = 'Detta fältet krävs';
-            }
-            if (!values.confirmPassword) {
-              errors.confirmPassword = 'Detta fältet krävs';
-            }
-            if (values.password !== values.confirmPassword) {
-              errors.confirmPassword = 'Lösenorden måste stämma överens';
-            }
+          //   // if (!values.username) {
+          //   //   errors.username = 'Detta fältet krävs';
+          //   // }
+          //   // if (!values.email) {
+          //   //   errors.email = 'Detta fältet krävs';
+          //   // }
+          //   // if (
+          //   //   !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
+          //   // ) {
+          //   //   errors.email = 'E-mailadressen måste vara en giltig e-mail';
+          //   // }
+          //   // if (!values.firstname) {
+          //   //   errors.firstname = 'Detta fältet krävs';
+          //   // }
+          //   // if (!values.lastname) {
+          //   //   errors.lastname = 'Detta fältet krävs';
+          //   // }
+          //   // if (values.password.length < 8) {
+          //   //   errors.password = 'Lösenordet är för kort';
+          //   // }
+          //   // if (!values.password) {
+          //   //   errors.password = 'Detta fältet krävs';
+          //   // }
+          //   // if (!values.confirmPassword) {
+          //   //   errors.confirmPassword = 'Detta fältet krävs';
+          //   // }
+          //   // if (values.password !== values.confirmPassword) {
+          //   //   errors.confirmPassword = 'Lösenorden måste stämma överens';
+          //   // }
 
-            // console.log(errors);
-            return errors;
-          }}
+          //   // console.log(errors);
+          //   return errors;
+          // }}
           initialValues={{
             username: '',
             email: '',
@@ -62,12 +100,15 @@ const Register = () => {
             lastname: '',
             password: '',
             confirmPassword: '',
+            userRole: 'kund',
+            motormon: false,
           }}
           onSubmit={(values, { setSubmitting }) => {
             console.log(values);
-            const options = {
-              headers: authHeader(),
-            };
+            // console.log('halelleelallals');
+            // const options = {
+            //   headers: authHeader(),
+            // };
 
             setSubmitting(false);
           }}
@@ -75,16 +116,14 @@ const Register = () => {
           {({
             values,
             isSubmitting,
-            validateOnChange,
             errors,
             touched,
             handleSubmit,
             handleChange,
-            handleBlur,
           }) => (
             <Form onSubmit={handleSubmit}>
               <Row>
-                <Col>
+                <Col md={6}>
                   <Form.Group controlId="formGroupUsername">
                     <Form.Label>Användarnamn</Form.Label>
                     <Form.Control
@@ -184,7 +223,34 @@ const Register = () => {
                   </SButton>
                 </Col>
                 <Col>
-                  <h5>Behörigheter</h5>
+                  <h5>Användarbehörigheter</h5>
+                  {isError && <div>{isError}</div>}
+                  {isLoading ? (
+                    <SSpinner animation="border">
+                      <span>Loading...</span>
+                    </SSpinner>
+                  ) : (
+                    <>
+                      <Form.Group>
+                        <Form.Label>Användarroll</Form.Label>
+                        <Form.Control
+                          onChange={handleChange}
+                          name="userRole"
+                          isValid={touched.userRole}
+                          as="select"
+                        >
+                          {response.map(role => (
+                            <option value={role.name} key={role.id}>
+                              {role.name}
+                            </option>
+                          ))}
+                        </Form.Control>
+                      </Form.Group>
+                      <Form.Group>
+                        <Form.Label>Behörigheter</Form.Label>
+                      </Form.Group>
+                    </>
+                  )}
                 </Col>
               </Row>
             </Form>
@@ -194,4 +260,4 @@ const Register = () => {
     </Layout>
   );
 };
-export default Register;
+export default RegisterUser;

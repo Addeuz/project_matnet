@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { Form, Alert } from 'react-bootstrap';
 
-import SButton from '../styles/SButton';
+import { SButton } from '../styles/styled';
 
 import AuthService from '../services/auth.service';
 import { UserContext } from '../components/UserContext';

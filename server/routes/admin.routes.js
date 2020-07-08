@@ -5,6 +5,8 @@ const db = require('../models');
 const { authJwt } = require('../middleware');
 
 const User = db.user;
+const Role = db.role;
+const Client = db.client;
 
 router.use(function(req, res, next) {
   res.header(
@@ -18,7 +20,14 @@ router.get('/admin/users', [authJwt.verifyToken, authJwt.isAdmin], function(
   req,
   res
 ) {
-  User.findAll().then(users => {
+  User.findAll({
+    include: {
+      model: Role,
+      through: {
+        attributes: [],
+      },
+    },
+  }).then(users => {
     if (!users) {
       return res.status(404).send({ message: 'Inga användare hittade' });
     }
@@ -70,6 +79,50 @@ router.post(
 
       res.status(200).send({ message: 'Hello' });
     });
+  }
+);
+
+router.get('/admin/roles', [authJwt.verifyToken, authJwt.isAdmin], function(
+  req,
+  res
+) {
+  Role.findAll().then(roles => {
+    if (!roles) {
+      return res.status(404).send({ message: 'Inga användare hittade' });
+    }
+    res.status(200).send(roles);
+  });
+});
+
+router.get('/admin/clients', [authJwt.verifyToken, authJwt.isAdmin], function(
+  req,
+  res
+) {
+  Client.findAll().then(clients => {
+    console.log(clients);
+    if (!clients || clients.length === 0) {
+      return res.status(404).send({ message: 'Inga kunder hittade' });
+    }
+    res.status(200).send(clients);
+  });
+});
+
+router.post(
+  '/admin/register/client',
+  [authJwt.verifyToken, authJwt.isAdmin],
+  (req, res) => {
+    Client.create({
+      clientName: req.body.clientName,
+      contactName: req.body.clientContactName,
+      phoneNumber: req.body.clientContactNumber,
+    })
+      .then(client => {
+        console.log(client);
+        res.status(201).send({ message: 'Kunden skapad!' });
+      })
+      .catch(err => {
+        res.status(500).send({ message: err.message });
+      });
   }
 );
 

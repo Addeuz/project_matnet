@@ -1,15 +1,7 @@
 import { useRouter } from 'next/router';
-import { BsSearch } from 'react-icons/bs';
 import { InputGroup, FormControl, Button } from 'react-bootstrap';
-import styled from 'styled-components';
-
+import { BsSearch, BsPlus } from 'react-icons/bs';
 import Link from 'next/link';
-import Layout from '../../components/Layout';
-// import adminService from '../../services/admin.service';
-import Sidebar from '../../components/Navigation/Sidebar';
-import UserCard from '../../components/Admin/User/UserCard';
-
-import useFetch from '../../utils/hooks/useFetch';
 import {
   SRow,
   SCol,
@@ -17,11 +9,17 @@ import {
   SSpinner,
   AddButtonCol,
 } from '../../styles/styled';
+import Layout from '../../components/Layout';
+import Sidebar from '../../components/Navigation/Sidebar';
+import useFetch from '../../utils/hooks/useFetch';
+import ClientCard from '../../components/Admin/Client/ClientCard';
 
-const HandleUsers = () => {
+const Clients = () => {
   const router = useRouter();
+
+  // TODO: Fix this api endpoint
   const { response, isLoading, isError } = useFetch(
-    `http://localhost:3000/api/admin/users`
+    `http://localhost:3000/api/admin/clients`
   );
 
   const [filter, setFilter] = React.useState('');
@@ -36,10 +34,10 @@ const HandleUsers = () => {
       <Sidebar page={page}>
         <SRow>
           <SCol xs={7} lg={5}>
-            <h3>Användare</h3>
+            <h3>Kunder</h3>
           </SCol>
           <AddButtonCol xs={5} lg={3}>
-            <Link href="/admin/register/user">
+            <Link href="/admin/register/client">
               <Button variant="success">
                 <span>Lägg till ny</span>
               </Button>
@@ -52,7 +50,6 @@ const HandleUsers = () => {
                 aria-label="Filtrera"
                 onChange={e => {
                   setFilter(e.target.value);
-                  console.log(filter);
                 }}
               />
               <InputGroup.Append>
@@ -72,9 +69,16 @@ const HandleUsers = () => {
               )}
               {!isError &&
                 response &&
-                response.map(user => (
-                  <UserCard filter={filter} user={user} key={user.id} />
+                response.map(client => (
+                  <ClientCard filter={filter} client={client} key={client.id} />
                 ))}
+              {/* {!response && isLoading ? (
+            <SSpinner animation="border">
+              <span>Loading...</span>
+            </SSpinner>
+          ) : (
+            response.map(client => <div>{client.clientName}</div>)
+          )} */}
             </SAccordion>
           </SCol>
         </SRow>
@@ -83,4 +87,4 @@ const HandleUsers = () => {
   );
 };
 
-export default HandleUsers;
+export default Clients;

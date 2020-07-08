@@ -1,23 +1,11 @@
 import { Modal, Form } from 'react-bootstrap';
 import { Formik } from 'formik';
-import styled from 'styled-components';
 import axios from 'axios';
-import * as yup from 'yup';
 
-import SButton from '../../styles/SButton';
-import authHeader from '../../services/auth-header';
+import { SButton } from '../../../styles/styled';
+import authHeader from '../../../services/auth-header';
 
 // const { Formik } = require('formik');
-
-const schema = yup.object({
-  username: yup.string().required(),
-  email: yup
-    .string()
-    .email()
-    .required(),
-  firstname: yup.string().required(),
-  lastname: yup.string().required(),
-});
 
 const EditUserModal = ({ user, show, onHide }) => {
   React.useEffect(() => {}, []);

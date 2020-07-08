@@ -28,11 +28,11 @@ const SidebarItems = ({ viewPort, page }) => (
             <Link href="/admin" passHref>
               <Nav.Link>Administratörpanel</Nav.Link>
             </Link>
-            <Link href="/admin/register" passHref>
-              <Nav.Link>Registrera ny användare</Nav.Link>
-            </Link>
             <Link href="/admin/users" passHref>
               <Nav.Link>Hantera användare</Nav.Link>
+            </Link>
+            <Link href="/admin/clients" passHref>
+              <Nav.Link>Hantera kunder</Nav.Link>
             </Link>
           </>
         )}
@@ -54,11 +54,11 @@ const SidebarItems = ({ viewPort, page }) => (
               <Link href="/admin" passHref>
                 <NavDropdown.Item>Administratörpanel</NavDropdown.Item>
               </Link>
-              <Link href="/admin/register" passHref>
-                <NavDropdown.Item>Registrera ny användare</NavDropdown.Item>
-              </Link>
               <Link href="/admin/users" passHref>
                 <NavDropdown.Item>Hantera användare</NavDropdown.Item>
+              </Link>
+              <Link href="/admin/clients" passHref>
+                <NavDropdown.Item>Hantera kunder</NavDropdown.Item>
               </Link>
             </>
           )}

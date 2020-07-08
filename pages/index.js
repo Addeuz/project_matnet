@@ -19,7 +19,7 @@ const Index = () => {
       response => {
         console.log(response.data);
         if (!user) {
-          router.push('/login');
+          window.location.replace('/login');
         } else {
           // dispatch({ action: 'LOG_IN' });
           setLoading(false);
@@ -36,11 +36,11 @@ const Index = () => {
         // User don't have access
         if (error.response.status === 403) {
           authService.logOut();
-          router.push('/login');
+          window.location.replace('/login');
         }
         // User is not logged in and there is no token
         if (error.response.status === 401) {
-          router.push('/login');
+          window.location.replace('/login');
         }
       }
     );

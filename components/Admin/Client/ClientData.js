@@ -1,7 +1,6 @@
 import { Table } from 'react-bootstrap';
 import styled from 'styled-components';
-import SButton from '../../styles/SButton';
-import EditUserModal from './EditUserModal';
+import { SButton } from '../../../styles/styled';
 
 const Div = styled.div`
   display: flex;
@@ -13,10 +12,8 @@ const RightButton = styled(SButton)`
   margin: 0.5rem 0.5rem 0.5rem 0;
 `;
 
-const UserData = ({ user }) => {
+const ClientData = ({ client }) => {
   const [modalShow, setModalShow] = React.useState(false);
-
-  React.useEffect(() => {}, []);
 
   return (
     <Div>
@@ -24,19 +21,17 @@ const UserData = ({ user }) => {
         <thead>
           <tr>
             <th>ID</th>
-            <th>Användarnamn</th>
-            <th>E-mail</th>
-            <th>E-mail</th>
-            <th>E-mail</th>
+            <th>Kund</th>
+            <th>Kontaktperson</th>
+            <th>Telefonnummer</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>{user.id}</td>
-            <td>{user.username}</td>
-            <td>{user.email}</td>
-            <td>{user.email}</td>
-            <td>{user.email}</td>
+            <td>{client.id}</td>
+            <td>{client.clientName}</td>
+            <td>{client.contactName}</td>
+            <td>{client.phoneNumber}</td>
           </tr>
         </tbody>
       </Table>
@@ -46,12 +41,12 @@ const UserData = ({ user }) => {
       >
         Redigera
       </RightButton>
-      <EditUserModal
+      {/* <EditclientModal
         show={modalShow}
         onHide={() => setModalShow(false)}
-        user={user}
-      />
+        client={client}
+      /> */}
     </Div>
   );
 };
-export default UserData;
+export default ClientData;

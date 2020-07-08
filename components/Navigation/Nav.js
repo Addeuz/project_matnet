@@ -1,11 +1,14 @@
 import Link from 'next/link';
 import styled from 'styled-components';
-import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
+import { Navbar, Nav, NavDropdown, Row, Col } from 'react-bootstrap';
 
 import { UserContext } from '../UserContext';
+import { SRow, SCol } from '../../styles/styled';
 
 const SNavbar = styled(Navbar)`
   background-color: var(--green_100);
+  /* padding: 0; */
+  /* margin: 0; */
 `;
 
 const SNavbarLogo = styled.img`
@@ -72,7 +75,6 @@ export default function Navigation() {
             />
           </Navbar.Brand>
         </Link>
-
         <SNav>
           {!user && (
             <Link href="/login" passHref>

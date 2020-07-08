@@ -1,17 +1,9 @@
 import { useRouter } from 'next/router';
-import { Nav, Row, Col } from 'react-bootstrap';
+import { Nav, Col } from 'react-bootstrap';
 import styled from 'styled-components';
 import useCurrentWidth from '../../utils/hooks/useCurrentWidth';
 import SidebarItems from './SidebarItems';
-
-const SRow = styled(Row)`
-  margin-top: 0.5rem;
-
-  @media only screen and (max-width: 768px) {
-    flex-direction: column;
-    margin: 0;
-  }
-`;
+import { SCol, SRow } from '../../styles/styled';
 
 const SNav = styled(Nav)`
   border-radius: 0.25rem;
@@ -32,6 +24,12 @@ const SNav = styled(Nav)`
   }
 `;
 
+const ContainerCol = styled(Col)`
+  @media only screen and (max-width: 768px) {
+    padding: 0 0.5rem;
+  }
+`;
+
 const Sidebar = ({ page, children }) => {
   const router = useRouter();
   const windowWidth = useCurrentWidth();
@@ -46,7 +44,7 @@ const Sidebar = ({ page, children }) => {
 
   return (
     <SRow>
-      <Col>
+      <SCol xs={12} md={3}>
         {viewPort === 'desktop' ? (
           <SNav>
             <SidebarItems page={page} viewPort={viewPort} />
@@ -56,10 +54,10 @@ const Sidebar = ({ page, children }) => {
             <SidebarItems page={page} viewPort={viewPort} />
           </SNav>
         )}
-      </Col>
-      <Col className="px-2" md={9}>
+      </SCol>
+      <ContainerCol md={9} xs={12}>
         {children}
-      </Col>
+      </ContainerCol>
     </SRow>
   );
 };

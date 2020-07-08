@@ -27,12 +27,20 @@ router.get('/admin', function(req, res) {
   return app.render(req, res, '/admin', req.query);
 });
 
-router.get('/admin/register', function(req, res) {
-  return app.render(req, res, '/admin/register', req.query);
-});
-
 router.get('/admin/users', function(req, res) {
   return app.render(req, res, '/admin/users', req.query);
+});
+
+router.get('/admin/register/user', function(req, res) {
+  return app.render(req, res, '/admin/register/user', req.query);
+});
+
+router.get('/admin/clients', function(req, res) {
+  return app.render(req, res, '/admin/clients', req.query);
+});
+
+router.get('/admin/register/client', function(req, res) {
+  return app.render(req, res, '/admin/register/client', req.query);
 });
 
 module.exports = router;

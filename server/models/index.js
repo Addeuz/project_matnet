@@ -23,6 +23,7 @@ db.sequelize = sequelize;
 
 db.user = require('./user.model')(sequelize, Sequelize);
 db.role = require('./role.model')(sequelize, Sequelize);
+db.client = require('./client.model')(sequelize, Sequelize);
 
 // Defines many to many relationship between users and roles.
 // The connection will be done in a new table called 'user_roles'
@@ -37,6 +38,18 @@ db.user.belongsToMany(db.role, {
   through: 'user_roles',
   foreignKey: 'userId',
   otherKey: 'roleId',
+});
+
+db.client.belongsToMany(db.user, {
+  through: 'client_users',
+  foreignKey: 'clientId',
+  otherKey: 'userId',
+});
+
+db.user.belongsToMany(db.client, {
+  through: 'client_users',
+  foreignKey: 'userId',
+  otherKey: 'clientId',
 });
 
 db.ROLES = ['kund', 'admin', 'moderator'];
