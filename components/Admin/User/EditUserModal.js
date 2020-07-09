@@ -1,14 +1,16 @@
-import { Modal, Form } from 'react-bootstrap';
+import { Modal, Form, Alert } from 'react-bootstrap';
 import { Formik } from 'formik';
 import axios from 'axios';
 
-import { SButton } from '../../../styles/styled';
+import styled from 'styled-components';
+import { SButton, SAlert } from '../../../styles/styled';
 import authHeader from '../../../services/auth-header';
 
 // const { Formik } = require('formik');
 
 const EditUserModal = ({ user, show, onHide }) => {
-  React.useEffect(() => {}, []);
+  const [message, setMessage] = React.useState('');
+  const [error, setError] = React.useState('');
 
   return (
     <Modal show={show} onHide={onHide} centered size="lg">
@@ -20,17 +22,7 @@ const EditUserModal = ({ user, show, onHide }) => {
           enableReinitialize
           validate={values => {
             const errors = {};
-            // schema
-            //   .validate(values)
-            //   .then(value => {
-            //     console.log(`validation: ${JSON.stringify(value)}`);
-            //   })
-            //   .catch(error => {
-            //     errors[error.path] = error.message;
-            //     // errors.error.path = error.message;
-            //     console.log(errors);
-            //   });
-
+            // TODO: change this to yup, or look into checking if somethings are equal
             if (!values.username) {
               errors.username = 'Detta fältet krävs';
             }
@@ -50,7 +42,6 @@ const EditUserModal = ({ user, show, onHide }) => {
             }
 
             if (values.password) {
-              console.log(values.password.length);
               if (values.password.length < 8) {
                 errors.password = 'Lösenordet är för kort';
               } else if (values.password !== values.confirmPassword) {
@@ -58,7 +49,6 @@ const EditUserModal = ({ user, show, onHide }) => {
               }
             }
 
-            console.log(errors);
             return errors;
           }}
           initialValues={{
@@ -70,7 +60,6 @@ const EditUserModal = ({ user, show, onHide }) => {
             confirmPassword: '',
           }}
           onSubmit={(values, { setSubmitting }) => {
-            console.log(values);
             const options = {
               headers: authHeader(),
             };
@@ -88,10 +77,10 @@ const EditUserModal = ({ user, show, onHide }) => {
               )
               .then(
                 response => {
-                  console.log(response);
+                  setMessage('Användaren ändrad');
                 },
                 error => {
-                  console.log(error.message);
+                  setError(error);
                 }
               );
             setSubmitting(false);
@@ -202,6 +191,8 @@ const EditUserModal = ({ user, show, onHide }) => {
               <SButton type="submit" disabled={isSubmitting}>
                 Ändra
               </SButton>
+              {message && <SAlert variant="success">{message}</SAlert>}
+              {error && <SAlert variant="danger">{error}</SAlert>}
             </Form>
           )}
         </Formik>

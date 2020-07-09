@@ -44,37 +44,21 @@ router.post(
         res.status(404).send({ message: 'Ingen användare hittad' });
       }
 
-      console.log(`retrieved record ${JSON.stringify(user, null, 2)}`);
-      console.log(req.body);
       if (req.body.password) {
-        console.log('update password');
-        user
-          .update({
-            username: req.body.username,
-            firstname: req.body.firstname,
-            lastname: req.body.lastname,
-            email: req.body.email,
-            password: bcrypt.hashSync(req.body.password),
-          })
-          .then(updatedRecord => {
-            console.log(
-              `updated record ${JSON.stringify(updatedRecord, null, 2)}`
-            );
-          });
+        user.update({
+          username: req.body.username,
+          firstname: req.body.firstname,
+          lastname: req.body.lastname,
+          email: req.body.email,
+          password: bcrypt.hashSync(req.body.password),
+        });
       } else {
-        console.log('DO NOT update password');
-        user
-          .update({
-            username: req.body.username,
-            firstname: req.body.firstname,
-            lastname: req.body.lastname,
-            email: req.body.email,
-          })
-          .then(updatedRecord => {
-            console.log(
-              `updated record ${JSON.stringify(updatedRecord, null, 2)}`
-            );
-          });
+        user.update({
+          username: req.body.username,
+          firstname: req.body.firstname,
+          lastname: req.body.lastname,
+          email: req.body.email,
+        });
       }
 
       res.status(200).send({ message: 'Hello' });
@@ -99,7 +83,6 @@ router.get('/admin/clients', [authJwt.verifyToken, authJwt.isAdmin], function(
   res
 ) {
   Client.findAll().then(clients => {
-    console.log(clients);
     if (!clients || clients.length === 0) {
       return res.status(404).send({ message: 'Inga kunder hittade' });
     }
@@ -116,8 +99,7 @@ router.post(
       contactName: req.body.clientContactName,
       phoneNumber: req.body.clientContactNumber,
     })
-      .then(client => {
-        console.log(client);
+      .then(() => {
         res.status(201).send({ message: 'Kunden skapad!' });
       })
       .catch(err => {

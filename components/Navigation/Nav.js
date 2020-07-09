@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { Navbar, Nav, NavDropdown, Row, Col } from 'react-bootstrap';
 
@@ -44,6 +45,8 @@ const SNavDropdown = styled(NavDropdown)`
 `;
 
 export default function Navigation() {
+  const router = useRouter();
+
   const { user, dispatch } = React.useContext(UserContext);
 
   const [admin, setAdmin] = React.useState(false);

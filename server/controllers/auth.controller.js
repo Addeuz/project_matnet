@@ -27,7 +27,6 @@ exports.signUp = (req, res) => {
             },
           },
         }).then(roles => {
-          console.log(`roles: ${JSON.stringify(roles, null, 2)}`);
           user.setRoles(roles).then(() => {
             res.status(201).send({ message: 'Användaren skapad!' });
           });
@@ -51,7 +50,6 @@ exports.signIn = (req, res) => {
     },
   })
     .then(user => {
-      console.log(user);
       if (!user) {
         return res.status(404).send({ message: 'Ingen användare hittad.' });
       }
@@ -77,7 +75,6 @@ exports.signIn = (req, res) => {
         for (let i = 0; i < roles.length; i++) {
           authorities.push(`ROLE_${roles[i].name.toUpperCase()}`);
         }
-        console.log(user);
         res.status(200).send({
           id: user.id,
           username: user.username,

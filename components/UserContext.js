@@ -12,10 +12,6 @@ const UserContextProvider = ({ children }) => {
     }
   });
 
-  // React.useEffect(() => {
-  //   dispatch({ action: 'LOG_IN' });
-  // }, []);
-
   return (
     <UserContext.Provider value={{ user, dispatch }}>
       {children}

@@ -5,14 +5,12 @@ const AUTH_URL = 'http://localhost:3000/api/auth';
 
 class AuthService {
   login(username, password) {
-    console.log({ username, password });
     return axios
       .post(`${AUTH_URL}/signin`, {
         username,
         password,
       })
       .then(response => {
-        console.log(response.data);
         // if there is an accessToken, the user successfully logged in
         if (response.data.accessToken) {
           localStorage.setItem('user', JSON.stringify(response.data));
@@ -40,7 +38,6 @@ class AuthService {
   }
 
   getCurrentUser() {
-    // console.log('wowo');
     return JSON.parse(localStorage.getItem('user'));
   }
 }

@@ -31,12 +31,10 @@ const Logo = styled.img`
 const Header = styled.h1`
   color: var(--yellow);
   margin-bottom: 3rem;
-  /* font-weight: ; */
 `;
 
 const LoginDiv = styled.div`
   border-radius: 0.25rem;
-  /* background-color: var(--green_20); */
 `;
 
 const SForm = styled(Form)`
@@ -65,13 +63,6 @@ const CustomButton = styled(SButton)`
     color: var(--yellow) !important;
   }
 `;
-
-// export async function getServerSideProps(context) {
-//   const { query } = context;
-//   return {
-//     props: { query },
-//   };
-// }
 
 const schema = yup.object({
   username: yup.string().required(),
@@ -102,9 +93,7 @@ const Login = () => {
           onSubmit={(values, { setSubmitting }) => {
             AuthService.login(values.username, values.password).then(
               () => {
-                console.log('HOOAOJDOASJ');
                 setSubmitting(true);
-                console.log('replace');
                 window.location.replace('/');
               },
               error => {

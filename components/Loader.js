@@ -1,12 +1,5 @@
 import styled from 'styled-components';
-
-const Container = styled.div`
-  background-color: var(--green_100);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-`;
+import { GreenContainer } from '../styles/styled';
 
 const SpinningLogo = styled.img`
   width: 10%;
@@ -24,11 +17,11 @@ const SpinningLogo = styled.img`
 
 export default function Loader() {
   return (
-    <Container>
+    <GreenContainer>
       <SpinningLogo
         src="/Assemblin_Symbol_Yellow_RGB.svg"
         alt="Assemblin Logotyp"
       />
-    </Container>
+    </GreenContainer>
   );
 }

@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const app = require('../server');
-const { authJwt } = require('../middleware');
 
 router.use(function(req, res, next) {
   res.header(

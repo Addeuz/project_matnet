@@ -6,8 +6,9 @@ const User = db.user;
 
 verifyToken = (req, res, next) => {
   const token = req.headers['x-access-token'];
-
   if (!token) {
+    res.statusCode = 401;
+    req.query = { message: 'Ingen token försedd!' };
     return res.status(401).send({
       message: 'Ingen token försedd!',
     });
@@ -15,6 +16,8 @@ verifyToken = (req, res, next) => {
 
   jwt.verify(token, accessTokenSecret, (err, decoded) => {
     if (err) {
+      res.statusCode = 403;
+      req.query = { message: 'Obehörig!' };
       return res.status(403).send({
         message: 'Obehörig!',
       });

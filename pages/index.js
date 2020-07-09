@@ -15,9 +15,8 @@ const Index = () => {
   const { user } = React.useContext(UserContext);
 
   React.useEffect(() => {
-    userService.getUserBoard().then(
+    userService.isUser().then(
       response => {
-        console.log(response.data);
         if (!user) {
           window.location.replace('/login');
         } else {
@@ -26,13 +25,6 @@ const Index = () => {
         }
       },
       error => {
-        console.log(
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-            error.message ||
-            error.toString()
-        );
         // User don't have access
         if (error.response.status === 403) {
           authService.logOut();
@@ -51,8 +43,6 @@ const Index = () => {
   return loading ? (
     <Loader />
   ) : (
-    // <Layout>
-    // </Layout>
     <Layout>
       <Head>
         <title>{siteTitle}</title>
@@ -62,6 +52,5 @@ const Index = () => {
       </Sidebar>
     </Layout>
   );
-  // return <Loader />;
 };
 export default Index;

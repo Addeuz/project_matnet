@@ -11,22 +11,22 @@ router.use(function(req, res, next) {
   next();
 });
 
-router.get('/test/all', function(req, res) {
-  controller.allAccess(req, res);
-});
+// router.get('/test/all', function(req, res) {
+//   controller.allAccess(req, res);
+// });
 
-router.get('/test/user', [authJwt.verifyToken], function(req, res) {
+router.get('/user', [authJwt.verifyToken], function(req, res) {
   controller.userBoard(req, res);
 });
 
-router.get('/test/mod', [authJwt.verifyToken, authJwt.isModerator], function(
-  req,
-  res
-) {
-  controller.moderatorBoard(req, res);
-});
+// router.get('/test/mod', [authJwt.verifyToken, authJwt.isModerator], function(
+//   req,
+//   res
+// ) {
+//   controller.moderatorBoard(req, res);
+// });
 
-router.get('/test/admin', [authJwt.verifyToken, authJwt.isAdmin], function(
+router.get('/admin', [authJwt.verifyToken, authJwt.isAdmin], function(
   req,
   res
 ) {

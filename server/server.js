@@ -46,7 +46,6 @@ app
 
     // using a wildcard handler here so that next can do some heavy lifting, like serving a 404 page..
     server.get('*', (req, res) => {
-      // console.log(`> Request: ${req}`);
       handle(req, res);
     });
 

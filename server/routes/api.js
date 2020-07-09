@@ -7,8 +7,6 @@
 
 // // router.get('/pokemon', async (req, res) => {
 // //   const data = await fetcher(API_URL);
-// //   // console.log(data);
-// //   console.log('hello');
 // //   res.json(data);
 // // });
 

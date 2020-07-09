@@ -1,9 +1,20 @@
 // Global styled components used everywhere in the application
 // Mostly just rewriting the style of bootstrap components
 // the big S infront of the components stands for Styled
-import { Button, Spinner, Row, Col, Accordion } from 'react-bootstrap';
+import { Button, Spinner, Row, Col, Accordion, Alert } from 'react-bootstrap';
 import styled from 'styled-components';
 
+export const GreenContainer = styled.div`
+  background-color: var(--green_100);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+`;
+
+export const SAlert = styled(Alert)`
+  margin-top: 0.5rem;
+`;
 export const SButton = styled(Button)`
   background-color: var(--yellow);
   color: var(--green_100);
