@@ -8,6 +8,8 @@ const User = db.user;
 const Role = db.role;
 const Client = db.client;
 
+const { Op } = db.Sequelize;
+
 router.use(function(req, res, next) {
   res.header(
     'Access-Control-Allow-Headers',
@@ -21,17 +23,29 @@ router.get('/admin/users', [authJwt.verifyToken, authJwt.isAdmin], function(
   res
 ) {
   User.findAll({
-    include: {
-      model: Role,
-      through: {
-        attributes: [],
+    include: [
+      {
+        model: Role,
+        through: {
+          association: [],
+        },
       },
-    },
+      {
+        model: Client,
+        through: {
+          association: [],
+        },
+      },
+    ],
   }).then(users => {
     if (!users) {
       return res.status(404).send({ message: 'Inga användare hittade' });
     }
-    res.status(200).send(users);
+    Role.findAll().then(roles => {
+      Client.findAll().then(clients => {
+        res.status(200).send({ users, roles, clients });
+      });
+    });
   });
 });
 
@@ -41,32 +55,82 @@ router.post(
   (req, res) => {
     User.findByPk(req.params.id).then(user => {
       if (!user) {
-        res.status(404).send({ message: 'Ingen användare hittad' });
+        return res.status(404).send({ message: 'Ingen användare hittad' });
       }
 
       if (req.body.password) {
-        user.update({
-          username: req.body.username,
-          firstname: req.body.firstname,
-          lastname: req.body.lastname,
-          email: req.body.email,
-          password: bcrypt.hashSync(req.body.password),
-        });
+        user
+          .update({
+            username: req.body.username,
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
+            email: req.body.email,
+            password: bcrypt.hashSync(req.body.password),
+          })
+          .then(() => {
+            Role.findOne({
+              where: {
+                name: req.body.role,
+              },
+            }).then(role => {
+              user
+                .setRoles(role)
+                .catch(err => res.status(500).send({ message: err.message }));
+            });
+            Client.findAll({
+              where: {
+                clientName: {
+                  [Op.or]: req.body.clients,
+                },
+              },
+            }).then(clients => {
+              user
+                .setClients(clients)
+                .then(() =>
+                  res.status(200).send({ message: 'Användaren ändrad!' })
+                )
+                .catch(err => res.status(500).send({ message: err.message }));
+            });
+          });
       } else {
-        user.update({
-          username: req.body.username,
-          firstname: req.body.firstname,
-          lastname: req.body.lastname,
-          email: req.body.email,
-        });
+        user
+          .update({
+            username: req.body.username,
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
+            email: req.body.email,
+          })
+          .then(() => {
+            Role.findOne({
+              where: {
+                name: req.body.role,
+              },
+            }).then(role => {
+              user
+                .setRoles(role)
+                .catch(err => res.status(500).send({ message: err.message }));
+            });
+            Client.findAll({
+              where: {
+                clientName: {
+                  [Op.or]: req.body.clients,
+                },
+              },
+            }).then(clients => {
+              user
+                .setClients(clients)
+                .then(() =>
+                  res.status(200).send({ message: 'Användaren ändrad!' })
+                )
+                .catch(err => res.status(500).send({ message: err.message }));
+            });
+          });
       }
-
-      res.status(200).send({ message: 'Hello' });
     });
   }
 );
 
-router.get('/admin/roles', [authJwt.verifyToken, authJwt.isAdmin], function(
+router.get('/admin/register', [authJwt.verifyToken, authJwt.isAdmin], function(
   req,
   res
 ) {
@@ -74,7 +138,12 @@ router.get('/admin/roles', [authJwt.verifyToken, authJwt.isAdmin], function(
     if (!roles) {
       return res.status(404).send({ message: 'Inga användare hittade' });
     }
-    res.status(200).send(roles);
+    Client.findAll().then(clients => {
+      if (!clients || clients.length === 0) {
+        return res.status(404).send({ message: 'Inga kunder hittade' });
+      }
+      res.status(200).send({ roles, clients });
+    });
   });
 });
 
@@ -105,6 +174,27 @@ router.post(
       .catch(err => {
         res.status(500).send({ message: err.message });
       });
+  }
+);
+
+router.put(
+  '/admin/client/:id',
+  [authJwt.verifyToken, authJwt.isAdmin],
+  (req, res) => {
+    Client.findByPk(req.params.id).then(client => {
+      if (!client) {
+        return res.status(404).send({ message: 'Ingen kund hittad' });
+      }
+
+      client
+        .update({
+          clientName: req.body.clientName,
+          contactName: req.body.clientContactName,
+          phoneNumber: req.body.clientContactNumber,
+        })
+        .then(() => res.status(200).send({ message: 'Kund ändrad' }))
+        .catch(err => res.status(500).send({ message: err.message }));
+    });
   }
 );
 

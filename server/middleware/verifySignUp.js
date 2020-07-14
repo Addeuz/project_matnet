@@ -39,16 +39,16 @@ checkDuplicateUsernameOrEmail = (req, res, next) => {
 
 // check if roles provided with the request body exists
 checkRolesExisting = (req, res, next) => {
-  if (req.body.roles) {
-    for (let i = 0; i < req.body.roles.length; i++) {
-      if (!ROLES.includes(req.body.roles[i])) {
-        res.status(400).send({
-          message: `Misslyckade! Rolen existerar inte: ${req.body.roles[i]}.`,
-        });
-        return;
-      }
-    }
-  }
+  // if (req.body.roles) {
+  //   for (let i = 0; i < req.body.roles.length; i++) {
+  //     if (!ROLES.includes(req.body.roles[i])) {
+  //       res.status(400).send({
+  //         message: `Misslyckade! Rolen existerar inte: ${req.body.roles[i]}.`,
+  //       });
+  //       return;
+  //     }
+  //   }
+  // }
 
   next();
 };

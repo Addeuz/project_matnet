@@ -1,16 +1,35 @@
-import { Modal, Form, Alert } from 'react-bootstrap';
+import { Modal, Form } from 'react-bootstrap';
 import { Formik } from 'formik';
 import axios from 'axios';
 
 import styled from 'styled-components';
-import { SButton, SAlert } from '../../../styles/styled';
+import { SButton, SAlert, SRow, SCol } from '../../../styles/styled';
 import authHeader from '../../../services/auth-header';
 
 // const { Formik } = require('formik');
 
-const EditUserModal = ({ user, show, onHide }) => {
+const FormColumn = styled(SCol)`
+  padding-left: 0;
+`;
+
+// const FormROw = styled(SRow)``;
+
+const EditUserModal = ({ user, roles, clients, show, onHide }) => {
   const [message, setMessage] = React.useState('');
   const [error, setError] = React.useState('');
+  const [userClients, setUserClients] = React.useState([]);
+  console.log(clients);
+  console.log(user.clients);
+
+  React.useEffect(() => {
+    if (user.clients[0]) {
+      const temp = [];
+      user.clients.forEach(client => {
+        temp.push(client.clientName);
+      });
+      setUserClients(temp);
+    }
+  }, [user.clients]);
 
   return (
     <Modal show={show} onHide={onHide} centered size="lg">
@@ -49,6 +68,10 @@ const EditUserModal = ({ user, show, onHide }) => {
               }
             }
 
+            if (!values.clients) {
+              error.clients = 'Detta fältet krävs';
+            }
+
             return errors;
           }}
           initialValues={{
@@ -56,6 +79,8 @@ const EditUserModal = ({ user, show, onHide }) => {
             email: user.email,
             firstname: user.firstname,
             lastname: user.lastname,
+            role: user.roles[0] ? user.roles[0].name : '',
+            clients: userClients,
             password: '',
             confirmPassword: '',
           }}
@@ -63,6 +88,7 @@ const EditUserModal = ({ user, show, onHide }) => {
             const options = {
               headers: authHeader(),
             };
+            console.log(values);
             axios
               .post(
                 `http://localhost:3000/api/admin/users/${user.id}`,
@@ -71,16 +97,18 @@ const EditUserModal = ({ user, show, onHide }) => {
                   email: values.email,
                   firstname: values.firstname,
                   lastname: values.lastname,
+                  role: values.role,
+                  clients: values.clients,
                   password: values.password,
                 },
                 options
               )
               .then(
                 response => {
-                  setMessage('Användaren ändrad');
+                  setMessage(response.data.message);
                 },
                 error => {
-                  setError(error);
+                  setError(error.response.data.message);
                 }
               );
             setSubmitting(false);
@@ -89,12 +117,10 @@ const EditUserModal = ({ user, show, onHide }) => {
           {({
             values,
             isSubmitting,
-            validateOnChange,
             errors,
             touched,
             handleSubmit,
             handleChange,
-            handleBlur,
           }) => (
             <Form onSubmit={handleSubmit}>
               <Form.Group controlId="formGroupUsername">
@@ -188,6 +214,50 @@ const EditUserModal = ({ user, show, onHide }) => {
                   {errors.confirmPassword}
                 </Form.Control.Feedback>
               </Form.Group>
+              <SRow>
+                <FormColumn xs={12} md={6}>
+                  <Form.Group>
+                    <Form.Label>Användarroll</Form.Label>
+                    <Form.Control
+                      onChange={handleChange}
+                      name="role"
+                      value={values.role}
+                      isValid={touched.role}
+                      as="select"
+                    >
+                      {roles.map(role => (
+                        <option value={role.name} key={role.id}>
+                          {role.name}
+                        </option>
+                      ))}
+                    </Form.Control>
+                  </Form.Group>
+                </FormColumn>
+                <FormColumn xs={12} md={6}>
+                  {console.log(values.clients)}
+                  <Form.Group>
+                    <Form.Label>Kunder</Form.Label>
+                    <Form.Control
+                      onChange={handleChange}
+                      value={values.clients}
+                      name="clients"
+                      isValid={touched.clients && !errors.clients}
+                      isInvalid={touched.clients && errors.clients}
+                      as="select"
+                      multiple
+                    >
+                      {clients.map(client => (
+                        <option value={client.clientName} key={client.id}>
+                          {client.clientName}
+                        </option>
+                      ))}
+                    </Form.Control>
+                    <Form.Control.Feedback tooltip="true" type="invalid">
+                      {errors.clients}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </FormColumn>
+              </SRow>
               <SButton type="submit" disabled={isSubmitting}>
                 Ändra
               </SButton>
@@ -201,9 +271,6 @@ const EditUserModal = ({ user, show, onHide }) => {
         <SButton onClick={onHide}>Stäng</SButton>
       </Modal.Footer>
     </Modal>
-    // <div>
-
-    // </div>
   );
 };
 

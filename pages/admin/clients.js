@@ -27,8 +27,9 @@ const Clients = () => {
   const [page, setPage] = React.useState('');
 
   React.useEffect(() => {
+    console.log(response);
     if (router.pathname.includes('/admin')) setPage('/admin');
-  }, [router.pathname]);
+  }, [response, router.pathname]);
 
   return (
     <AdminDispatch>

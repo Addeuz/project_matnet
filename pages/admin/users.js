@@ -28,8 +28,9 @@ const HandleUsers = () => {
   const [page, setPage] = React.useState('');
 
   React.useEffect(() => {
+    console.log(response);
     if (router.pathname.includes('/admin')) setPage('/admin');
-  }, [router.pathname]);
+  }, [response, router.pathname]);
 
   return (
     <AdminDispatch>
@@ -72,8 +73,14 @@ const HandleUsers = () => {
                 )}
                 {!isError &&
                   response &&
-                  response.map(user => (
-                    <UserCard filter={filter} user={user} key={user.id} />
+                  response.users.map(user => (
+                    <UserCard
+                      filter={filter}
+                      user={user}
+                      roles={response.roles}
+                      clients={response.clients}
+                      key={user.id}
+                    />
                   ))}
               </SAccordion>
             </SCol>

@@ -1,6 +1,9 @@
 import { useRouter } from 'next/router';
 import { Formik } from 'formik';
-import { Form, Row, Col } from 'react-bootstrap';
+// import { Row, Col } from 'react-bootstrap';
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import * as yup from 'yup';
 import axios from 'axios';
 import Sidebar from '../../../components/Navigation/Sidebar';

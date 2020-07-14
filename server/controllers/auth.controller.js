@@ -6,11 +6,13 @@ const { accessTokenSecret } = require('../config/env.config');
 
 const User = db.user;
 const Role = db.role;
+const Client = db.client;
 
 const { Op } = db.Sequelize;
 
 exports.signUp = (req, res) => {
   // save the user to the database
+  console.log(req.body);
   User.create({
     username: req.body.username,
     firstname: req.body.firstname,
@@ -19,24 +21,40 @@ exports.signUp = (req, res) => {
     password: bcrypt.hashSync(req.body.password),
   })
     .then(user => {
+      // checking for roles and then setting the roles that corresponds in the database
       if (req.body.roles) {
-        Role.findAll({
+        Role.findOne({
           where: {
-            name: {
-              [Op.or]: req.body.roles,
-            },
+            name: req.body.roles,
           },
-        }).then(roles => {
-          user.setRoles(roles).then(() => {
-            res.status(201).send({ message: 'Användaren skapad!' });
+        }).then(role => {
+          user.setRoles(role).catch(err => {
+            res.status(500).send({ message: err.message });
           });
         });
       } else {
-        // if no roles find set the role to 'user'
-        user.setRoles([1]).then(() => {
-          res.status(201).send({ message: 'Användaren skapad!' });
+        // if no roles find set the role to 'kund'
+        user.setRoles('kund').catch(err => {
+          res.status(500).send({ message: err.message });
         });
       }
+      // checking for clients and then making the association between users and clients in the database
+      Client.findAll({
+        where: {
+          clientName: {
+            [Op.or]: req.body.clients,
+          },
+        },
+      })
+        .then(clients => {
+          console.log(clients);
+          user.setClients(clients).then(() => {
+            res.status(201).send({ message: 'Användaren skapad!' });
+          });
+        })
+        .catch(err => {
+          res.status(500).send({ message: err.message });
+        });
     })
     .catch(err => {
       res.status(500).send({ message: err.message });

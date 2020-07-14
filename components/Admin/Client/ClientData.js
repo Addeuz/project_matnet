@@ -1,6 +1,7 @@
 import { Table } from 'react-bootstrap';
 import styled from 'styled-components';
 import { SButton } from '../../../styles/styled';
+import EditClientModal from './EditClientModal';
 
 const Div = styled.div`
   display: flex;
@@ -41,11 +42,11 @@ const ClientData = ({ client }) => {
       >
         Redigera
       </RightButton>
-      {/* <EditclientModal
+      <EditClientModal
         show={modalShow}
         onHide={() => setModalShow(false)}
         client={client}
-      /> */}
+      />
     </Div>
   );
 };

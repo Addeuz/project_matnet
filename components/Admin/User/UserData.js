@@ -13,7 +13,7 @@ const RightButton = styled(SButton)`
   margin: 0.5rem 0.5rem 0.5rem 0;
 `;
 
-const UserData = ({ user }) => {
+const UserData = ({ user, roles, clients }) => {
   const [modalShow, setModalShow] = React.useState(false);
 
   React.useEffect(() => {}, []);
@@ -50,6 +50,8 @@ const UserData = ({ user }) => {
         show={modalShow}
         onHide={() => setModalShow(false)}
         user={user}
+        roles={roles}
+        clients={clients}
       />
     </Div>
   );

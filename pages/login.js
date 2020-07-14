@@ -65,8 +65,8 @@ const CustomButton = styled(SButton)`
 `;
 
 const schema = yup.object({
-  username: yup.string().required(),
-  password: yup.string().required(),
+  username: yup.string().required('Användarnamn krävs'),
+  password: yup.string().required('Lösenord krävs'),
 });
 
 const Login = () => {
