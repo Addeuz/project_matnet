@@ -18,8 +18,8 @@ const SidebarItems = ({ viewPort, page }) => (
             <Link href="/" passHref>
               <Nav.Link>hej index</Nav.Link>
             </Link>
-            <Link href="/about" passHref>
-              <Nav.Link>about</Nav.Link>
+            <Link href="/engines" passHref>
+              <Nav.Link>Motorer</Nav.Link>
             </Link>
           </>
         )}
@@ -45,9 +45,14 @@ const SidebarItems = ({ viewPort, page }) => (
       >
         <>
           {page === '/' && (
-            <Link href="/" passHref>
-              <NavDropdown.Item>hej index</NavDropdown.Item>
-            </Link>
+            <>
+              <Link href="/" passHref>
+                <NavDropdown.Item>hej index</NavDropdown.Item>
+              </Link>
+              <Link href="/engines" passHref>
+                <NavDropdown.Item>Motorer</NavDropdown.Item>
+              </Link>
+            </>
           )}
           {page === '/admin' && (
             <>

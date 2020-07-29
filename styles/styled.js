@@ -1,8 +1,36 @@
 // Global styled components used everywhere in the application
 // Mostly just rewriting the style of bootstrap components
 // the big S infront of the components stands for Styled
-import { Button, Spinner, Row, Col, Accordion, Alert } from 'react-bootstrap';
+import {
+  Button,
+  Spinner,
+  Row,
+  Col,
+  Accordion,
+  Alert,
+  Form,
+} from 'react-bootstrap';
 import styled from 'styled-components';
+
+const FormControl = Form.Control;
+
+export const FormControlPHError = styled(FormControl)`
+  ::placeholder {
+    /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #dc3545;
+    opacity: 1; /* Firefox */
+  }
+
+  :-ms-input-placeholder {
+    /* Internet Explorer 10-11 */
+    color: #dc3545;
+  }
+
+  ::-ms-input-placeholder {
+    /* Microsoft Edge */
+    color: #dc3545;
+  }
+`;
 
 export const GreenContainer = styled.div`
   background-color: var(--green_100);

@@ -2,6 +2,7 @@ const express = require('express');
 const next = require('next');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const bcrypt = require('bcryptjs');
 
 // dev becomes true when running 'npm run start'
 const dev = process.env.NODE_ENV !== 'production';
@@ -12,7 +13,11 @@ const handle = app.getRequestHandler();
 
 const db = require('./models/index');
 
+// These lines are for the initial function
 const Role = db.role;
+const Client = db.client;
+const User = db.user;
+const { Op } = db.Sequelize;
 
 const corsOptions = {
   origin: 'http://localhost:8081',
@@ -42,6 +47,8 @@ app
     server.use('/api', authRoutes);
     server.use('/api', userRoutes);
     server.use('/api', adminRoutes);
+    server.use('/api', moderatorRoutes);
+
     server.use('/', applicationRoutes);
 
     // using a wildcard handler here so that next can do some heavy lifting, like serving a 404 page..
@@ -67,19 +74,61 @@ const {
   userRoutes,
   applicationRoutes,
   adminRoutes,
+  moderatorRoutes,
 } = require('./routes/index');
 
 // Only used in development to create roles
-// function initial() {
-//   Role.create({
-//     name: 'kund',
-//   });
+function initial() {
+  Role.create({
+    name: 'kund',
+  });
 
-//   Role.create({
-//     name: 'moderator',
-//   });
+  Role.create({
+    name: 'moderator',
+  });
 
-//   Role.create({
-//     name: 'admin',
-//   });
-// }
+  Role.create({
+    name: 'admin',
+  });
+
+  Client.create({
+    clientName: 'Preem',
+    contactName: 'Preem Preemsson',
+    phoneNumber: '0768660622',
+  });
+  Client.create({
+    clientName: 'Ovako Steel',
+    contactName: 'Ovako Steelsson',
+    phoneNumber: '0768660622',
+  });
+
+  User.create({
+    username: 'admin',
+    firstname: 'Andreas',
+    lastname: 'Johansson',
+    email: 'andreas.nb.johansson@gmail.com',
+    password: bcrypt.hashSync('Loadme81'),
+  }).then(user => {
+    // checking for roles and then setting the roles that corresponds in the database
+
+    Role.findOne({
+      where: {
+        name: 'admin',
+      },
+    }).then(role => {
+      user.setRoles(role);
+    });
+
+    // checking for clients and then making the association between users and clients in the database
+    Client.findAll({
+      where: {
+        clientName: {
+          [Op.or]: ['Preem', 'Ovako Steel'],
+        },
+      },
+    }).then(clients => {
+      console.log(clients);
+      user.setClients(clients);
+    });
+  });
+}

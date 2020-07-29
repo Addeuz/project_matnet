@@ -130,7 +130,7 @@ const EditClientModal = ({ client, show, onHide }) => {
                     </Form.Control.Feedback>
                   </Form.Group>
                   <SButton type="submit" disabled={isSubmitting}>
-                    Registrera
+                    Ändra
                   </SButton>
                   {message && <SAlert variant="success">{message}</SAlert>}
                   {error && <SAlert variant="danger">{error}</SAlert>}

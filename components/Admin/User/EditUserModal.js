@@ -18,8 +18,6 @@ const EditUserModal = ({ user, roles, clients, show, onHide }) => {
   const [message, setMessage] = React.useState('');
   const [error, setError] = React.useState('');
   const [userClients, setUserClients] = React.useState([]);
-  console.log(clients);
-  console.log(user.clients);
 
   React.useEffect(() => {
     if (user.clients[0]) {

@@ -9,6 +9,10 @@ const CustomContainer = styled(GreenContainer)`
   h1 {
     font-size: 5rem;
   }
+
+  a {
+    color: var(--yellow);
+  }
 `;
 
 export async function getServerSideProps(context) {
@@ -40,6 +44,7 @@ export default function ErrorPage({ error, errorCode, title }) {
       </Head>
       <h1>{error.errorCode}</h1>
       <h4>{error.errorMessage}</h4>
+      <a href="/login">Logga in</a>
     </CustomContainer>
   );
 }

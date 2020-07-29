@@ -14,6 +14,7 @@ const sequelize = new Sequelize(database, user, password, {
   host,
   dialect,
   pool,
+  logging: false,
 });
 
 const db = {};
@@ -24,6 +25,8 @@ db.sequelize = sequelize;
 db.user = require('./user.model')(sequelize, Sequelize);
 db.role = require('./role.model')(sequelize, Sequelize);
 db.client = require('./client.model')(sequelize, Sequelize);
+db.engine_values = require('./engine_values.model')(sequelize, Sequelize);
+db.engine = require('./engine.model')(sequelize, Sequelize);
 
 // Defines many to many relationship between users and roles.
 // The connection will be done in a new table called 'user_roles'
@@ -51,6 +54,32 @@ db.user.belongsToMany(db.client, {
   foreignKey: 'userId',
   otherKey: 'clientId',
 });
+
+// db.engine.belongsToMany(db.user, {
+//   through: 'engine_users',
+//   foreginKey: 'engineId',
+//   otherKey: 'userId',
+// });
+
+// db.user.belongsToMany(db.engine, {
+//   through: 'engine_users',
+//   foreginKey: 'userId',
+//   otherKey: 'engineId',
+// });
+
+db.engine.belongsTo(db.engine_values);
+db.engine.belongsTo(db.client);
+db.client.hasMany(db.engine);
+
+// used to see mixins for the models that sequelize generate because of the associations above
+const model = db.client;
+for (const assoc of Object.keys(model.associations)) {
+  for (const accessor of Object.keys(model.associations[assoc].accessors)) {
+    console.log(
+      `${model.name}.${model.associations[assoc].accessors[accessor]}()`
+    );
+  }
+}
 
 db.ROLES = ['kund', 'admin', 'moderator'];
 

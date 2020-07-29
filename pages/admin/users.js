@@ -28,7 +28,6 @@ const HandleUsers = () => {
   const [page, setPage] = React.useState('');
 
   React.useEffect(() => {
-    console.log(response);
     if (router.pathname.includes('/admin')) setPage('/admin');
   }, [response, router.pathname]);
 

@@ -1,51 +1,64 @@
-import { Table } from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
 import styled from 'styled-components';
-import { SButton } from '../../../styles/styled';
+import { SButton, SRow } from '../../../styles/styled';
 import EditUserModal from './EditUserModal';
+import HeadingData from '../Utils/HeadingData';
 
-const Div = styled.div`
-  display: flex;
-  flex-direction: column;
+const CustomerDiv = styled.div`
+  height: 150px;
+  overflow: auto;
+
+  @media only screen and (max-width: 768px) {
+    height: auto;
+  }
 `;
 
 const RightButton = styled(SButton)`
-  align-self: flex-end;
+  float: right;
   margin: 0.5rem 0.5rem 0.5rem 0;
+
+  @media only screen and (max-width: 768px) {
+    float: initial;
+  }
 `;
 
 const UserData = ({ user, roles, clients }) => {
   const [modalShow, setModalShow] = React.useState(false);
 
-  React.useEffect(() => {}, []);
-
   return (
-    <Div>
-      <Table responsive size="sm">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Användarnamn</th>
-            <th>E-mail</th>
-            <th>E-mail</th>
-            <th>E-mail</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>{user.id}</td>
-            <td>{user.username}</td>
-            <td>{user.email}</td>
-            <td>{user.email}</td>
-            <td>{user.email}</td>
-          </tr>
-        </tbody>
-      </Table>
-      <RightButton
-        // TODO: extend this to a styled component
-        onClick={() => setModalShow(true)}
-      >
-        Redigera
-      </RightButton>
+    <SRow>
+      <Col xs={12} md={5}>
+        <HeadingData header="Användarnamn">{user.username}</HeadingData>
+        <HeadingData header="Förnamn">{user.firstname}</HeadingData>
+        <HeadingData header="Efternamn">{user.lastname}</HeadingData>
+        <HeadingData header="Email">{user.email}</HeadingData>
+      </Col>
+      <Col xs={12} md={4}>
+        {user.roles[0] ? (
+          <HeadingData header="Roll">{user.roles[0].name}</HeadingData>
+        ) : (
+          <HeadingData header="Roll">Ingen roll tilldelad</HeadingData>
+        )}
+        <HeadingData header="Kunder">
+          <CustomerDiv>
+            {user.clients[0] ? (
+              user.clients.map(client => (
+                <p key={client.id}>{client.clientName}</p>
+              ))
+            ) : (
+              <p>Inga kunder tillagda</p>
+            )}
+          </CustomerDiv>
+        </HeadingData>
+      </Col>
+      <Col xs={12} md={3}>
+        <RightButton
+          // TODO: extend this to a styled component
+          onClick={() => setModalShow(true)}
+        >
+          Redigera
+        </RightButton>
+      </Col>
       <EditUserModal
         show={modalShow}
         onHide={() => setModalShow(false)}
@@ -53,7 +66,7 @@ const UserData = ({ user, roles, clients }) => {
         roles={roles}
         clients={clients}
       />
-    </Div>
+    </SRow>
   );
 };
 export default UserData;
