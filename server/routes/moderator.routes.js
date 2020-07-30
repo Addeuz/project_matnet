@@ -1,16 +1,12 @@
 const router = require('express').Router();
-const bcrypt = require('bcryptjs');
 
 const db = require('../models');
 const { authJwt } = require('../middleware');
 
 const User = db.user;
-const Role = db.role;
 const Client = db.client;
 const EngineValues = db.engine_values;
 const Engine = db.engine;
-
-const { Op } = db.Sequelize;
 
 router.use(function(req, res, next) {
   res.header(
@@ -21,30 +17,28 @@ router.use(function(req, res, next) {
 });
 
 router.get('/moderator/engines/:id', function(req, res) {
+  const engineArray = [];
+
   User.findByPk(req.params.id).then(user => {
     if (!user) {
       return res
         .status(404)
         .send({ message: `Ingen användare med det id-numret existerar` });
     }
-
     user.getClients().then(clients => {
-      // console.log(clients);
-      // console.log(clients.getEngines());
-      // clients.map(client => {
-      //   console.log(client.getUsers());
-      // });
-
-      clients.forEach(client => {
-        client.getEngines().then(engines => {
-          console.log(client.clientName);
-          engines.forEach(engine => {
-            console.log(engine.tag_nr);
+      clients.forEach((client, clientIndex) => {
+        client
+          .getEngines({ include: { model: EngineValues } })
+          .then(engines => {
+            engines.forEach(engine => {
+              engineArray.push(engine);
+            });
+            // check if all clients engines have been pushed, then respond with the enginges
+            if (clientIndex + 1 === clients.length) {
+              res.status(200).send(engineArray);
+            }
           });
-        });
       });
-
-      res.status(200).send('hello');
     });
   });
 });
@@ -53,18 +47,6 @@ router.post(
   '/moderator/engine',
   [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
   function(req, res) {
-    // EngineTypes.create({
-    //   name: req.body.engineName,
-    //   engine_values: req.body.engineValues,
-    // })
-    //   .then(() => {
-    //     res.status(201).send({ message: 'Typen är skapad' });
-    //   })
-    //   .catch(err => {
-    //     res.status(500).send({ message: err.message });
-    //   });
-
-    console.log(req.body);
     Engine.create({
       tag_nr: req.body.tagNr,
       art_nr: req.body.artNr,

@@ -55,18 +55,6 @@ db.user.belongsToMany(db.client, {
   otherKey: 'clientId',
 });
 
-// db.engine.belongsToMany(db.user, {
-//   through: 'engine_users',
-//   foreginKey: 'engineId',
-//   otherKey: 'userId',
-// });
-
-// db.user.belongsToMany(db.engine, {
-//   through: 'engine_users',
-//   foreginKey: 'userId',
-//   otherKey: 'engineId',
-// });
-
 db.engine.belongsTo(db.engine_values);
 db.engine.belongsTo(db.client);
 db.client.hasMany(db.engine);

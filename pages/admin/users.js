@@ -20,9 +20,7 @@ import AdminDispatch from '../../components/AdminDispatch';
 
 const HandleUsers = () => {
   const router = useRouter();
-  const { response, isLoading, isError } = useFetch(
-    `http://localhost:3000/api/admin/users`
-  );
+  const { response, isLoading, isError } = useFetch(`/api/admin/users`);
 
   const [filter, setFilter] = React.useState('');
   const [page, setPage] = React.useState('');

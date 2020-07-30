@@ -1,12 +1,10 @@
-import styled from 'styled-components';
 /* eslint-disable react/button-has-type */
-import Link from 'next/link';
 import { Button, InputGroup, FormControl } from 'react-bootstrap';
 import { BsSearch } from 'react-icons/bs';
+import axios from 'axios';
 import Layout from '../../components/Layout';
 import { UserContext } from '../../components/UserContext';
 import Sidebar from '../../components/Navigation/Sidebar';
-
 import {
   SRow,
   SCol,
@@ -15,19 +13,34 @@ import {
   AddButtonCol,
 } from '../../styles/styled';
 import AddEngineModal from '../../components/Engine/AddEngineModal';
-import Loader from '../../components/Loader';
-
-const Div = styled.div`
-  background-color: red;
-`;
+import { adress } from '../../utils/hooks/useFetch';
+import EngineCard from '../../components/Engine/EngineCard';
 
 const EngineIndex = () => {
-  const { user, setUser } = React.useContext(UserContext);
+  const { user } = React.useContext(UserContext);
+  // const { response, isLoading, isError } = useFetch(
+  //   `/api/moderator/engines/${user.id}`
+  // );
+
+  const [response, setResponse] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [isError, setError] = React.useState(null);
+
   const [modalShow, setModalShow] = React.useState(false);
-  const [isLoading, setLoading] = React.useState(true);
+  const [loading, setLoading] = React.useState(true);
+  const [filter, setFilter] = React.useState('');
 
   React.useEffect(() => {
     if (user) {
+      axios(`${adress}/api/moderator/engines/${user.id}`)
+        .then(response => {
+          console.log(response.data);
+          setIsLoading(false);
+          setResponse(response.data);
+        })
+        .catch(err => {
+          setError(err);
+        });
       setLoading(false);
     }
   }, [user]);
@@ -41,7 +54,7 @@ const EngineIndex = () => {
           </SCol>
 
           <AddButtonCol xs={5} lg={3}>
-            {!isLoading &&
+            {!loading &&
               (user.roles[0] === 'ROLE_ADMIN' ||
                 user.roles[0] === 'ROLE_MODERATOR') && (
                 <Button variant="success" onClick={() => setModalShow(true)}>
@@ -66,25 +79,20 @@ const EngineIndex = () => {
             </InputGroup>
           </SCol>
           <SCol xs={12}>
-            {/* <SAccordion>
-            {isError && <div>{isError.response.data.message}</div>}
-            {isLoading && (
-              <SSpinner animation="border">
-                <span>Loading...</span>
-              </SSpinner>
-            )}
-            {!isError &&
-              response &&
-              response.users.map(user => (
-                <UserCard
-                  filter={filter}
-                  user={user}
-                  roles={response.roles}
-                  clients={response.clients}
-                  key={user.id}
-                />
-              ))}
-          </SAccordion> */}
+            <SAccordion>
+              {isError && <div>{isError.response.data.message}</div>}
+              {isLoading && (
+                <SSpinner animation="border">
+                  <span>Loading...</span>
+                </SSpinner>
+              )}
+              {/* // <EngineCard key={engine.id} engine={engine} filter={filter} /> */}
+              {!isError &&
+                response &&
+                response.map(engine => (
+                  <EngineCard engine={engine} filter={filter} key={engine.id} />
+                ))}
+            </SAccordion>
           </SCol>
         </SRow>
       </Sidebar>

@@ -19,9 +19,7 @@ const Clients = () => {
   const router = useRouter();
 
   // TODO: Fix this api endpoint
-  const { response, isLoading, isError } = useFetch(
-    `http://localhost:3000/api/admin/clients`
-  );
+  const { response, isLoading, isError } = useFetch(`/api/admin/clients`);
 
   const [filter, setFilter] = React.useState('');
   const [page, setPage] = React.useState('');
