@@ -15,6 +15,8 @@ const SpinningLogo = styled.img`
   }
 `;
 
+// A spinning Assemblin icon to be a full page loader
+
 export default function Loader() {
   return (
     <GreenContainer>

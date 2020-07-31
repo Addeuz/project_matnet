@@ -9,6 +9,10 @@ const SNavDropdown = styled(NavDropdown)`
   }
 `;
 
+// Component that handles all the links in Sidebar.js
+//    viewport - the current viewport
+//    page - a variable that holds the current page that the user is on, ex: admin page or index page ('/')
+
 const SidebarItems = ({ viewPort, page }) => (
   <>
     {viewPort === 'desktop' ? (

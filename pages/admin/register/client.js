@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router';
 import { Formik } from 'formik';
-// import { Row, Col } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -24,6 +23,8 @@ const schema = yup.object({
     .max(15, 'Telefonnumret måste vara kortare än 15 siffor'),
 });
 
+// The view to handle a registration of a client (kund).
+
 const RegisterClient = () => {
   const router = useRouter();
   const [page, setPage] = React.useState('');
@@ -32,6 +33,7 @@ const RegisterClient = () => {
   const [error, setError] = React.useState('');
 
   React.useEffect(() => {
+    // set the page to admin so that Sidebar component know what links to show
     if (router.pathname.includes('/admin')) setPage('/admin');
   }, [router.pathname]);
 

@@ -8,6 +8,9 @@ const SDiv = styled.div`
   padding: 0;
 `;
 
+// Component used to alter the head of the html document.
+// It is coming from next.js
+
 export default function Layout({ children }) {
   return (
     <div>

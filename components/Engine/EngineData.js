@@ -1,17 +1,16 @@
 import { Col } from 'react-bootstrap';
 import styled from 'styled-components';
 import { SButton, SRow } from '../../styles/styled';
-// import EditengineModal from './EditengineModal';
 import HeadingData from '../Admin/Utils/HeadingData';
 
-const CustomerDiv = styled.div`
-  height: 150px;
-  overflow: auto;
+// const CustomerDiv = styled.div`
+//   height: 150px;
+//   overflow: auto;
 
-  @media only screen and (max-width: 768px) {
-    height: auto;
-  }
-`;
+//   @media only screen and (max-width: 768px) {
+//     height: auto;
+//   }
+// `;
 
 const RightButton = styled(SButton)`
   float: right;
@@ -21,6 +20,10 @@ const RightButton = styled(SButton)`
     float: initial;
   }
 `;
+
+// Component that handles showing the data of a engine
+// props:
+//    engine - engine data that is passed from the map() in /pages/admin/clients.js
 
 const EngineData = ({ engine }) => {
   const [modalShow, setModalShow] = React.useState(false);
@@ -53,12 +56,7 @@ const EngineData = ({ engine }) => {
         Hello
       </Col>
       <Col xs={12} md={3}>
-        <RightButton
-          // TODO: extend this to a styled component
-          onClick={() => setModalShow(true)}
-        >
-          Redigera
-        </RightButton>
+        <RightButton onClick={() => setModalShow(true)}>Redigera</RightButton>
       </Col>
       {/* <EditengineModal
         show={modalShow}

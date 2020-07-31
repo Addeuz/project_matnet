@@ -1,4 +1,4 @@
-import { Table, Col } from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
 import styled from 'styled-components';
 import { SButton, SRow } from '../../../styles/styled';
 import EditClientModal from './EditClientModal';
@@ -13,6 +13,10 @@ const RightButton = styled(SButton)`
   }
 `;
 
+// Component that handles showing the data of a client
+// props:
+//    client - client data that is passed from the map in /pages/admin/clients.js
+
 const ClientData = ({ client }) => {
   const [modalShow, setModalShow] = React.useState(false);
 
@@ -25,12 +29,7 @@ const ClientData = ({ client }) => {
       </Col>
 
       <Col xs={12} md={3}>
-        <RightButton
-          // TODO: extend this to a styled component
-          onClick={() => setModalShow(true)}
-        >
-          Redigera
-        </RightButton>
+        <RightButton onClick={() => setModalShow(true)}>Redigera</RightButton>
       </Col>
       <EditClientModal
         show={modalShow}
@@ -38,37 +37,6 @@ const ClientData = ({ client }) => {
         client={client}
       />
     </SRow>
-    // <Div>
-    //   <Table responsive size="sm">
-    //     <thead>
-    //       <tr>
-    //         <th>ID</th>
-    //         <th>Kund</th>
-    //         <th>Kontaktperson</th>
-    //         <th>Telefonnummer</th>
-    //       </tr>
-    //     </thead>
-    //     <tbody>
-    //       <tr>
-    //         <td>{client.id}</td>
-    //         <td>{client.clientName}</td>
-    //         <td>{client.contactName}</td>
-    //         <td>{client.phoneNumber}</td>
-    //       </tr>
-    //     </tbody>
-    //   </Table>
-    //   <RightButton
-    //     // TODO: extend this to a styled component
-    //     onClick={() => setModalShow(true)}
-    //   >
-    //     Redigera
-    //   </RightButton>
-    //   <EditClientModal
-    //     show={modalShow}
-    //     onHide={() => setModalShow(false)}
-    //     client={client}
-    //   />
-    // </Div>
   );
 };
 export default ClientData;

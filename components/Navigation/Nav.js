@@ -1,10 +1,8 @@
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import styled from 'styled-components';
-import { Navbar, Nav, NavDropdown, Row, Col } from 'react-bootstrap';
+import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
 
 import { UserContext } from '../UserContext';
-import { SRow, SCol } from '../../styles/styled';
 
 const SNavbar = styled(Navbar)`
   background-color: var(--green_100);
@@ -44,9 +42,10 @@ const SNavDropdown = styled(NavDropdown)`
   }
 `;
 
-export default function Navigation() {
-  const router = useRouter();
+// This is the main navbar that is visible at the top
+// The links is depending on if a user has the role admin or not
 
+export default function Navigation() {
   const { user, dispatch } = React.useContext(UserContext);
 
   const [admin, setAdmin] = React.useState(false);

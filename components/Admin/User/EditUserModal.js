@@ -6,13 +6,17 @@ import styled from 'styled-components';
 import { SButton, SAlert, SRow, SCol } from '../../../styles/styled';
 import authHeader from '../../../services/auth-header';
 
-// const { Formik } = require('formik');
-
 const FormColumn = styled(SCol)`
   padding-left: 0;
 `;
 
-// const FormROw = styled(SRow)``;
+// Component that opens up a modal and allows the user to edit a user
+// props:
+//    user - the user chosen to be edited
+//    roles - the roles that the user can have
+//    clients - all clients added into Mätnet
+//    show - a boolean that is being passed to the Modal component to decide if the modal is visible or not
+//    onHide - the function that determines what is to be done when the model is somehow closed
 
 const EditUserModal = ({ user, roles, clients, show, onHide }) => {
   const [message, setMessage] = React.useState('');

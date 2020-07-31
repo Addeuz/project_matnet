@@ -95,6 +95,10 @@ const initialCheckboxFields = {
   varvtalsgivare: false,
 };
 
+// Component shows a form for adding a engine with a type of: 'lågspänd'
+// props:
+//    engineType - the type of the engine so it can be saved into the database
+
 const LowVoltage = ({ engineType }) => {
   const [message, setMessage] = React.useState('');
   const [error, setError] = React.useState('');

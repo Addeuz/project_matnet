@@ -17,10 +17,15 @@ const schema = yup.object({
     .max(15, 'Telefonnumret måste vara kortare än 15 siffor'),
 });
 
+// Component that opens up a modal and allows the user to edit a client
+// props:
+//    client - client data that is passed from the map in /pages/admin/users.js
+//    show - a boolean that is being passed to the Modal component to decide if the modal is visible or not
+//    onHide - the function that determines what is to be done when the model is somehow closed
+
 const EditClientModal = ({ client, show, onHide }) => {
   const [message, setMessage] = React.useState('');
   const [error, setError] = React.useState('');
-  React.useEffect(() => {}, []);
 
   return (
     <Modal show={show} onHide={onHide} centered size="lg">

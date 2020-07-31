@@ -22,6 +22,12 @@ const RightButton = styled(SButton)`
   }
 `;
 
+// Component that handles showing the data of a user
+// props:
+//    user - client data that is passed from the map in /pages/admin/users.js
+//    clients - clients added into mätnet
+//    roles - roles that exists in mätnet
+
 const UserData = ({ user, roles, clients }) => {
   const [modalShow, setModalShow] = React.useState(false);
 

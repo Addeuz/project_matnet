@@ -30,6 +30,13 @@ const ContainerCol = styled(Col)`
   }
 `;
 
+// Component that is used as a sidebar menu
+// Depending on what page we are on the sidebar looks different.
+// It also depends on what viewport the user has
+// props:
+//    page - the current page we are on
+//    children - the children of the component is showed in a large container beside the sidebar
+
 const Sidebar = ({ page, children }) => {
   const router = useRouter();
   const windowWidth = useCurrentWidth();
