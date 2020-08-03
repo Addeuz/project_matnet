@@ -1,7 +1,7 @@
-import { Col } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 import styled from 'styled-components';
 import { SButton, SRow } from '../../styles/styled';
-import HeadingData from '../Admin/Utils/HeadingData';
+import EngineHeadingData from '../Admin/Utils/EngineHeadingData';
 
 // const CustomerDiv = styled.div`
 //   height: 150px;
@@ -15,10 +15,6 @@ import HeadingData from '../Admin/Utils/HeadingData';
 const RightButton = styled(SButton)`
   float: right;
   margin: 0.5rem 0.5rem 0.5rem 0;
-
-  @media only screen and (max-width: 768px) {
-    float: initial;
-  }
 `;
 
 // Component that handles showing the data of a engine
@@ -28,13 +24,63 @@ const RightButton = styled(SButton)`
 const EngineData = ({ engine }) => {
   const [modalShow, setModalShow] = React.useState(false);
 
+  React.useEffect(() => {
+    console.log(engine);
+  }, [engine]);
+
   return (
     <SRow>
-      <Col xs={12} md={5}>
-        <HeadingData header="Tag_NR">{engine.tag_nr}</HeadingData>
-        <HeadingData header="Position">{engine.position}</HeadingData>
-        <HeadingData header="Ström">{engine.strom} A</HeadingData>
-        <HeadingData header="Spänning">{engine.spanning} V</HeadingData>
+      <Col xs={12} md={6}>
+        <h5>
+          {/* Used to make first letter Capitalized */}
+          {engine.engine_value.type[0].toUpperCase()}
+          {engine.engine_value.type.slice(1)}
+        </h5>
+        <EngineHeadingData header="Tag nr">{engine.tag_nr}</EngineHeadingData>
+        <EngineHeadingData header="Art nr">{engine.art_nr}</EngineHeadingData>
+        <EngineHeadingData header="Position">
+          {engine.position}
+        </EngineHeadingData>
+        <EngineHeadingData header="Diverse">{engine.diverse}</EngineHeadingData>
+        <EngineHeadingData header="Fabrikat">
+          {engine.fabrikat}
+        </EngineHeadingData>
+        <EngineHeadingData header="Typ">{engine.typ}</EngineHeadingData>
+        <EngineHeadingData header="Motor nr">
+          {engine.motor_nr}
+        </EngineHeadingData>
+        <EngineHeadingData header="Varvtal RPM">
+          {engine.varvtal}
+        </EngineHeadingData>
+        <EngineHeadingData header="Frekvens Hz">
+          {engine.frekvens}
+        </EngineHeadingData>
+        <EngineHeadingData header="Effekt kW">
+          {engine.effekt}
+        </EngineHeadingData>
+        <EngineHeadingData header="Spänning (V)">
+          {engine.spanning}
+        </EngineHeadingData>
+        <EngineHeadingData header="Ström (A)">{engine.strom}</EngineHeadingData>
+        <EngineHeadingData header="Sekundär (V)">
+          {engine.sekundar_v}
+        </EngineHeadingData>
+        <EngineHeadingData header="Sekundär (A)">
+          {engine.sekundar_a}
+        </EngineHeadingData>
+        {/* Lager isolerad */}
+        <EngineHeadingData header="Lager DE">
+          {engine.lager_de}
+        </EngineHeadingData>
+        <EngineHeadingData header="Lager NDE">
+          {engine.lager_nde}
+        </EngineHeadingData>
+        <EngineHeadingData header="Kolborstar">
+          {engine.kolborstar}
+        </EngineHeadingData>
+        <EngineHeadingData header="Fri text">
+          {engine.fri_text}
+        </EngineHeadingData>
       </Col>
       <Col xs={12} md={4}>
         {/* {engine.roles[0] ? (
@@ -55,7 +101,7 @@ const EngineData = ({ engine }) => {
         </HeadingData> */}
         Hello
       </Col>
-      <Col xs={12} md={3}>
+      <Col xs={12}>
         <RightButton onClick={() => setModalShow(true)}>Redigera</RightButton>
       </Col>
       {/* <EditengineModal

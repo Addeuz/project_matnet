@@ -26,6 +26,7 @@ router.get('/moderator/engines/:id', function(req, res) {
         .send({ message: `Ingen användare med det id-numret existerar` });
     }
     user.getClients().then(clients => {
+      console.log(clients);
       clients.forEach((client, clientIndex) => {
         client
           .getEngines({ include: { model: EngineValues } })
