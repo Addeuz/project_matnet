@@ -1,10 +1,7 @@
 import { Row, Col } from 'react-bootstrap';
 import styled from 'styled-components';
-<<<<<<< HEAD
 import Link from 'next/link';
 import { camelize } from '../../../utils/stringManipulation';
-=======
->>>>>>> master
 
 const NoMarginH6 = styled.h6`
   margin-bottom: 0.25rem;
@@ -19,7 +16,6 @@ const SCol = styled(Col)`
   padding-left: 0;
 `;
 
-<<<<<<< HEAD
 const GreenSpan = styled.span`
   /* display: inline-block; */
   /* vertical-align: middle; */
@@ -30,7 +26,6 @@ const RedSpan = styled.span`
   /* vertical-align: middle; */
   color: var(--red);
 `;
-
 
 // Because of the magnitude of data that is displayed in an engine this component is made so save up some space compared to 'HeadingData.js' component
 // props:
@@ -139,13 +134,4 @@ export const UserEditingRight = ({ header, canEdit }) => {
   );
 };
 
-  <Row>
-    <Col xs={5}>
-      <NoMarginH6>{header}</NoMarginH6>
-    </Col>
-    <SCol xs={7}>
-      {children ? <span>{children}</span> : <span>Ingen data</span>}
-    </SCol>
-  </Row>
-);
 export default EngineHeadingData;

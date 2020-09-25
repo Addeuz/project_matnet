@@ -6,7 +6,6 @@ import EngineDataInfo from './EngineDataInfo/EngineDataInfo';
 //    engine - engine data that is passed from the map() in /pages/admin/clients.js
 
 const EngineData = ({ engine }) => {
-  const aaa = get(EngineData, 'aaa', '');
   const [engineValues, setEngineValues] = React.useState({});
 
   React.useEffect(() => {

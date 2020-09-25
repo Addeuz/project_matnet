@@ -36,13 +36,13 @@ nextApp
     server.use(bodyParser.urlencoded({ extended: true }));
 
     // Use this in production.
-    // db.sequelize.sync();
+    db.sequelize.sync();
     // force: true will drop the table if it already exists, can be used in development but not really smart
-    db.sequelize.sync({ force: true }).then(() => {
-      console.log('Drop and resync database because { force: true }');
-      // eslint-disable-next-line no-use-before-define
-      initial();
-    });
+    // db.sequelize.sync({ force: true }).then(() => {
+    //   console.log('Drop and resync database because { force: true }');
+    //   // eslint-disable-next-line no-use-before-define
+    //   initial();
+    // });
 
     server.use('/api', authRoutes);
     server.use('/api', userRoutes);
