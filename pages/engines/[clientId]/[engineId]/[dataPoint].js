@@ -213,9 +213,12 @@ const AddDataToEngine = () => {
                             )}
                           </Col>
                           <Col xs={5}>
-                            <SButton onClick={() => setModalShow(true)}>
-                              Ändra gränsv.
-                            </SButton>
+                            {((user && user.roles[0] === 'ROLE_ADMIN') ||
+                              user.roles[0] === 'ROLE_MODERATOR') && (
+                              <SButton onClick={() => setModalShow(true)}>
+                                Ändra gränsv.
+                              </SButton>
+                            )}
                           </Col>
                         </Row>
 
