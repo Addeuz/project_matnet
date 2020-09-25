@@ -1,4 +1,4 @@
-import { Modal, Form } from 'react-bootstrap';
+import { Modal, Form, Row, Col } from 'react-bootstrap';
 import { Formik } from 'formik';
 import axios from 'axios';
 
@@ -8,6 +8,21 @@ import authHeader from '../../../services/auth-header';
 
 const FormColumn = styled(SCol)`
   padding-left: 0;
+`;
+
+const FormGroup = Form.Group;
+
+const SFormGroup = styled(FormGroup)`
+  margin-bottom: 0.25rem;
+
+  .custom-form-check-input {
+    input {
+      margin-top: 9px;
+      @media only screen and (max-width: 768px) {
+        margin-top: 7px;
+      }
+    }
+  }
 `;
 
 // Component that opens up a modal and allows the user to edit a user
@@ -31,7 +46,8 @@ const EditUserModal = ({ user, roles, clients, show, onHide }) => {
       });
       setUserClients(temp);
     }
-  }, [user.clients]);
+    console.log(user);
+  }, [user, user.clients]);
 
   return (
     <Modal show={show} onHide={onHide} centered size="lg">
@@ -85,6 +101,35 @@ const EditUserModal = ({ user, roles, clients, show, onHide }) => {
             clients: userClients,
             password: '',
             confirmPassword: '',
+            motormon: user.motormon,
+            baker: user.baker,
+            meggningstator: user.meggningstator,
+            meggningrotor: user.meggningrotor,
+            driftström: user['driftström'],
+            lindtemp: user.lindtemp,
+            vibration: user.vibration,
+            smörjning: user['smörjning'],
+            okulärintern: user['okulärintern'],
+            okulärextern: user['okulärextern'],
+            manteltemp: user.manteltemp,
+            släpringsyta: user['släpringsyta'],
+            lagerkondde: user.lagerkondde,
+            lagerkondnde: user.lagerkondnde,
+            spmde: user.spmde,
+            spmnde: user.spmnde,
+            lagertempde: user.lagertempde,
+            lagertempnde: user.lagertempnde,
+            lagerisolering: user.lagerisolering,
+            renhet: user.renhet,
+            kylpaket: user.kylpaket,
+            kolborstar: user.kolborstar,
+            varvtalsgivare: user.varvtalsgivare,
+            'tan-delta': user['tan-delta'],
+            'pol-index': user['pol-index'],
+            kommutatoryta: user.kommutatoryta,
+            kollektortemp: user.kollektortemp,
+            driftservice: user.driftservice,
+            stoppservice: user.stoppservice,
           }}
           onSubmit={(values, { setSubmitting }) => {
             const options = {
@@ -102,6 +147,35 @@ const EditUserModal = ({ user, roles, clients, show, onHide }) => {
                   role: values.role,
                   clients: values.clients,
                   password: values.password,
+                  motormon: values.motormon,
+                  baker: values.baker,
+                  meggningstator: values.meggningstator,
+                  meggningrotor: values.meggningrotor,
+                  driftström: values['driftström'],
+                  lindtemp: values.lindtemp,
+                  vibration: values.vibration,
+                  smörjning: values['smörjning'],
+                  okulärintern: values['okulärintern'],
+                  okulärextern: values['okulärextern'],
+                  manteltemp: values.manteltemp,
+                  släpringsyta: values['släpringsyta'],
+                  lagerkondde: values.lagerkondde,
+                  lagerkondnde: values.lagerkondnde,
+                  spmde: values.spmde,
+                  spmnde: values.spmnde,
+                  lagertempde: values.lagertempde,
+                  lagertempnde: values.lagertempnde,
+                  lagerisolering: values.lagerisolering,
+                  renhet: values.renhet,
+                  kylpaket: values.kylpaket,
+                  kolborstar: values.kolborstar,
+                  varvtalsgivare: values.varvtalsgivare,
+                  'tan-delta': values['tan-delta'],
+                  'pol-index': values['pol-index'],
+                  kommutatoryta: values.kommutatoryta,
+                  kollektortemp: values.kollektortemp,
+                  driftservice: values.driftservice,
+                  stoppservice: values.stoppservice,
                 },
                 options
               )
@@ -260,6 +334,248 @@ const EditUserModal = ({ user, roles, clients, show, onHide }) => {
                   </Form.Group>
                 </FormColumn>
               </SRow>
+              <SFormGroup as={Row}>
+                <Col xs={12}>
+                  <Form.Label>Behörighet att lägga till data</Form.Label>
+                </Col>
+
+                <Col xs={6}>
+                  <Form.Check
+                    id="motormon"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Motormon"
+                    checked={values.motormon}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="baker"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Baker"
+                    checked={values.baker}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="meggningstator"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Meggning stator"
+                    checked={values.meggningstator}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="meggningrotor"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Meggning rotor"
+                    checked={values.meggningrotor}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="driftström"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Driftström"
+                    checked={values['driftström']}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="lindtemp"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Lind temp"
+                    checked={values.lindtemp}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="vibration"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Vibration"
+                    checked={values.vibration}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="smörjning"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Smörjning"
+                    checked={values['smörjning']}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="okulärextern"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Okulär extern"
+                    checked={values['okulärextern']}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="okulärintern"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Okulär intern"
+                    checked={values['okulärintern']}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="manteltemp"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Mantel temp"
+                    checked={values.manteltemp}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="släpringsyta"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Släpringsyta"
+                    checked={values['släpringsyta']}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="lagerkondde"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Lager kond DE"
+                    checked={values.lagerkondde}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="lagerkondnde"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Lager kond NDE"
+                    checked={values.lagerkondnde}
+                    onChange={handleChange}
+                  />
+                </Col>
+                <Col xs={6}>
+                  <Form.Check
+                    id="spmde"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Spm DE"
+                    checked={values.spmde}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="spmnde"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Spm NDE"
+                    checked={values.spmnde}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="lagertempde"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Lager temp DE"
+                    checked={values.lagertempde}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="lagertempnde"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Lager temp NDE"
+                    checked={values.lagertempnde}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="lagerisolering"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Lager isolering"
+                    checked={values.lagerisolering}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="renhet"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Renhet"
+                    checked={values.renhet}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="kylpaket"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Kylpaket"
+                    checked={values.kylpaket}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="kolborstar"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Kolborstar"
+                    checked={values.kolborstar}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="varvtalsgivare"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Varvtalsgivare"
+                    checked={values.varvtalsgivare}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="tan-delta"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Tan-delta"
+                    checked={values['tan-delta']}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="pol-index"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Pol-index"
+                    checked={values['pol-index']}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="kommutatoryta"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Kommutator yta"
+                    checked={values.kommutatoryta}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="kollektortemp"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Kollektor temp"
+                    checked={values.kollektortemp}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="driftservice"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Driftservice"
+                    checked={values.driftservice}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    id="stoppservice"
+                    className="custom-form-check-input"
+                    type="checkbox"
+                    label="Stoppservice"
+                    checked={values.stoppservice}
+                    onChange={handleChange}
+                  />
+                </Col>
+              </SFormGroup>
               <SButton type="submit" disabled={isSubmitting}>
                 Ändra
               </SButton>

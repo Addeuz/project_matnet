@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const app = require('../server');
+const nextApp = require('../server');
 
 router.use(function(req, res, next) {
   res.header(
@@ -10,7 +10,11 @@ router.use(function(req, res, next) {
 });
 
 // router.get('/', function(req, res) {
-//   return app.render(req, res, '/', req.query);
+//   return nextApp.render(req, res, '/', req.query);
+// });
+
+// router.get('/engines', function(req, res) {
+//   return nextApp.render(req, res, '/engines', req.query);
 // });
 
 // // only for testing
@@ -18,9 +22,9 @@ router.use(function(req, res, next) {
 //   return app.render(req, res, '/about', req.query);
 // });
 
-router.get('/login', function(req, res) {
-  return app.render(req, res, '/login', req.query);
-});
+// router.get('/login', function(req, res) {
+//   return nextApp.render(req, res, '/login', req.query);
+// });
 
 // router.get('/admin', function(req, res) {
 //   return app.render(req, res, '/admin', req.query);

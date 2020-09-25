@@ -1,61 +1,123 @@
 module.exports = (sequelize, Sequelize) => {
   const Engine = sequelize.define('engine', {
-    tag_nr: {
-      type: Sequelize.STRING,
+    engineInfo: {
+      type: Sequelize.JSON,
     },
-    art_nr: {
-      type: Sequelize.STRING,
+    motormon: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
     },
-    position: {
-      type: Sequelize.STRING,
+    baker: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
     },
-    diverse: {
-      type: Sequelize.STRING,
+    meggningstator: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
     },
-    fabrikat: {
-      type: Sequelize.STRING,
+    meggningrotor: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
     },
-    typ: {
-      type: Sequelize.STRING,
+    driftström: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
     },
-    motor_nr: {
-      type: Sequelize.STRING,
+    lindtemp: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
     },
-    varvtal: {
-      type: Sequelize.STRING,
+    vibration: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
     },
-    frekvens: {
-      type: Sequelize.STRING,
+    smörjning: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
     },
-    effekt: {
-      type: Sequelize.STRING,
+    okulärintern: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
     },
-    spanning: {
-      type: Sequelize.STRING,
+    okulärextern: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
     },
-    strom: {
-      type: Sequelize.STRING,
+    manteltemp: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
     },
-    sekundar_v: {
-      type: Sequelize.STRING,
+    släpringsyta: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
     },
-    sekundar_a: {
-      type: Sequelize.STRING,
+    lagerkondde: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
     },
-    lager_isolerad: {
-      type: Sequelize.BOOLEAN,
+    lagerkondnde: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
     },
-    lager_de: {
-      type: Sequelize.STRING,
+    spmde: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
     },
-    lager_nde: {
-      type: Sequelize.STRING,
+    spmnde: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
+    },
+    lagertempde: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
+    },
+    lagertempnde: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
+    },
+    lagerisolering: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
+    },
+    renhet: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
+    },
+    kylpaket: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
     },
     kolborstar: {
-      type: Sequelize.STRING,
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
     },
-    fri_text: {
-      type: Sequelize.STRING,
+    varvtalsgivare: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
+    },
+    'tan-delta': {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
+    },
+    'pol-index': {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
+    },
+    kommutatoryta: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
+    },
+    kollektortemp: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
+    },
+    driftservice: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
+    },
+    stoppservice: {
+      type: Sequelize.JSON,
+      defaultValue: { values: [] },
     },
   });
 

@@ -1,7 +1,9 @@
 /* eslint-disable react/button-has-type */
-import { Button, InputGroup, FormControl } from 'react-bootstrap';
+import { Button, InputGroup, FormControl, Form } from 'react-bootstrap';
 import { BsSearch } from 'react-icons/bs';
 import axios from 'axios';
+import styled from 'styled-components';
+import Link from 'next/link';
 import Layout from '../../components/Layout';
 import { UserContext } from '../../components/UserContext';
 import Sidebar from '../../components/Navigation/Sidebar';
@@ -11,54 +13,70 @@ import {
   SAccordion,
   SSpinner,
   AddButtonCol,
+  SButton,
 } from '../../styles/styled';
 import AddEngineModal from '../../components/Engine/AddEngineModal';
 import { adress } from '../../utils/hooks/useFetch';
 import EngineCard from '../../components/Engine/EngineCard';
 
+const ClientRow = styled(SRow)`
+  height: 400px;
+`;
+
+const ClientCol = styled(SCol)`
+  height: inherit;
+  overflow: auto;
+  display: flex;
+  flex-flow: column wrap;
+  align-items: flex-start;
+
+  @media only screen and (max-width: 768px) {
+    flex-flow: row wrap;
+  }
+`;
+
 const EngineIndex = () => {
   const { user } = React.useContext(UserContext);
-  // const { response, isLoading, isError } = useFetch(
-  //   `/api/moderator/engines/${user.id}`
-  // );
 
   const [response, setResponse] = React.useState([]);
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [loadingData, setLoadingData] = React.useState(true);
   const [isError, setError] = React.useState(null);
 
+  const [client, setClient] = React.useState(null);
+
   const [modalShow, setModalShow] = React.useState(false);
-  const [loading, setLoading] = React.useState(true);
+  const [loadingUser, setLoadingUser] = React.useState(true);
   const [filter, setFilter] = React.useState('');
 
   React.useEffect(() => {
-    if (user) {
-      axios(`${adress}/api/moderator/engines/${user.id}`)
-        .then(response => {
-          console.log(response.data);
-          setIsLoading(false);
-          setResponse(response.data);
-        })
-        .catch(err => {
-          setError(err);
-        });
-      setLoading(false);
-    }
-  }, [user]);
+    axios(`${adress}/api/admin/clients`)
+      .then(response => {
+        console.log(response.data);
+        setLoadingData(false);
+        setResponse(response.data);
+      })
+      .catch(err => {
+        setError(err);
+      });
+
+    setLoadingUser(false);
+  }, []);
 
   return (
     <Layout>
       <Sidebar page="/">
         <SRow>
-          <SCol xs={7} lg={5}>
+          <SCol xs={5} lg={3}>
             <h3>Motorer</h3>
           </SCol>
 
-          <AddButtonCol xs={5} lg={3}>
-            {!loading &&
+          <AddButtonCol xs={7} lg={5}>
+            {!loadingUser &&
+              user &&
               (user.roles[0] === 'ROLE_ADMIN' ||
                 user.roles[0] === 'ROLE_MODERATOR') && (
                 <Button variant="success" onClick={() => setModalShow(true)}>
-                  <span>Lägg till ny</span>
+                  <span>Lägg till ny motor</span>
                 </Button>
               )}
           </AddButtonCol>
@@ -67,6 +85,7 @@ const EngineIndex = () => {
               <FormControl
                 placeholder="Filtrera"
                 aria-label="Filtrera"
+                value={filter}
                 onChange={e => {
                   setFilter(e.target.value);
                 }}
@@ -78,23 +97,46 @@ const EngineIndex = () => {
               </InputGroup.Append>
             </InputGroup>
           </SCol>
-          <SCol xs={12}>
-            <SAccordion>
-              {isError && <div>{isError.response.data.message}</div>}
-              {isLoading && (
-                <SSpinner animation="border">
-                  <span>Loading...</span>
-                </SSpinner>
-              )}
-              {/* // <EngineCard key={engine.id} engine={engine} filter={filter} /> */}
-              {!isError &&
-                response &&
-                response.map(engine => (
-                  <EngineCard engine={engine} filter={filter} key={engine.id} />
-                ))}
-            </SAccordion>
-          </SCol>
         </SRow>
+        <ClientRow>
+          <SCol xs={12} className="">
+            <h5>Välj kund</h5>
+          </SCol>
+          <ClientCol xs={12} className="">
+            {isError && <div>{isError.response.data.message}</div>}
+            {loadingData && (
+              <SSpinner animation="border">
+                <span>Loading...</span>
+              </SSpinner>
+            )}
+            {!isError &&
+              response &&
+              response.map(client =>
+                filter === '' ||
+                client.clientName
+                  .toLowerCase()
+                  .indexOf(filter.toLowerCase()) !== -1 ? (
+                  <Link
+                    key={client.id}
+                    href="/engines/[clientId]"
+                    as={`/engines/${client.id}`}
+                  >
+                    <Button
+                      key={client.id}
+                      onClick={e => {
+                        setClient(client);
+                        setFilter('');
+                      }}
+                      value={client.clientName}
+                      variant="link"
+                    >
+                      <a>{client.clientName}</a>
+                    </Button>
+                  </Link>
+                ) : null
+              )}
+          </ClientCol>
+        </ClientRow>
       </Sidebar>
       <AddEngineModal show={modalShow} onHide={() => setModalShow(false)} />
     </Layout>

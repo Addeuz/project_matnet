@@ -1,12 +1,14 @@
 import { Col, Form, Row } from 'react-bootstrap';
+import styled from 'styled-components';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import styled from 'styled-components';
 import axios from 'axios';
-import { SButton, SAlert, FormControlPHError } from '../../styles/styled';
-import ExtraInput from './ExtraInput';
-import { UserContext } from '../UserContext';
-import authHeader from '../../services/auth-header';
+import { SButton, SAlert, SSpinner } from '../../../styles/styled';
+import ExtraInput from '../ExtraInput';
+import { UserContext } from '../../UserContext';
+import { camelize, camelCaseToNormal } from '../../../utils/stringManipulation';
+import useFetch from '../../../utils/hooks/useFetch';
+import authHeader from '../../../services/auth-header';
 
 const FormGroup = Form.Group;
 
@@ -35,83 +37,99 @@ const ExtraMarginSButton = styled(SButton)`
   margin-top: 1rem;
 `;
 
-function camelize(str) {
-  return str
-    .replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) {
-      return index === 0 ? word.toLowerCase() : word.toUpperCase();
-    })
-    .replace(/\s+/g, '');
-}
-
 const schema = yup.object({
   tagNr: yup.string().required('Tag nr krävs'),
 });
 
-const initialTextFields = {
-  tagNr: '',
-  artNr: '',
-  position: '',
-  diverse: '',
-  fabrikat: '',
-  typ: '',
-  motorNr: '',
-  varvtal: '',
-  frekvens: '',
-  effekt: '',
-  spanning: '',
-  strom: '',
-  sekundarV: '',
-  sekundarA: '',
-  lagerDE: '',
-  lagerNDE: '',
-  kolborstar: '',
-  friText: '',
-  lagerIsolerad: false,
-};
-
-const initialCheckboxFields = {
-  motormon: true,
-  baker: false,
-  meggningStator: true,
-  meggningRotor: false,
-  driftstrom: true,
-  lindTemp: true,
-  vibration: true,
-  smorjning: false,
-  okularIntern: false,
-  okularExtern: true,
-  mantelTemp: false,
-  slapringsYta: false,
-  lagerKondDe: true,
-  lagerKondNde: true,
-  spmDE: false,
-  spmNDE: false,
-  lagerTempDe: true,
-  lagerTempNde: true,
-  lagerIsolering: false,
-  renhet: false,
-  kylpaket: false,
-  kolborstar: false,
-  varvtalsgivare: false,
-};
-
-// Component shows a form for adding a engine with a type of: 'lågspänd'
+// Component used to display the editing forms for an engine with the type of 'lågspänd'
 // props:
-//    engineType - the type of the engine so it can be saved into the database
+//    engine - data from the engine being edited
 
-const LowVoltage = ({ engineType }) => {
+const EditLowVoltage = ({ engine }) => {
+  const { response, isLoading, isError } = useFetch(
+    `/api/admin/client/${engine.clientId}`
+  );
+
   const [message, setMessage] = React.useState('');
   const [error, setError] = React.useState('');
   const [extraInputNames, setExtraInputNames] = React.useState([]);
   const [extraInputs, setExtraInputs] = React.useState([]);
+  const [initialTextFields, setInitialFields] = React.useState({});
+  const [initialCheckboxFields, setInitialCheckboxes] = React.useState({});
   const [extraName, setExtraName] = React.useState('');
   const { user } = React.useContext(UserContext);
   const [engineClient, setEngineClient] = React.useState(null);
 
   React.useEffect(() => {
-    console.log(engineClient);
-    console.log(engineType);
-  }, [engineClient, engineType]);
+    console.log(engine);
+    setInitialFields({
+      tagNr: engine.engineInfo.tagNr,
+      artNr: engine.engineInfo.artNr,
+      position: engine.engineInfo.position,
+      diverse: engine.engineInfo.diverse,
+      fabrikat: engine.engineInfo.fabrikat,
+      typ: engine.engineInfo.typ,
+      motorNr: engine.engineInfo.motorNr,
+      varvtal: engine.engineInfo.varvtal,
+      frekvens: engine.engineInfo.frekvens,
+      effekt: engine.engineInfo.effekt,
+      spänning: engine.engineInfo['spänning'],
+      ström: engine.engineInfo['ström'],
+      sekundärV: engine.engineInfo['sekundärV'],
+      sekundärA: engine.engineInfo['sekundärA'],
+      lagerDE: engine.engineInfo.lagerDE,
+      lagerNDE: engine.engineInfo.lagerNDE,
+      kolborstar: engine.engineInfo.kolborstar,
+      friText: engine.engineInfo.friText,
+      lagerIsolerad: engine.engineInfo.lagerIsolerad,
+    });
+
+    setInitialCheckboxes({
+      motormon: engine.engineValues.motormon,
+      baker: engine.engineValues.baker,
+      meggningStator: engine.engineValues.meggningStator,
+      meggningRotor: engine.engineValues.meggningRotor,
+      driftström: engine.engineValues['driftström'],
+      lindTemp: engine.engineValues.lindTemp,
+      vibration: engine.engineValues.vibration,
+      smörjning: engine.engineValues['smörjning'],
+      okulärIntern: engine.engineValues['okulärIntern'],
+      okulärExtern: engine.engineValues['okulärExtern'],
+      mantelTemp: engine.engineValues.mantelTemp,
+      släpringsYta: engine.engineValues['släpringsYta'],
+      lagerKondDe: engine.engineValues.lagerKondDe,
+      lagerKondNde: engine.engineValues.lagerKondNde,
+      spmDE: engine.engineValues.spmDE,
+      spmNDE: engine.engineValues.spmNDE,
+      lagerTempDe: engine.engineValues.lagerTempDe,
+      lagerTempNde: engine.engineValues.lagerTempNde,
+      lagerIsolering: engine.engineValues.lagerIsolering,
+      renhet: engine.engineValues.renhet,
+      kylpaket: engine.engineValues.kylpaket,
+      kolborstar: engine.engineValues.kolborstar,
+      varvtalsgivare: engine.engineValues.varvtalsgivare,
+    });
+
+    if (engine.engineValues.extraInputs) {
+      setExtraInputs(engine.engineValues.extraInputs);
+      engine.engineValues.extraInputs.forEach(extraInput => {
+        console.log(extraInput);
+        const camelCase = camelize(Object.keys(extraInput)[0]);
+        const normalCase = camelCaseToNormal(Object.keys(extraInput)[0]);
+        setExtraInputNames(extraInputNames.concat(normalCase));
+        setExtraInputs(
+          extraInputs.concat({ [camelCase]: extraInput[camelCase] })
+        );
+      });
+    }
+
+    if (!isLoading && response) {
+      setEngineClient(response);
+      console.log(engineClient);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [response]);
 
   return (
     <Formik
@@ -129,21 +147,20 @@ const LowVoltage = ({ engineType }) => {
         };
         setError('');
         setMessage('');
-        if (engineClient) {
-          console.log(engineClient);
-          if (extraInputs[0]) {
-            values.engineMeasureData = Object.assign(
-              values.engineMeasureData,
-              ...extraInputs
-            );
-          }
 
-          console.log(values);
+        if (extraInputs[0]) {
+          values.engineMeasureData = {
+            ...values.engineMeasureData,
+            extraInputs: [...extraInputs],
+          };
+        }
 
-          axios
-            .post(
-              `http://localhost:3000/api/moderator/engine`,
-              {
+        console.log(values);
+        axios
+          .put(
+            `http://localhost:3000/api/moderator/engine/${engine.engineId}`,
+            {
+              engineInfo: {
                 tagNr: values.tagNr,
                 artNr: values.artNr,
                 position: values.position,
@@ -154,38 +171,30 @@ const LowVoltage = ({ engineType }) => {
                 varvtal: values.varvtal,
                 frekvens: values.frekvens,
                 effekt: values.effekt,
-                spanning: values.spanning,
-                strom: values.strom,
-                sekundarV: values.sekundarV,
-                sekundarA: values.sekundarA,
+                spänning: values['spänning'],
+                ström: values['ström'],
+                sekundärV: values['sekundärV'],
+                sekundärA: values['sekundärA'],
                 lagerDE: values.lagerDE,
                 lagerNDE: values.lagerNDE,
                 kolborstar: values.kolborstar,
                 friText: values.friText,
                 lagerIsolerad: values.lagerIsolerad,
-                engineMeasureData: values.engineMeasureData,
-                engineType,
-                client: engineClient,
               },
-              options
-            )
-            .then(
-              response => {
-                setMessage(response.data.message);
-              },
-              error => {
-                setError(error.message);
-              }
-            );
-          setSubmitting(false);
-        } else {
-          // HERE PUT THE API CALL
-          setError('Ingen kund är vald');
-          setSubmitting(false);
-        }
-        console.log('YWAOASDA');
-
-        console.log(values);
+              engineMeasureData: values.engineMeasureData,
+              client: engineClient,
+            },
+            options
+          )
+          .then(
+            response => {
+              setMessage(response.data.message);
+            },
+            error => {
+              console.log(error.response);
+              setError(error.response.data.message);
+            }
+          );
 
         setSubmitting(false);
       }}
@@ -206,18 +215,17 @@ const LowVoltage = ({ engineType }) => {
                   Tag nr
                 </Form.Label>
                 <SCol sm={7}>
-                  <FormControlPHError
+                  <Form.Control
                     type="text"
-                    value={values.tagNr}
+                    value={values.tagNr || ''}
                     name="tagNr"
-                    placeholder={errors.tagNr ? errors.tagNr : ''}
                     onChange={handleChange}
                     isValid={touched.tagNr && !errors.tagNr}
                     isInvalid={touched.tagNr && errors.tagNr}
                   />
-                  {/* <Form.Control.Feedback tooltip="true" type="invalid">
+                  <Form.Control.Feedback tooltip="true" type="invalid">
                     {errors.tagNr}
-                  </Form.Control.Feedback> */}
+                  </Form.Control.Feedback>
                 </SCol>
               </SFormGroup>
               <SFormGroup as={Row}>
@@ -227,7 +235,7 @@ const LowVoltage = ({ engineType }) => {
                 <SCol sm={7}>
                   <Form.Control
                     type="text"
-                    value={values.artNr}
+                    value={values.artNr || ''}
                     name="artNr"
                     onChange={handleChange}
                     isValid={touched.artNr && !errors.artNr}
@@ -245,7 +253,7 @@ const LowVoltage = ({ engineType }) => {
                 <SCol sm={7}>
                   <Form.Control
                     type="text"
-                    value={values.position}
+                    value={values.position || ''}
                     name="position"
                     onChange={handleChange}
                     isValid={touched.position && !errors.position}
@@ -263,7 +271,7 @@ const LowVoltage = ({ engineType }) => {
                 <SCol sm={7}>
                   <Form.Control
                     type="text"
-                    value={values.diverse}
+                    value={values.diverse || ''}
                     name="diverse"
                     onChange={handleChange}
                     isValid={touched.diverse && !errors.diverse}
@@ -281,7 +289,7 @@ const LowVoltage = ({ engineType }) => {
                 <SCol sm={7}>
                   <Form.Control
                     type="text"
-                    value={values.fabrikat}
+                    value={values.fabrikat || ''}
                     name="fabrikat"
                     onChange={handleChange}
                     isValid={touched.fabrikat && !errors.fabrikat}
@@ -299,7 +307,7 @@ const LowVoltage = ({ engineType }) => {
                 <SCol sm={7}>
                   <Form.Control
                     type="text"
-                    value={values.typ}
+                    value={values.typ || ''}
                     name="typ"
                     onChange={handleChange}
                     isValid={touched.typ && !errors.typ}
@@ -317,7 +325,7 @@ const LowVoltage = ({ engineType }) => {
                 <SCol sm={7}>
                   <Form.Control
                     type="text"
-                    value={values.motorNr}
+                    value={values.motorNr || ''}
                     name="motorNr"
                     onChange={handleChange}
                     isValid={touched.motorNr && !errors.motorNr}
@@ -335,7 +343,7 @@ const LowVoltage = ({ engineType }) => {
                 <SCol sm={7}>
                   <Form.Control
                     type="text"
-                    value={values.varvtal}
+                    value={values.varvtal || ''}
                     name="varvtal"
                     onChange={handleChange}
                     isValid={touched.varvtal && !errors.varvtal}
@@ -353,7 +361,7 @@ const LowVoltage = ({ engineType }) => {
                 <SCol sm={7}>
                   <Form.Control
                     type="text"
-                    value={values.frekvens}
+                    value={values.frekvens || ''}
                     name="frekvens"
                     onChange={handleChange}
                     isValid={touched.frekvens && !errors.frekvens}
@@ -371,7 +379,7 @@ const LowVoltage = ({ engineType }) => {
                 <SCol sm={7}>
                   <Form.Control
                     type="text"
-                    value={values.effekt}
+                    value={values.effekt || ''}
                     name="effekt"
                     onChange={handleChange}
                     isValid={touched.effekt && !errors.effekt}
@@ -389,11 +397,11 @@ const LowVoltage = ({ engineType }) => {
                 <SCol sm={7}>
                   <Form.Control
                     type="text"
-                    value={values.spanning}
-                    name="spanning"
+                    value={values['spänning'] || ''}
+                    name="spänning"
                     onChange={handleChange}
-                    isValid={touched.spanning && !errors.spanning}
-                    isInvalid={touched.spanning && errors.spanning}
+                    isValid={touched['spänning'] && !errors['spänning']}
+                    isInvalid={touched['spänning'] && errors['spänning']}
                   />
                   {/* <Form.Control.Feedback tooltip="true" type="invalid">
                     {errors.spanning}
@@ -407,11 +415,11 @@ const LowVoltage = ({ engineType }) => {
                 <SCol sm={7}>
                   <Form.Control
                     type="text"
-                    value={values.strom}
-                    name="strom"
+                    value={values['ström'] || ''}
+                    name="ström"
                     onChange={handleChange}
-                    isValid={touched.strom && !errors.strom}
-                    isInvalid={touched.strom && errors.strom}
+                    isValid={touched['ström'] && !errors['ström']}
+                    isInvalid={touched['ström'] && errors['ström']}
                   />
                   {/* <Form.Control.Feedback tooltip="true" type="invalid">
                     {errors.strom}
@@ -425,11 +433,11 @@ const LowVoltage = ({ engineType }) => {
                 <SCol sm={7}>
                   <Form.Control
                     type="text"
-                    value={values.sekundarV}
-                    name="sekundarV"
+                    value={values['sekundärV'] || ''}
+                    name="sekundärV"
                     onChange={handleChange}
-                    isValid={touched.sekundarV && !errors.sekundarV}
-                    isInvalid={touched.sekundarV && errors.sekundarV}
+                    isValid={touched['sekundärV'] && !errors['sekundärV']}
+                    isInvalid={touched['sekundärV'] && errors['sekundärV']}
                   />
                   {/* <Form.Control.Feedback tooltip="true" type="invalid">
                     {errors.sekundarV}
@@ -443,11 +451,11 @@ const LowVoltage = ({ engineType }) => {
                 <SCol sm={7}>
                   <Form.Control
                     type="text"
-                    value={values.sekundarA}
-                    name="sekundarA"
+                    value={values['sekundärA'] || ''}
+                    name="sekundärA"
                     onChange={handleChange}
-                    isValid={touched.sekundarA && !errors.sekundarA}
-                    isInvalid={touched.sekundarA && errors.sekundarA}
+                    isValid={touched['sekundärA'] && !errors['sekundärA']}
+                    isInvalid={touched['sekundärA'] && errors['sekundärA']}
                   />
                   {/* <Form.Control.Feedback tooltip="true" type="invalid">
                     {errors.sekundarA}
@@ -482,7 +490,7 @@ const LowVoltage = ({ engineType }) => {
                     type="text"
                     as="textarea"
                     rows={2}
-                    value={values.lagerDE}
+                    value={values.lagerDE || ''}
                     name="lagerDE"
                     onChange={handleChange}
                     isValid={touched.lagerDE && !errors.lagerDE}
@@ -502,7 +510,7 @@ const LowVoltage = ({ engineType }) => {
                     type="text"
                     as="textarea"
                     rows={2}
-                    value={values.lagerNDE}
+                    value={values.lagerNDE || ''}
                     name="lagerNDE"
                     onChange={handleChange}
                     isValid={touched.lagerNDE && !errors.lagerNDE}
@@ -522,7 +530,7 @@ const LowVoltage = ({ engineType }) => {
                     type="text"
                     as="textarea"
                     rows={2}
-                    value={values.kolborstar}
+                    value={values.kolborstar || ''}
                     name="kolborstar"
                     onChange={handleChange}
                     isValid={touched.kolborstar && !errors.kolborstar}
@@ -542,7 +550,7 @@ const LowVoltage = ({ engineType }) => {
                     type="text"
                     as="textarea"
                     rows={2}
-                    value={values.friText}
+                    value={values.friText || ''}
                     name="friText"
                     onChange={handleChange}
                     isValid={touched.friText && !errors.friText}
@@ -590,11 +598,11 @@ const LowVoltage = ({ engineType }) => {
                     onChange={handleChange}
                   />
                   <Form.Check
-                    id="engineMeasureData.driftstrom"
+                    id="engineMeasureData['driftström']"
                     className="custom-form-check-input"
                     type="checkbox"
                     label="Driftström"
-                    checked={values.engineMeasureData.driftstrom}
+                    checked={values.engineMeasureData['driftström']}
                     onChange={handleChange}
                   />
                   <Form.Check
@@ -614,28 +622,27 @@ const LowVoltage = ({ engineType }) => {
                     onChange={handleChange}
                   />
                   <Form.Check
-                    id="engineMeasureData.smorjning"
+                    id="engineMeasureData['smörjning']"
                     className="custom-form-check-input"
                     type="checkbox"
                     label="Smörjning"
-                    checked={values.engineMeasureData.smorjning}
+                    checked={values.engineMeasureData['smörjning']}
                     onChange={handleChange}
                   />
                   <Form.Check
-                    id="engineMeasureData.okularIntern"
+                    id="engineMeasureData['okulärIntern']"
                     className="custom-form-check-input"
                     type="checkbox"
                     label="Okulär intern"
-                    checked={values.engineMeasureData.okularIntern}
+                    checked={values.engineMeasureData['okulärIntern']}
                     onChange={handleChange}
                   />
                   <Form.Check
-                    id="engineMeasureData.okularExtern"
+                    id="engineMeasureData['okulärExtern']"
                     className="custom-form-check-input"
                     type="checkbox"
                     label="Okulär extern"
-                    name="okularExtern"
-                    checked={values.engineMeasureData.okularExtern}
+                    checked={values.engineMeasureData['okulärExtern']}
                     onChange={handleChange}
                   />
                   <Form.Check
@@ -647,11 +654,11 @@ const LowVoltage = ({ engineType }) => {
                     onChange={handleChange}
                   />
                   <Form.Check
-                    id="engineMeasureData.slapringsYta"
+                    id="engineMeasureData['släpringsYta']"
                     className="custom-form-check-input"
                     type="checkbox"
                     label="Släpringsyta"
-                    checked={values.engineMeasureData.slapringsYta}
+                    checked={values.engineMeasureData['släpringsYta']}
                     onChange={handleChange}
                   />
                 </Col>
@@ -815,33 +822,34 @@ const LowVoltage = ({ engineType }) => {
                   <Row>
                     <Col xs={12}>
                       <h5>Kund</h5>
-                      <Form.Control
-                        as="select"
-                        // value={type}
-                        name="engineClient"
-                        value={values.engineClient}
-                        onChange={e => {
-                          console.log(e.target.value);
-                          user.clients.forEach(client => {
-                            if (e.target.value === client.clientName) {
-                              setEngineClient(client);
-                            }
-                          });
-                        }}
-                      >
-                        <option value="default">
-                          Vilken kund tillhör motorn?
-                        </option>
-                        {user.clients.map(client => (
-                          <option key={client.id} value={client.clientName}>
-                            {client.clientName}
-                          </option>
-                        ))}
-                      </Form.Control>
-                      {errors.engineClient && (
-                        <Form.Control.Feedback tooltip="true" type="invalid">
-                          {errors.engineClient}
-                        </Form.Control.Feedback>
+                      {isLoading ? (
+                        <SSpinner animation="border">
+                          <span>Loading...</span>
+                        </SSpinner>
+                      ) : (
+                        <Form.Control
+                          as="select"
+                          // value={type}
+                          name="engineClient"
+                          defaultValue={response.clientName}
+                          value={values.engineClient}
+                          onChange={e => {
+                            console.log(e.target.value);
+                            user.clients.forEach(client => {
+                              if (e.target.value === client.clientName) {
+                                console.log(e.target.value);
+                                setEngineClient(client);
+                              }
+                            });
+                          }}
+                        >
+                          {user.clients.map(client => (
+                            // checking to return the current engine client as the first selected option
+                            <option key={client.id} value={client.clientName}>
+                              {client.clientName}
+                            </option>
+                          ))}
+                        </Form.Control>
                       )}
                     </Col>
                   </Row>
@@ -850,7 +858,7 @@ const LowVoltage = ({ engineType }) => {
             </Col>
             <Col>
               <ExtraMarginSButton type="submit" disabled={isSubmitting}>
-                Lägg till
+                {`Ändra ${values.tagNr}`}
               </ExtraMarginSButton>
               {message && <SAlert variant="success">{message}</SAlert>}
               {error && <SAlert variant="danger">{error}</SAlert>}
@@ -862,4 +870,4 @@ const LowVoltage = ({ engineType }) => {
   );
 };
 
-export default LowVoltage;
+export default EditLowVoltage;

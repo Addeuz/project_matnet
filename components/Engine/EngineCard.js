@@ -9,17 +9,20 @@ const { default: EngineData } = require('./EngineData');
 
 const EngineCard = ({ engine, filter }) => (
   <>
-    {filter !== '' &&
-    engine.tag_nr.toLowerCase().indexOf(filter.toLowerCase()) === -1 ? null : (
+    {filter === '' ||
+    engine.engineInfo.tagNr.toLowerCase().indexOf(filter.toLowerCase()) !==
+      -1 ||
+    engine.engineInfo.position.toLowerCase().indexOf(filter.toLowerCase()) !==
+      -1 ? (
       <Card>
         <Accordion.Toggle as={Card.Header} eventKey={engine.id}>
-          {engine.tag_nr}
+          {engine.engineInfo.tagNr}
         </Accordion.Toggle>
         <Accordion.Collapse eventKey={engine.id}>
           <EngineData engine={engine} />
         </Accordion.Collapse>
       </Card>
-    )}
+    ) : null}
   </>
 );
 

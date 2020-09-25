@@ -1,6 +1,9 @@
 import { Modal, Form, Col, Row } from 'react-bootstrap';
 import styled from 'styled-components';
-import LowVoltage from './LowVoltage';
+import AddLowVoltage from './LowVoltage/AddLowVoltage';
+import AddHighVoltage from './HighVoltage/AddHighVoltage';
+import AddDirectCurrent from './DirectCurrent/AddDirectCurrent';
+import AddPowerTrain from './PowerTrain/AddPowerTrain';
 
 const SRow = styled(Row)`
   [class*='col']:first-child {
@@ -58,7 +61,10 @@ const AddEngineModal = ({ show, onHide }) => {
           )}
         </SRow>
 
-        {type === 'lågspänd' && <LowVoltage engineType="lågspänd" />}
+        {type === 'lågspänd' && <AddLowVoltage engineType={type} />}
+        {type === 'högspänd' && <AddHighVoltage engineType={type} />}
+        {type === 'likström' && <AddDirectCurrent engineType={type} />}
+        {type === 'drivsystem' && <AddPowerTrain engineType={type} />}
       </Modal.Body>
     </Modal>
   );

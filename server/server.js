@@ -8,8 +8,8 @@ const bcrypt = require('bcryptjs');
 const dev = process.env.NODE_ENV !== 'production';
 // port for the server to run on
 const port = process.env.PORT || 3000;
-const app = next({ dev });
-const handle = app.getRequestHandler();
+const nextApp = next({ dev });
+const handle = nextApp.getRequestHandler();
 
 const db = require('./models/index');
 
@@ -23,7 +23,7 @@ const corsOptions = {
   origin: 'http://localhost:8081',
 };
 
-app
+nextApp
   .prepare()
   .then(() => {
     const server = express();
@@ -36,13 +36,13 @@ app
     server.use(bodyParser.urlencoded({ extended: true }));
 
     // Use this in production.
-    db.sequelize.sync();
+    // db.sequelize.sync();
     // force: true will drop the table if it already exists, can be used in development but not really smart
-    // db.sequelize.sync({ force: true }).then(() => {
-    //   console.log('Drop and resync database because { force: true }');
-    //   // eslint-disable-next-line no-use-before-define
-    //   initial();
-    // });
+    db.sequelize.sync({ force: true }).then(() => {
+      console.log('Drop and resync database because { force: true }');
+      // eslint-disable-next-line no-use-before-define
+      initial();
+    });
 
     server.use('/api', authRoutes);
     server.use('/api', userRoutes);
@@ -67,8 +67,8 @@ app
     process.exit(1);
   });
 
-module.exports = app;
-
+module.exports = nextApp;
+// jej TODO: ta bort
 const {
   authRoutes,
   userRoutes,

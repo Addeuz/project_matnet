@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 
+import { Col, Row } from 'react-bootstrap';
 import Loader from '../components/Loader';
 import Layout, { siteTitle } from '../components/Layout';
 import { UserContext } from '../components/UserContext';
@@ -48,7 +49,12 @@ const Index = () => {
         <title>{siteTitle}</title>
       </Head>
       <Sidebar page={router.pathname}>
-        <div>hello logged in</div>
+        <Row>
+          <Col md={8}>{user && <h3>Välkommen, {user.firstname}</h3>}</Col>
+          <Col md={4}>
+            <h4>Larmlista</h4>
+          </Col>
+        </Row>
       </Sidebar>
     </Layout>
   );

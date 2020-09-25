@@ -9,6 +9,7 @@ import {
   Accordion,
   Alert,
   Form,
+  Table,
 } from 'react-bootstrap';
 import styled from 'styled-components';
 
@@ -30,6 +31,10 @@ export const FormControlPHError = styled(FormControl)`
     /* Microsoft Edge */
     color: #dc3545;
   }
+`;
+
+export const WarningText = styled.div`
+  color: var(--danger);
 `;
 
 export const GreenContainer = styled.div`
@@ -103,6 +108,11 @@ export const SCol = styled(Col)`
   }
 `;
 
+export const NoMarginBottomH6 = styled.h6`
+  margin-bottom: 0;
+  margin-top: 0.5rem;
+`;
+
 export const AddButtonCol = styled(SCol)`
   display: flex;
   justify-content: flex-end;
@@ -118,7 +128,7 @@ export const AddButtonCol = styled(SCol)`
 `;
 
 export const SAccordion = styled(Accordion)`
-  height: 80vh;
+  height: 74vh;
   overflow: auto;
   margin-top: 0.5rem;
 
@@ -129,6 +139,25 @@ export const SAccordion = styled(Accordion)`
   @media only screen and (max-width: 768px) {
     height: auto;
   }
+`;
+
+export const STable = styled(Table)`
+  table-layout: fixed;
+`;
+
+export const TdDanger = styled.td`
+  background-color: var(--danger);
+  text-align: center;
+`;
+
+export const TdWarning = styled.td`
+  background-color: var(--warning);
+  text-align: center;
+`;
+
+export const TdSuccess = styled.td`
+  background-color: var(--success);
+  text-align: center;
 `;
 
 // export default SButton;
