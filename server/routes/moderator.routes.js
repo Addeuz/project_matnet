@@ -188,6 +188,57 @@ router.delete(
   }
 );
 
+router.get('/moderator/:engineId/:type/overview', function(req, res) {
+  if (req.params.type === 'lågspänd') {
+    Engine.findByPk(req.params.engineId, {
+      attributes: [
+        'motormon',
+        'baker',
+        'meggningstator',
+        'meggningrotor',
+        'driftström',
+        'lindtemp',
+        'vibration',
+        'smörjning',
+        'okulärintern',
+        'okulärextern',
+        'manteltemp',
+        'släpringsyta',
+        'lagerkondde',
+        'lagerkondnde',
+        'spmde',
+        'spmnde',
+        'lagertempde',
+        'lagertempnde',
+        'lagerisolering',
+        'renhet',
+        'kylpaket',
+        'kolborstar',
+        'varvtalsgivare',
+      ],
+    })
+      .then(engine => {
+        const engineData = [];
+        for (
+          let index = 0;
+          index < engine._options.attributes.length;
+          index++
+        ) {
+          const attributes = engine._options.attributes[index];
+          // console.log(engine[attributes].values);
+          engineData.push({ [attributes]: engine[attributes].values });
+        }
+        console.log(engineData);
+        res.status(200).send(engineData);
+      })
+      .catch(error => {
+        res.status(500).send({ message: error });
+      });
+  } else {
+    res.status(200).send(req.params.type);
+  }
+});
+
 router.get('/moderator/:engineId/:dataPoint/:userId', function(req, res) {
   console.log(req.params);
   Engine.findByPk(req.params.engineId, {

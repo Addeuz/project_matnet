@@ -1,6 +1,5 @@
 const { Card, Accordion } = require('react-bootstrap');
 const { default: EngineData } = require('./EngineData');
-// const { default: engineData } = require('./engineData');
 
 // Component - returns the card that populates the accordion in /pages/admin/clients.js
 // props:

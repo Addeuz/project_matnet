@@ -5,6 +5,7 @@
 import { Col, Row, Button } from 'react-bootstrap';
 import styled from 'styled-components';
 import axios from 'axios';
+import Link from 'next/link';
 import { SButton, NoMarginBottomH6 } from '../../../styles/styled';
 
 import {
@@ -288,6 +289,14 @@ const LowVoltageInfo = ({
             <RightButton
               onClick={() => setModalShow(true)}
             >{`Redigera ${engineInfo.tagNr}`}</RightButton>
+            <Link
+              href="/engines/[clientId]/[engineId]/overview/[tagNr]/[type]"
+              as={`/engines/${clientId}/${engineId}/overview/${engineInfo.tagNr}/${type}`}
+            >
+              <a>
+                <RightButton variant="primary">Översikt</RightButton>
+              </a>
+            </Link>
             <EditEngineModal
               show={modalShow}
               onHide={() => setModalShow(false)}
