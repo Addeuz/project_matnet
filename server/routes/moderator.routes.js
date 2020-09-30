@@ -1,5 +1,6 @@
 const router = require('express').Router();
 
+const { Op } = require('sequelize');
 const db = require('../models');
 const { authJwt } = require('../middleware');
 
@@ -8,6 +9,7 @@ const Client = db.client;
 const EngineValues = db.engine_values;
 const Engine = db.engine;
 const LimitValues = db.limit_values;
+const AlarmList = db.alarm_list;
 
 router.use(function(req, res, next) {
   res.header(
@@ -15,6 +17,14 @@ router.use(function(req, res, next) {
     'x-access-token, Origin, Content-Type, Accept'
   );
   next();
+});
+
+router.get('/moderator/clients/:userId', function(req, res) {
+  User.findByPk(req.params.userId).then(user => {
+    user.getClients().then(clients => {
+      res.status(200).send(clients);
+    });
+  });
 });
 
 router.get('/moderator/engines/:clientId', function(req, res) {
@@ -256,12 +266,63 @@ router.get('/moderator/:engineId/:dataPoint/:userId', function(req, res) {
 
 router.post('/moderator/:engineId/:dataPoint', function(req, res) {
   Engine.findByPk(req.params.engineId).then(engine => {
+    console.log(req.body.data);
     const oldValues = engine[req.params.dataPoint].values;
-    console.log(typeof oldValues);
-    console.log(oldValues);
     engine
       .update({
         [req.params.dataPoint]: { values: [...oldValues, req.body.data] },
+      })
+      .then(() => {
+        if (req.body.data.limit === 'red') {
+          AlarmList.findAll({
+            where: {
+              engineId: engine.id,
+              dataPoint: req.params.dataPoint,
+            },
+          }).then(alarm => {
+            console.log(alarm.length);
+            console.log(alarm);
+            if (alarm.length !== 0) {
+              AlarmList.update(
+                {
+                  value: req.body.data,
+                },
+                {
+                  where: {
+                    engineId: engine.id,
+                    dataPoint: req.params.dataPoint,
+                  },
+                }
+              );
+            } else {
+              AlarmList.create({
+                engineId: engine.id,
+                dataPoint: req.params.dataPoint,
+                value: req.body.data,
+              }).then(alarm => {
+                engine.getClient().then(client => {
+                  alarm.setClient(client);
+                });
+              });
+            }
+          });
+        } else {
+          AlarmList.findAll({
+            where: {
+              engineId: engine.id,
+              dataPoint: req.params.dataPoint,
+            },
+          }).then(alarm => {
+            if (alarm) {
+              AlarmList.destroy({
+                where: {
+                  engineId: engine.id,
+                  dataPoint: req.params.dataPoint,
+                },
+              });
+            }
+          });
+        }
       })
       .then(() => {
         res.status(200).send({ message: 'Värde sparat, ladda om sidan!' });
@@ -269,6 +330,24 @@ router.post('/moderator/:engineId/:dataPoint', function(req, res) {
       .catch(err => {
         res.status(500).send({ message: 'Kunde ej lägga till värdet' });
       });
+  });
+});
+
+router.get('/moderator/:userId/alarmList', function(req, res) {
+  User.findByPk(req.params.userId).then(user => {
+    user.getClients().then(clients => {
+      console.log(clients);
+      const clientIdArray = [];
+      clients.forEach(client => {
+        clientIdArray.push(client.id);
+      });
+
+      AlarmList.findAll({
+        where: { clientId: { [Op.or]: clientIdArray } },
+      }).then(alarms => {
+        res.status(200).send(alarms);
+      });
+    });
   });
 });
 

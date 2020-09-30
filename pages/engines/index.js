@@ -49,7 +49,7 @@ const EngineIndex = () => {
   const [filter, setFilter] = React.useState('');
 
   React.useEffect(() => {
-    axios(`${adress}/api/admin/clients`)
+    axios(`${adress}/api/moderator/clients/${user.id}`)
       .then(response => {
         console.log(response.data);
         setLoadingData(false);
@@ -60,7 +60,7 @@ const EngineIndex = () => {
       });
 
     setLoadingUser(false);
-  }, []);
+  }, [user.id]);
 
   return (
     <Layout>

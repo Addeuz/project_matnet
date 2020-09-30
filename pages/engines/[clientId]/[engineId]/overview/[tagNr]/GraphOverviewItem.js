@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
+import { formatTime, formatYear } from '../../GraphItem';
 
 const WrapperDiv = styled.div`
   display: flex;
@@ -113,31 +114,4 @@ const GraphOverviewItem = ({ data, header }) => {
   );
 };
 
-function formatYear(date) {
-  const year = date.getFullYear();
-  let month = date.getMonth();
-  let day = date.getDate();
-  if (month < 10) {
-    month = `0${month}`;
-  }
-  if (day < 10) {
-    day = `0${day}`;
-  }
-
-  return `${year}-${month}-${day}`;
-}
-
-function formatTime(date) {
-  let hour = date.getHours();
-  let minutes = date.getMinutes();
-
-  if (hour < 10) {
-    hour = `0${hour}`;
-  }
-  if (minutes < 10) {
-    minutes = `0${minutes}`;
-  }
-
-  return `${hour}:${minutes}`;
-}
 export default GraphOverviewItem;

@@ -62,7 +62,7 @@ const GraphItem = ({ data, limit }) => {
   );
 };
 
-function formatYear(date) {
+export function formatYear(date) {
   const year = date.getFullYear();
   let month = date.getMonth();
   let day = date.getDate();
@@ -77,7 +77,7 @@ function formatYear(date) {
   return `${year}-${month}-${day}`;
 }
 
-function formatTime(date) {
+export function formatTime(date) {
   let hour = date.getHours();
   let minutes = date.getMinutes();
 

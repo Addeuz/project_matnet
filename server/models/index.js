@@ -28,6 +28,7 @@ db.client = require('./client.model')(sequelize, Sequelize);
 db.engine_values = require('./engine_values.model')(sequelize, Sequelize);
 db.engine = require('./engine.model')(sequelize, Sequelize);
 db.limit_values = require('./limit_values.model')(sequelize, Sequelize);
+db.alarm_list = require('./alarm_list.model')(sequelize, Sequelize);
 
 // Defines many to many relationship between users and roles.
 // The connection will be done in a new table called 'user_roles'
@@ -59,10 +60,13 @@ db.user.belongsToMany(db.client, {
 db.engine.belongsTo(db.limit_values);
 db.engine.belongsTo(db.engine_values);
 db.engine.belongsTo(db.client);
+
+db.alarm_list.belongsTo(db.client);
+
 db.client.hasMany(db.engine);
 
 // used to see mixins for the models that sequelize generate because of the associations above
-const model = db.engine;
+const model = db.user;
 for (const assoc of Object.keys(model.associations)) {
   for (const accessor of Object.keys(model.associations[assoc].accessors)) {
     console.log(
