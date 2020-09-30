@@ -50,14 +50,12 @@ const AddDataToEngine = () => {
 
   const [response, setResponse] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
-  // const [isError, setIsError] = React.useState(true);
 
   React.useEffect(() => {
     const options = {
       headers: authHeader(),
     };
     if (router.query.dataPoint && user) {
-      console.log(user);
       axios
         .get(
           `/api/moderator/${
@@ -85,7 +83,6 @@ const AddDataToEngine = () => {
       setLimitDefault(response.engine.limit_value[dataPoint].default);
       setDataValues(response.engine[dataPoint].values);
       setCanEdit(response.canEdit);
-      console.log(dataValues);
     }
   }, [router.query, dataPoint, limitValues, dataValues, isLoading, response]);
 

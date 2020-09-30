@@ -17,18 +17,13 @@ const SingleDataDiv = styled.div`
   height: inherit;
 `;
 
-const DataOverviewTimeLine = ({ engineData, key }) => {
-  React.useEffect(() => {
-    // console.log(engineData.reverse());
-  }, [engineData]);
-
-  return engineData[0] ? (
+const DataOverviewTimeLine = ({ engineData }) =>
+  engineData[0] ? (
     <div>
       <DataDiv>
         {engineData.reverse().map(data => {
           const header = Object.keys(data)[0];
           const value = [...Object.values(data)[0]].reverse()[0];
-          console.log(header, value);
           return (
             <SingleDataDiv>
               <GraphOverviewItem data={value} header={header} />
@@ -42,6 +37,5 @@ const DataOverviewTimeLine = ({ engineData, key }) => {
       <Sh4>Det finns ingen data för {header}</Sh4>
     </div>
   );
-};
 
 export default DataOverviewTimeLine;

@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import Layout from '../../../../../../components/Layout';
 import Sidebar from '../../../../../../components/Navigation/Sidebar';
 import authHeader from '../../../../../../services/auth-header';
+import { SSpinner } from '../../../../../../styles/styled';
 import DataOverviewTimeLine from './DataOverviewTimeLine';
 
 const EngineDataOverview = () => {
@@ -12,7 +13,6 @@ const EngineDataOverview = () => {
   const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
-    console.log(router.query);
     const options = {
       headers: authHeader(),
     };
@@ -40,7 +40,9 @@ const EngineDataOverview = () => {
         {!isLoading && responses.length > 0 ? (
           <DataOverviewTimeLine engineData={responses.reverse()} />
         ) : (
-          <p>Laddar</p>
+          <SSpinner animation="border">
+            <span>Loading...</span>
+          </SSpinner>
         )}
       </Sidebar>
     </Layout>

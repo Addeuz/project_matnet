@@ -71,12 +71,10 @@ const GraphOverviewItem = ({ data, header }) => {
 
   const [date, setDate] = React.useState(null);
   React.useEffect(() => {
-    console.log(router.query);
     if (data) {
       setDate(new Date(data.date));
-      console.log(data.limit);
     }
-  }, [data, router.query]);
+  }, [data]);
 
   if (data && date) {
     return (
@@ -118,7 +116,7 @@ const GraphOverviewItem = ({ data, header }) => {
 function formatYear(date) {
   const year = date.getFullYear();
   let month = date.getMonth();
-  let day = date.getDay();
+  let day = date.getDate();
   if (month < 10) {
     month = `0${month}`;
   }

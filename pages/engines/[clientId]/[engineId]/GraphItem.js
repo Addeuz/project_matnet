@@ -44,12 +44,7 @@ const RedBar = styled.div`
 `;
 
 const GraphItem = ({ data, limit }) => {
-  console.log('GraphItem -> limit', limit);
   const date = new Date(data.date);
-
-  React.useEffect(() => {
-    console.log(limit);
-  }, [limit]);
 
   return (
     <WrapperDiv>
@@ -70,7 +65,8 @@ const GraphItem = ({ data, limit }) => {
 function formatYear(date) {
   const year = date.getFullYear();
   let month = date.getMonth();
-  let day = date.getDay();
+  let day = date.getDate();
+
   if (month < 10) {
     month = `0${month}`;
   }

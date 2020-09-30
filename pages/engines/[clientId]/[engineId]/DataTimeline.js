@@ -17,12 +17,8 @@ const SingleDataDiv = styled.div`
   height: inherit;
 `;
 
-const DataTimeLine = ({ engineData, header }) => {
-  React.useEffect(() => {
-    console.log(engineData);
-  }, [engineData]);
-
-  return engineData[0] ? (
+const DataTimeLine = ({ engineData, header }) =>
+  engineData[0] ? (
     <div>
       <Sh4>Data för {header}</Sh4>
       <DataDiv>
@@ -38,6 +34,5 @@ const DataTimeLine = ({ engineData, header }) => {
       <Sh4>Det finns ingen data för {header}</Sh4>
     </div>
   );
-};
 
 export default DataTimeLine;
