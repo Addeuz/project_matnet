@@ -109,17 +109,18 @@ const EditDirectCurrent = ({ engine }) => {
       varvtalsgivare: engine.engineValues.varvtalsgivare,
     });
 
+    const tempExtraInputs = [];
+    const tempExtraInputNames = [];
     if (engine.engineValues.extraInputs) {
       setExtraInputs(engine.engineValues.extraInputs);
       engine.engineValues.extraInputs.forEach(extraInput => {
-        console.log(extraInput);
         const camelCase = camelize(Object.keys(extraInput)[0]);
         const normalCase = camelCaseToNormal(Object.keys(extraInput)[0]);
-        setExtraInputNames(extraInputNames.concat(normalCase));
-        setExtraInputs(
-          extraInputs.concat({ [camelCase]: extraInput[camelCase] })
-        );
+        tempExtraInputNames.push(normalCase);
+        tempExtraInputs.push({ [camelCase]: extraInput[camelCase] });
       });
+      setExtraInputNames(tempExtraInputNames);
+      setExtraInputs(tempExtraInputs);
     }
 
     if (!isLoading && response) {

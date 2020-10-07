@@ -10,6 +10,7 @@ const EngineDataOverview = () => {
   const router = useRouter();
 
   const [responses, setResponses] = React.useState([]);
+  const [engineValues, setEngineValues] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
@@ -22,7 +23,8 @@ const EngineDataOverview = () => {
         options
       )
       .then(serverResponse => {
-        setResponses(responses.concat(serverResponse.data));
+        setEngineValues(serverResponse.data.engineValues);
+        setResponses(serverResponse.data.engineData.reverse());
       })
       .catch(error => {
         console.log(error.message);
@@ -38,7 +40,10 @@ const EngineDataOverview = () => {
       <Sidebar page="/">
         <h5>Översikt över data för {router.query.tagNr}</h5>
         {!isLoading && responses.length > 0 ? (
-          <DataOverviewTimeLine engineData={responses.reverse()} />
+          <DataOverviewTimeLine
+            engineData={responses.reverse()}
+            engineValues={engineValues}
+          />
         ) : (
           <SSpinner animation="border">
             <span>Loading...</span>

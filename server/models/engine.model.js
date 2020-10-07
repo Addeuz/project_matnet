@@ -119,6 +119,9 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.JSON,
       defaultValue: { values: [] },
     },
+    extraInputs: {
+      type: Sequelize.JSON,
+    },
   });
 
   return Engine;

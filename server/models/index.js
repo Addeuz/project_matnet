@@ -66,7 +66,7 @@ db.alarm_list.belongsTo(db.client);
 db.client.hasMany(db.engine);
 
 // used to see mixins for the models that sequelize generate because of the associations above
-const model = db.user;
+const model = db.engine;
 for (const assoc of Object.keys(model.associations)) {
   for (const accessor of Object.keys(model.associations[assoc].accessors)) {
     console.log(

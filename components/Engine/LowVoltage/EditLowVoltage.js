@@ -61,7 +61,7 @@ const EditLowVoltage = ({ engine }) => {
   const [engineClient, setEngineClient] = React.useState(null);
 
   React.useEffect(() => {
-    console.log(engine);
+    console.log(engine.engineValues.extraInputs);
     setInitialFields({
       tagNr: engine.engineInfo.tagNr,
       artNr: engine.engineInfo.artNr,
@@ -110,22 +110,23 @@ const EditLowVoltage = ({ engine }) => {
       varvtalsgivare: engine.engineValues.varvtalsgivare,
     });
 
+    const tempExtraInputs = [];
+    const tempExtraInputNames = [];
     if (engine.engineValues.extraInputs) {
       setExtraInputs(engine.engineValues.extraInputs);
       engine.engineValues.extraInputs.forEach(extraInput => {
-        console.log(extraInput);
         const camelCase = camelize(Object.keys(extraInput)[0]);
         const normalCase = camelCaseToNormal(Object.keys(extraInput)[0]);
-        setExtraInputNames(extraInputNames.concat(normalCase));
-        setExtraInputs(
-          extraInputs.concat({ [camelCase]: extraInput[camelCase] })
-        );
+        tempExtraInputNames.push(normalCase);
+        tempExtraInputs.push({ [camelCase]: extraInput[camelCase] });
       });
+      setExtraInputNames(tempExtraInputNames);
+      setExtraInputs(tempExtraInputs);
     }
 
     if (!isLoading && response) {
       setEngineClient(response);
-      console.log(engineClient);
+      // console.log(engineClient);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -764,7 +765,7 @@ const EditLowVoltage = ({ engine }) => {
                         <SFormGroup as={Row}>
                           {extraInputs.map((extraInput, index) => {
                             // <ExtraInput id={extraI}
-                            console.log(extraInput);
+                            // console.log(extraInput);
                             const key = Object.keys(extraInput);
                             const id = key[0];
                             return (

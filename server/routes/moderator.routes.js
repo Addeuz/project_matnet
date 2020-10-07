@@ -44,23 +44,6 @@ router.get('/moderator/engines/:clientId', function(req, res) {
           .status(404)
           .send({ message: 'Inga motorer hittade för angiven kund' });
       });
-    // user.getClients().then(clients => {
-    //   console.log(clients);
-    //   clients.forEach((client, clientIndex) => {
-    //     client
-    //       .getEngines({ include: { model: EngineValues } })
-    //       .then(engines => {
-    //         console.log(engines);
-    //         engines.forEach(engine => {
-    //           engineArray.push(engine);
-    //         });
-    //         // check if all clients engines have been pushed, then respond with the enginges
-    //         if (clientIndex + 1 === clients.length) {
-    //           res.status(200).send(engineArray);
-    //         }
-    //       });
-    //   });
-    // });
   });
 });
 
@@ -68,8 +51,21 @@ router.post(
   '/moderator/engine',
   [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
   function(req, res) {
+    const extraInputsDatabaseObject = {};
+    if (req.body.engineMeasureData.extraInputs) {
+      const { extraInputs } = req.body.engineMeasureData;
+
+      extraInputs.forEach(extraInput => {
+        console.log('extraInput', extraInput);
+        console.log('extraInput', Object.keys(extraInput)[0]);
+        const key = Object.keys(extraInput)[0].toLowerCase();
+        extraInputsDatabaseObject[key] = { values: {} };
+      });
+    }
+    console.log(extraInputsDatabaseObject);
     Engine.create({
       engineInfo: { ...req.body.engineInfo },
+      extraInputs: extraInputsDatabaseObject,
     })
       .then(engine => {
         Client.findByPk(req.body.client.id).then(client => {
@@ -88,9 +84,6 @@ router.post(
           })
           .then(() => {
             engine.createLimit_value();
-            // engine.createLimit_value({
-            //   ...req.body.limitValues,
-            // });
           })
           .then(() => {
             res.status(201).send({ message: 'Motor skapad!' });
@@ -111,16 +104,30 @@ router.put(
   '/moderator/engine/:id',
   [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
   function(req, res) {
+    // console.log(req.body.engineMeasureData.extraInputs);
+    const extraInputsDatabaseObject = {};
+    if (req.body.engineMeasureData.extraInputs) {
+      const { extraInputs } = req.body.engineMeasureData;
+
+      extraInputs.forEach(extraInput => {
+        // console.log('extraInput', extraInput);
+        // console.log('extraInput', Object.keys(extraInput)[0]);
+        const key = Object.keys(extraInput)[0].toLowerCase();
+        extraInputsDatabaseObject[key] = { values: {} };
+      });
+    }
+    // console.log(extraInputsDatabaseObject);
     Engine.findByPk(req.params.id)
       .then(engine => {
-        console.log(engine);
+        // console.log(engine);
         engine
           .update({
             engineInfo: { ...req.body.engineInfo },
+            extraInputs: extraInputsDatabaseObject,
           })
           .then(() => {
             EngineValues.findByPk(engine.engineValueId).then(values => {
-              console.log(req.body.engineMeasureData);
+              // console.log(req.body.engineMeasureData);
               values
                 .update({
                   engine_values: { ...req.body.engineMeasureData },
@@ -199,9 +206,12 @@ router.delete(
 );
 
 router.get('/moderator/:engineId/:type/overview', function(req, res) {
+  // TODO: still need type because we want to filter out attributes not concerned by that type
+  // might not be needed since we have the edit check in the front end so might take away attribute specific stuff anyway
   if (req.params.type === 'lågspänd') {
     Engine.findByPk(req.params.engineId, {
       attributes: [
+        'engineValueId',
         'motormon',
         'baker',
         'meggningstator',
@@ -235,11 +245,16 @@ router.get('/moderator/:engineId/:type/overview', function(req, res) {
           index++
         ) {
           const attributes = engine._options.attributes[index];
-          // console.log(engine[attributes].values);
-          engineData.push({ [attributes]: engine[attributes].values });
+          // TODO: check here if it is attributes we dont want, so that extra fields can get fetched
+          if (attributes !== 'engineValueId') {
+            engineData.push({ [attributes]: engine[attributes].values });
+          }
         }
-        console.log(engineData);
-        res.status(200).send(engineData);
+        EngineValues.findByPk(engine.engineValueId).then(engineValue => {
+          res
+            .status(200)
+            .send({ engineData, engineValues: engineValue.engine_values });
+        });
       })
       .catch(error => {
         res.status(500).send({ message: error });
