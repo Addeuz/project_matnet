@@ -22,7 +22,7 @@ const DataOverviewTimeLine = ({ engineData, engineValues }) => {
         {engineData.map(data => {
           const header = Object.keys(data)[0];
           const displayData = lowerCaseEngineValues[header];
-          const value = [...Object.values(data)[0]].reverse()[0];
+          const value = [...Object.values(data)[0]].reverse()[0]; // Get only the first value in the array of added values
           return displayData ? (
             <SingleDataDiv key={header}>
               <GraphOverviewItem data={value} header={header} />

@@ -1,15 +1,12 @@
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
 import { Col, Form, Row } from 'react-bootstrap';
-import styled from 'styled-components';
-import * as yup from 'yup';
 import axios from 'axios';
-import EditLimitValues from '../../../../components/Engine/LimitValues/EditLimitValues';
-import Layout from '../../../../components/Layout';
-import Sidebar from '../../../../components/Navigation/Sidebar';
-import DataTimeLine from './DataTimeline';
-
-import authHeader from '../../../../services/auth-header';
+import * as yup from 'yup';
+import styled from 'styled-components';
+import EditLimitValues from '../../../../../components/Engine/LimitValues/EditLimitValues';
+import Layout from '../../../../../components/Layout';
+import Sidebar from '../../../../../components/Navigation/Sidebar';
 import {
   SAlert,
   SButton,
@@ -18,8 +15,10 @@ import {
   TdDanger,
   TdSuccess,
   TdWarning,
-} from '../../../../styles/styled';
-import { UserContext } from '../../../../components/UserContext';
+} from '../../../../../styles/styled';
+import { UserContext } from '../../../../../components/UserContext';
+import DataTimeLine from '../DataTimeline';
+import authHeader from '../../../../../services/auth-header';
 
 const schema = yup.object({
   value: yup
@@ -27,29 +26,17 @@ const schema = yup.object({
     .required('Mätvärdet får ej lämnas tomt'),
 });
 
-const DefaultText = styled.p`
-  color: ${props => (props.default ? 'var(--success)' : 'var(--danger)')};
-`;
-
-const AddDataToEngine = () => {
+const ExtraAddDataToEngine = () => {
   const router = useRouter();
-
-  const [modalShow, setModalShow] = React.useState(false);
-
-  const [dataPoint, setDataPoint] = React.useState(null);
-  const [limitValues, setLimitValues] = React.useState(null);
-  const [limitDefault, setLimitDefault] = React.useState(null);
-
-  const [dataValues, setDataValues] = React.useState(null);
-  const [tagNr, setTagNr] = React.useState(null);
-  const [message, setMessage] = React.useState('');
-  const [canEdit, setCanEdit] = React.useState(false);
-
-  const [error, setError] = React.useState('');
   const { user } = React.useContext(UserContext);
-
-  const [response, setResponse] = React.useState(null);
+  const [dataPoint, setDataPoint] = React.useState(null);
+  const [limit, setLimit] = React.useState('yellow');
+  const [tagNr, setTagNr] = React.useState(null);
+  const [dataValues, setDataValues] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [response, setResponse] = React.useState(null);
+  const [message, setMessage] = React.useState('');
+  const [error, setError] = React.useState('');
 
   React.useEffect(() => {
     const options = {
@@ -58,7 +45,7 @@ const AddDataToEngine = () => {
     if (router.query.dataPoint && user) {
       axios
         .get(
-          `/api/moderator/${router.query.engineId}/${router.query.dataPoint}/${user.id}`,
+          `/api/moderator/${router.query.engineId}/${router.query.dataPoint}/extra`,
           options
         )
         .then(serverResponse => {
@@ -77,23 +64,18 @@ const AddDataToEngine = () => {
 
     if (!isLoading && response && dataPoint) {
       setTagNr(response.engine.engineInfo.tagNr);
-      setLimitValues(response.engine.limit_value[dataPoint].limit);
-      setLimitDefault(response.engine.limit_value[dataPoint].default);
       setDataValues(response.engine[dataPoint].values);
-      setCanEdit(response.canEdit);
     }
-  }, [router.query, dataPoint, limitValues, dataValues, isLoading, response]);
+  }, [router.query, dataPoint, dataValues, isLoading, response]);
 
   return (
     <Layout>
       <Sidebar page="/">
         {user &&
-          (canEdit ||
-            user.roles[0] === 'ROLE_ADMIN' ||
+          (user.roles[0] === 'ROLE_ADMIN' ||
             user.roles[0] === 'ROLE_MODERATOR') &&
           !isLoading &&
-          response.engine &&
-          limitValues && (
+          response.engine && (
             <>
               <Formik
                 validationSchema={schema}
@@ -105,27 +87,11 @@ const AddDataToEngine = () => {
                   const options = {
                     headers: authHeader(),
                   };
-                  console.log(values);
                   const currentDate = new Date();
-                  let limit;
-
-                  if (values.value < limitValues[0]) {
-                    // icke godkänt
-                    limit = 'red';
-                  } else if (
-                    values.value > limitValues[0] &&
-                    values.value < limitValues[1]
-                  ) {
-                    // godkänt
-                    limit = 'yellow';
-                  } else {
-                    // väl godkänt
-                    limit = 'green';
-                  }
 
                   axios
                     .post(
-                      `http://localhost:3000/api/moderator/${router.query.engineId}/${dataPoint}`,
+                      `http://localhost:3000/api/moderator/${router.query.engineId}/${dataPoint}/extra`,
                       {
                         data: {
                           value: values.value,
@@ -178,45 +144,19 @@ const AddDataToEngine = () => {
                             {errors.value}
                           </Form.Control.Feedback>
                         </Form.Group>
-                        <h5>Gränsvärden</h5>
-                        <STable size="sm">
-                          <thead>
-                            <tr>
-                              <th>Ej godkänt</th>
-                              <th>Godkänt</th>
-                              <th>Väl godkänt</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <TdDanger> &lt; {limitValues[0]}</TdDanger>
-                              <TdWarning>
-                                {limitValues[0]} - {limitValues[1]}
-                              </TdWarning>
-                              <TdSuccess> &gt; {limitValues[1]}</TdSuccess>
-                            </tr>
-                          </tbody>
-                        </STable>
-                        <Row>
-                          <Col xs={7}>
-                            {limitDefault ? (
-                              <DefaultText default>
-                                Gränsvärden standard
-                              </DefaultText>
-                            ) : (
-                              <DefaultText>Gränsvärden ej standard</DefaultText>
-                            )}
-                          </Col>
-                          <Col xs={5}>
-                            {((user && user.roles[0] === 'ROLE_ADMIN') ||
-                              user.roles[0] === 'ROLE_MODERATOR') && (
-                              <SButton onClick={() => setModalShow(true)}>
-                                Ändra gränsv.
-                              </SButton>
-                            )}
-                          </Col>
-                        </Row>
-
+                        <h5>Gränsvärde</h5>
+                        {/* TODO: add a select element her to choose the limit */}
+                        <Form.Group>
+                          <Form.Control
+                            value={limit}
+                            onChange={e => setLimit(e.target.value)}
+                            as="select"
+                          >
+                            <option value="red">Icke godkänt</option>
+                            <option value="yellow">Godkänt</option>
+                            <option value="green">Väl godkänt</option>
+                          </Form.Control>
+                        </Form.Group>
                         <SButton type="submit" disabled={isSubmitting}>
                           Lägg till
                         </SButton>
@@ -224,19 +164,6 @@ const AddDataToEngine = () => {
                           <SAlert variant="success">{message}</SAlert>
                         )}
                         {error && <SAlert variant="danger">{error}</SAlert>}
-                      </Col>
-                      <Col xs={12}>
-                        {limitValues && dataPoint && (
-                          <EditLimitValues
-                            show={modalShow}
-                            onHide={() => setModalShow(false)}
-                            limitValues={limitValues}
-                            dataPoint={dataPoint}
-                            title={tagNr}
-                            header={dataPoint}
-                            engineId={router.query.engineId}
-                          />
-                        )}
                       </Col>
                     </Row>
                   </Form>
@@ -256,4 +183,4 @@ const AddDataToEngine = () => {
   );
 };
 
-export default AddDataToEngine;
+export default ExtraAddDataToEngine;

@@ -199,6 +199,9 @@ const LowVoltageInfo = ({
                     key={key}
                     header={camelCaseToNormal(key)}
                     value={extraInput[key]}
+                    engineId={engineId}
+                    clientId={clientId}
+                    extra
                   />
                 );
               })

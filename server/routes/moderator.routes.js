@@ -56,13 +56,10 @@ router.post(
       const { extraInputs } = req.body.engineMeasureData;
 
       extraInputs.forEach(extraInput => {
-        console.log('extraInput', extraInput);
-        console.log('extraInput', Object.keys(extraInput)[0]);
         const key = Object.keys(extraInput)[0].toLowerCase();
-        extraInputsDatabaseObject[key] = { values: {} };
+        extraInputsDatabaseObject[key] = { values: [] };
       });
     }
-    console.log(extraInputsDatabaseObject);
     Engine.create({
       engineInfo: { ...req.body.engineInfo },
       extraInputs: extraInputsDatabaseObject,
@@ -104,39 +101,42 @@ router.put(
   '/moderator/engine/:id',
   [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
   function(req, res) {
-    // console.log(req.body.engineMeasureData.extraInputs);
-    const extraInputsDatabaseObject = {};
+    const extraInputsDatabaseKeys = [];
     if (req.body.engineMeasureData.extraInputs) {
       const { extraInputs } = req.body.engineMeasureData;
 
       extraInputs.forEach(extraInput => {
-        // console.log('extraInput', extraInput);
-        // console.log('extraInput', Object.keys(extraInput)[0]);
         const key = Object.keys(extraInput)[0].toLowerCase();
-        extraInputsDatabaseObject[key] = { values: {} };
+
+        extraInputsDatabaseKeys.push(key);
       });
     }
-    // console.log(extraInputsDatabaseObject);
     Engine.findByPk(req.params.id)
       .then(engine => {
-        // console.log(engine);
+        const oldExtraInputs = engine.extraInputs;
+
+        const newKeys = diffArray(
+          Object.keys(oldExtraInputs),
+          extraInputsDatabaseKeys
+        );
+
+        const tempObject = {};
+        newKeys.forEach(key => {
+          tempObject[key] = { values: [] };
+        });
+
         engine
           .update({
             engineInfo: { ...req.body.engineInfo },
-            extraInputs: extraInputsDatabaseObject,
+            extraInputs: { ...oldExtraInputs, ...tempObject },
           })
           .then(() => {
             EngineValues.findByPk(engine.engineValueId).then(values => {
-              // console.log(req.body.engineMeasureData);
               values
                 .update({
                   engine_values: { ...req.body.engineMeasureData },
                 })
                 .then(() => {
-                  // res.status(201).send({
-                  //   message:
-                  //     'Motor ändrad! Ladda om hemsidan för att se ändringarna.',
-                  // });
                   engine
                     .setClient(req.body.client.id)
                     .then(() => {
@@ -153,7 +153,6 @@ router.put(
                     });
                 })
                 .catch(err => {
-                  console.log(err);
                   res.status(500).send({
                     message: 'Kan ej uppdatera mätpunkterna för motorn',
                     errorMessage: err.message,
@@ -183,9 +182,7 @@ router.delete(
   function(req, res) {
     Engine.findByPk(req.params.id)
       .then(engine => {
-        console.log(engine);
         engine.getEngine_value().then(engineValue => {
-          console.log(engineValue);
           engineValue
             .destroy()
             .then(() => {
@@ -264,8 +261,59 @@ router.get('/moderator/:engineId/:type/overview', function(req, res) {
   }
 });
 
+router.get('/moderator/:engineId/:dataPoint/extra', function(req, res) {
+  Engine.findByPk(req.params.engineId, {
+    attributes: ['extraInputs', 'engineInfo'],
+  })
+    .then(engine => {
+      res.status(200).send({
+        engine: {
+          [req.params.dataPoint]: engine.extraInputs[req.params.dataPoint],
+          engineInfo: engine.engineInfo,
+        },
+      });
+    })
+    .catch(error => {
+      res
+        .status(400)
+        .send({ message: 'There has been an error getting the extra fields' });
+    });
+});
+
+router.post(
+  '/moderator/:engineId/:dataPoint/extra',
+  [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
+  function(req, res) {
+    Engine.findByPk(req.params.engineId).then(engine => {
+      const oldValues = engine.extraInputs[req.params.dataPoint].values;
+
+      const tempExtraInput = {};
+      const { extraInputs } = engine;
+
+      Object.keys(extraInputs).forEach(extraInputKey => {
+        if (extraInputKey === req.params.dataPoint) {
+          tempExtraInput[extraInputKey] = {
+            values: [...oldValues, req.body.data],
+          };
+        } else {
+          tempExtraInput[extraInputKey] = extraInputs[extraInputKey];
+        }
+      });
+
+      engine
+        .update({
+          extraInputs: {
+            ...tempExtraInput,
+          },
+        })
+        .then(() => {
+          res.status(200).send({ message: 'Värde sparat, ladda om sidan!' });
+        });
+    });
+  }
+);
+
 router.get('/moderator/:engineId/:dataPoint/:userId', function(req, res) {
-  console.log(req.params);
   Engine.findByPk(req.params.engineId, {
     attributes: [req.params.dataPoint, 'engineInfo'],
     include: { model: LimitValues, attributes: [req.params.dataPoint] },
@@ -281,7 +329,6 @@ router.get('/moderator/:engineId/:dataPoint/:userId', function(req, res) {
 
 router.post('/moderator/:engineId/:dataPoint', function(req, res) {
   Engine.findByPk(req.params.engineId).then(engine => {
-    console.log(req.body.data);
     const oldValues = engine[req.params.dataPoint].values;
     engine
       .update({
@@ -295,8 +342,6 @@ router.post('/moderator/:engineId/:dataPoint', function(req, res) {
               dataPoint: req.params.dataPoint,
             },
           }).then(alarm => {
-            console.log(alarm.length);
-            console.log(alarm);
             if (alarm.length !== 0) {
               AlarmList.update(
                 {
@@ -351,7 +396,6 @@ router.post('/moderator/:engineId/:dataPoint', function(req, res) {
 router.get('/moderator/:userId/alarmList', function(req, res) {
   User.findByPk(req.params.userId).then(user => {
     user.getClients().then(clients => {
-      console.log(clients);
       const clientIdArray = [];
       clients.forEach(client => {
         clientIdArray.push(client.id);
@@ -370,8 +414,6 @@ router.put(
   '/moderator/:engineId/editLimitValues',
   [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
   function(req, res) {
-    console.log(req.params);
-    console.log(req.body);
     Engine.findByPk(req.params.engineId).then(engine => {
       engine.getLimit_value().then(limitValues => {
         limitValues
@@ -391,5 +433,12 @@ router.put(
     });
   }
 );
+
+function diffArray(arr1, arr2) {
+  // eslint-disable-next-line array-callback-return
+  return arr1.concat(arr2).filter(function(val) {
+    if (!(arr1.includes(val) && arr2.includes(val))) return val;
+  });
+}
 
 module.exports = router;

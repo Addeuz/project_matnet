@@ -76,15 +76,36 @@ export const EngineHeadingValueData = ({
   value,
   engineId,
   clientId,
+  extra,
 }) => {
   const camelCaseHeader = camelize(header);
+  // this is for when clicking an extra added datapoint
+  if (extra && value) {
+    return (
+      <Row>
+        <Col xs={8}>
+          <Link
+            href="/engines/[clientId]/[engineId]/extra/[dataPoint]"
+            as={`/engines/${clientId}/${engineId}/extra/${camelCaseHeader.toLowerCase()}`}
+          >
+            <a>
+              <NoMarginH6>{header}</NoMarginH6>
+            </a>
+          </Link>
+        </Col>
+        <SCol xs={4}>
+          <GreenSpan>Ja</GreenSpan>
+        </SCol>
+      </Row>
+    );
+  }
   if (value) {
     return (
       <Row>
         <Col xs={8}>
           <Link
             href="/engines/[clientId]/[engineId]/[dataPoint]"
-            as={`/engines/${clientId}/${engineId}/${camelCaseHeader}`}
+            as={`/engines/${clientId}/${engineId}/${camelCaseHeader.toLowerCase()}`}
           >
             <a>
               <NoMarginH6>{header}</NoMarginH6>

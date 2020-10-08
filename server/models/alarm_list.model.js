@@ -9,6 +9,9 @@ module.exports = (sequelize, Sequelize) => {
     value: {
       type: Sequelize.JSON,
     },
+    extra: {
+      type: Sequelize.BOOLEAN,
+    },
   });
 
   return AlarmList;

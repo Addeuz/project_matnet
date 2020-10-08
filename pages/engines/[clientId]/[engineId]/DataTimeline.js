@@ -22,8 +22,8 @@ const DataTimeLine = ({ engineData, header }) =>
     <div>
       <Sh4>Data för {header}</Sh4>
       <DataDiv>
-        {engineData.reverse().map(data => (
-          <SingleDataDiv>
+        {engineData.map((data, index) => (
+          <SingleDataDiv key={index}>
             <GraphItem data={data} limit={data.limit} />
           </SingleDataDiv>
         ))}
