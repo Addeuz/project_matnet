@@ -23,6 +23,11 @@ const RightButton = styled(SButton)`
   margin: 0.5rem 0.5rem 0.5rem 0;
 `;
 
+const LeftButton = styled(SButton)`
+  float: left;
+  margin: 0.5rem 0.5rem 0.5rem 0;
+`;
+
 const SCol = styled(Col)`
   padding-left: 0;
   @media only screen and (max-width: 992px) {
@@ -279,10 +284,19 @@ const LowVoltageInfo = ({
           </Col>
         </Row>
       </SCol>
-      {user &&
-      (user.roles[0] === 'ROLE_ADMIN' || user.roles[0] === 'ROLE_MODERATOR') ? (
-        <>
-          <Col xs={12}>
+      <Col xs={12}>
+        <Link
+          href="/engines/[clientId]/[engineId]/overview/[tagNr]/[type]"
+          as={`/engines/${clientId}/${engineId}/overview/${engineInfo.tagNr}/${type}`}
+        >
+          <a>
+            <LeftButton variant="primary">Översikt</LeftButton>
+          </a>
+        </Link>
+        {user &&
+        (user.roles[0] === 'ROLE_ADMIN' ||
+          user.roles[0] === 'ROLE_MODERATOR') ? (
+          <>
             <RightButtonDelete
               variant="danger"
               onClick={() => setDeleteModalShow(true)}
@@ -292,14 +306,7 @@ const LowVoltageInfo = ({
             <RightButton
               onClick={() => setModalShow(true)}
             >{`Redigera ${engineInfo.tagNr}`}</RightButton>
-            <Link
-              href="/engines/[clientId]/[engineId]/overview/[tagNr]/[type]"
-              as={`/engines/${clientId}/${engineId}/overview/${engineInfo.tagNr}/${type}`}
-            >
-              <a>
-                <RightButton variant="primary">Översikt</RightButton>
-              </a>
-            </Link>
+
             <EditEngineModal
               show={modalShow}
               onHide={() => setModalShow(false)}
@@ -332,11 +339,11 @@ const LowVoltageInfo = ({
             >
               <p>Är du säker på att du vill ta bort {engineInfo.tagNr}?</p>
             </DeleteModal>
-          </Col>
-        </>
-      ) : (
-        <></>
-      )}
+          </>
+        ) : (
+          <></>
+        )}
+      </Col>
     </>
   );
 };

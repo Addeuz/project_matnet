@@ -46,6 +46,25 @@ export default AlarmList;
 const AlarmListItem = ({ data }) => {
   const date = new Date(data.value.date);
 
+  if (data.extra) {
+    return (
+      <>
+        <CenterTextAlignCol xs={4}>
+          <Link
+            href="/engines/[clientId]/[engineId]/extra/[dataPoint]"
+            as={`/engines/${data.clientId}/${data.engineId}/extra/${data.dataPoint}`}
+          >
+            <AssemblinYellowLink href="">{data.dataPoint}</AssemblinYellowLink>
+          </Link>
+        </CenterTextAlignCol>
+        <CenterTextAlignCol xs={2}>{data.value.value}</CenterTextAlignCol>
+        <CenterTextAlignCol xs={6}>{`${formatYear(date)} ${formatTime(
+          date
+        )}`}</CenterTextAlignCol>
+      </>
+    );
+  }
+
   return (
     <>
       <CenterTextAlignCol xs={4}>

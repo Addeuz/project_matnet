@@ -326,6 +326,61 @@ router.post(
           },
         })
         .then(() => {
+          if (req.body.data.limit === 'red') {
+            console.log('extra alarm');
+            AlarmList.findAll({
+              where: {
+                engineId: engine.id,
+                dataPoint: req.params.dataPoint,
+              },
+            }).then(alarm => {
+              // there is already an alarm
+              if (alarm.length !== 0) {
+                AlarmList.update(
+                  {
+                    value: req.body.data,
+                  },
+                  {
+                    where: {
+                      engineId: engine.id,
+                      dataPoint: req.params.dataPoint,
+                    },
+                  }
+                );
+              } else {
+                // there is no alarm for this datapoint at this point
+                AlarmList.create({
+                  engineId: engine.id,
+                  dataPoint: req.params.dataPoint,
+                  value: req.body.data,
+                  extra: true,
+                }).then(alarm => {
+                  engine.getClient().then(client => {
+                    alarm.setClient(client);
+                  });
+                });
+              }
+            });
+          } else {
+            // data was not in harm, check if there is data in alarm list, if there is delete it
+            AlarmList.findAll({
+              where: {
+                engineId: engine.id,
+                dataPoint: req.params.dataPoint,
+              },
+            }).then(alarm => {
+              if (alarm) {
+                AlarmList.destroy({
+                  where: {
+                    engineId: engine.id,
+                    dataPoint: req.params.dataPoint,
+                  },
+                });
+              }
+            });
+          }
+        })
+        .then(() => {
           res.status(200).send({ message: 'Värde sparat, ladda om sidan!' });
         });
     });
@@ -361,6 +416,7 @@ router.post('/moderator/:engineId/:dataPoint', function(req, res) {
               dataPoint: req.params.dataPoint,
             },
           }).then(alarm => {
+            // there is already an alarm
             if (alarm.length !== 0) {
               AlarmList.update(
                 {
@@ -378,6 +434,7 @@ router.post('/moderator/:engineId/:dataPoint', function(req, res) {
                 engineId: engine.id,
                 dataPoint: req.params.dataPoint,
                 value: req.body.data,
+                extra: false,
               }).then(alarm => {
                 engine.getClient().then(client => {
                   alarm.setClient(client);
