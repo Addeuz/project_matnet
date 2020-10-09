@@ -67,7 +67,7 @@ const NoBlueTextLink = styled.a`
   }
 `;
 
-const GraphOverviewItem = ({ data, header }) => {
+const GraphOverviewItem = ({ data, header, extra }) => {
   const router = useRouter();
 
   const [date, setDate] = React.useState(null);
@@ -76,6 +76,43 @@ const GraphOverviewItem = ({ data, header }) => {
       setDate(new Date(data.date));
     }
   }, [data]);
+
+  if (extra) {
+    if (date) {
+      return (
+        <WrapperDiv>
+          <Link
+            href="/engines/[clientId]/[engineId]/extra/[dataPoint]"
+            as={`/engines/${router.query.clientId}/${router.query.engineId}/extra/${header}`}
+          >
+            <NoBlueTextLink>
+              <DataDiv>{header}</DataDiv>
+              <BarDiv>
+                {data.limit === 'green' && <GreenBar />}
+                {data.limit === 'yellow' && <YellowBar />}
+                {data.limit === 'red' && <RedBar />}
+              </BarDiv>
+              <DataDiv>{data.value}</DataDiv>
+              <DateDiv>
+                <span>{formatYear(date)}</span>
+                <span>{formatTime(date)}</span>
+              </DateDiv>
+            </NoBlueTextLink>
+          </Link>
+        </WrapperDiv>
+      );
+    }
+    return (
+      <Link
+        href="/engines/[clientId]/[engineId]/extra/[dataPoint]"
+        as={`/engines/${router.query.clientId}/${router.query.engineId}/extra/${header}`}
+      >
+        <NoBlueTextLink>
+          <NoDataDiv>Det finns ingen data för {header}</NoDataDiv>
+        </NoBlueTextLink>
+      </Link>
+    );
+  }
 
   if (data && date) {
     return (

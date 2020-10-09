@@ -18,7 +18,6 @@ const Index = () => {
   const [loading, setLoading] = React.useState(true);
   const [alarmData, setAlarmData] = React.useState(null);
   const [loadingAlarmData, setLoadingAlarmData] = React.useState(true);
-  const [error, setError] = React.useState(null);
 
   const { user } = React.useContext(UserContext);
 
@@ -53,7 +52,7 @@ const Index = () => {
         setLoadingAlarmData(false);
       })
       .catch(err => {
-        setError(err);
+        console.log('Error', err);
       });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

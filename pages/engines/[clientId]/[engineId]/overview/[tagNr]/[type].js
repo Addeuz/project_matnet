@@ -9,7 +9,8 @@ import DataOverviewTimeLine from './DataOverviewTimeLine';
 const EngineDataOverview = () => {
   const router = useRouter();
 
-  const [responses, setResponses] = React.useState([]);
+  const [engineData, setEngineData] = React.useState([]);
+  const [extraEngineData, setExtraEngineData] = React.useState([]);
   const [engineValues, setEngineValues] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -23,8 +24,10 @@ const EngineDataOverview = () => {
         options
       )
       .then(serverResponse => {
+        console.log(serverResponse.data);
         setEngineValues(serverResponse.data.engineValues);
-        setResponses(serverResponse.data.engineData.reverse());
+        setEngineData(serverResponse.data.engineData);
+        setExtraEngineData(serverResponse.data.engineExtraData);
       })
       .catch(error => {
         console.log(error.message);
@@ -38,10 +41,15 @@ const EngineDataOverview = () => {
   return (
     <Layout>
       <Sidebar page="/">
-        <h5>Översikt över data för {router.query.tagNr}</h5>
-        {!isLoading && responses.length > 0 ? (
+        <h4>Översikt över data för {router.query.tagNr}</h4>
+        {!isLoading &&
+        engineData &&
+        engineData.length > 0 &&
+        extraEngineData &&
+        extraEngineData.length > 0 ? (
           <DataOverviewTimeLine
-            engineData={responses.reverse()}
+            engineData={engineData}
+            extraEngineData={extraEngineData}
             engineValues={engineValues}
           />
         ) : (

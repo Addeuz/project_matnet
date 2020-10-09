@@ -13,7 +13,15 @@ const SingleDataDiv = styled.div`
   height: inherit;
 `;
 
-const DataOverviewTimeLine = ({ engineData, engineValues }) => {
+const SH5 = styled.h5`
+  margin-top: 1rem;
+`;
+
+const DataOverviewTimeLine = ({
+  engineData,
+  extraEngineData,
+  engineValues,
+}) => {
   const lowerCaseEngineValues = convertKeysToLowerCase(engineValues);
 
   return (
@@ -28,6 +36,19 @@ const DataOverviewTimeLine = ({ engineData, engineValues }) => {
               <GraphOverviewItem data={value} header={header} />
             </SingleDataDiv>
           ) : null;
+        })}
+      </DataDiv>
+      {/** TODO: Add extra inputs here */}
+      <SH5>Data för extra mätpunkter</SH5>
+      <DataDiv>
+        {extraEngineData.map(data => {
+          const header = Object.keys(data)[0];
+          const value = [...Object.values(data)[0]].reverse()[0]; // Get only the first value in the array of added values
+          return (
+            <SingleDataDiv key={header}>
+              <GraphOverviewItem data={value} header={header} extra />
+            </SingleDataDiv>
+          );
         })}
       </DataDiv>
     </div>

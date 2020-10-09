@@ -44,7 +44,9 @@ const RedBar = styled.div`
 `;
 
 const GraphItem = ({ data, limit }) => {
+  console.log(data);
   const date = new Date(data.date);
+  console.log(date);
 
   return (
     <WrapperDiv>

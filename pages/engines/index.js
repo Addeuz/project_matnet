@@ -60,7 +60,7 @@ const EngineIndex = () => {
       });
 
     setLoadingUser(false);
-  }, [user.id]);
+  }, [user]);
 
   return (
     <Layout>

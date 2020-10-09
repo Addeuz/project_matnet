@@ -3,19 +3,9 @@ import { useRouter } from 'next/router';
 import { Col, Form, Row } from 'react-bootstrap';
 import axios from 'axios';
 import * as yup from 'yup';
-import styled from 'styled-components';
-import EditLimitValues from '../../../../../components/Engine/LimitValues/EditLimitValues';
 import Layout from '../../../../../components/Layout';
 import Sidebar from '../../../../../components/Navigation/Sidebar';
-import {
-  SAlert,
-  SButton,
-  SSpinner,
-  STable,
-  TdDanger,
-  TdSuccess,
-  TdWarning,
-} from '../../../../../styles/styled';
+import { SAlert, SButton, SSpinner } from '../../../../../styles/styled';
 import { UserContext } from '../../../../../components/UserContext';
 import DataTimeLine from '../DataTimeline';
 import authHeader from '../../../../../services/auth-header';

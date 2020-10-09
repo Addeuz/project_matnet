@@ -95,8 +95,6 @@ router.post(
   }
 );
 
-// router.post();
-
 router.put(
   '/moderator/engine/:id',
   [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
@@ -232,6 +230,7 @@ router.get('/moderator/:engineId/:type/overview', function(req, res) {
         'kylpaket',
         'kolborstar',
         'varvtalsgivare',
+        'extraInputs',
       ],
     })
       .then(engine => {
@@ -243,14 +242,34 @@ router.get('/moderator/:engineId/:type/overview', function(req, res) {
         ) {
           const attributes = engine._options.attributes[index];
           // TODO: check here if it is attributes we dont want, so that extra fields can get fetched
-          if (attributes !== 'engineValueId') {
+          if (attributes !== 'engineValueId' && attributes !== 'extraInputs') {
             engineData.push({ [attributes]: engine[attributes].values });
           }
         }
+        // console.log('engineData', engineData);
+        // console.log('extraInputs', engine.extraInputs);
+        // console.log(
+        //   'extraInputsLength',
+        //   Object.keys(engine.extraInputs).length
+        // );
+
+        const engineExtraData = [];
+        const extraInputKeys = Object.keys(engine.extraInputs);
+        extraInputKeys.forEach(extraInputKey => {
+          // console.log('extraInputKey', extraInputKey);
+          // console.log(engine.extraInputs[extraInputKey].values);
+          engineExtraData.push({
+            [extraInputKey]: engine.extraInputs[extraInputKey].values,
+          });
+        });
+
+        // console.log('engineExtraData', engineExtraData);
         EngineValues.findByPk(engine.engineValueId).then(engineValue => {
-          res
-            .status(200)
-            .send({ engineData, engineValues: engineValue.engine_values });
+          res.status(200).send({
+            engineData,
+            engineExtraData,
+            engineValues: engineValue.engine_values,
+          });
         });
       })
       .catch(error => {
