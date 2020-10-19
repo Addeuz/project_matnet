@@ -5,6 +5,7 @@
 import { Col, Row, Button } from 'react-bootstrap';
 import styled from 'styled-components';
 import axios from 'axios';
+import Link from 'next/link';
 import { SButton, NoMarginBottomH6 } from '../../../styles/styled';
 import {
   EngineHeadingData,
@@ -15,6 +16,7 @@ import EditEngineModal from '../EditEngineModal';
 import authHeader from '../../../services/auth-header';
 import DeleteModal from '../../DeleteModal';
 import { UserContext } from '../../UserContext';
+import { LeftButton } from '../LowVoltage/LowVoltageInfo';
 
 const RightButton = styled(SButton)`
   float: right;
@@ -98,10 +100,14 @@ const PowerTrainInfo = ({
             <EngineHeadingValueData
               header="Driftservice"
               value={engineValues.driftservice}
+              engineId={engineId}
+              clientId={clientId}
             />
             <EngineHeadingValueData
               header="Stoppservice"
               value={engineValues.stoppservice}
+              engineId={engineId}
+              clientId={clientId}
             />
 
             <NoMarginBottomH6>Extra mätpunkter</NoMarginBottomH6>
@@ -113,6 +119,9 @@ const PowerTrainInfo = ({
                     key={key}
                     header={camelCaseToNormal(key)}
                     value={extraInput[key]}
+                    engineId={engineId}
+                    clientId={clientId}
+                    extra
                   />
                 );
               })
@@ -123,10 +132,19 @@ const PowerTrainInfo = ({
           <Col xs={6}></Col>
         </Row>
       </SCol>
-      {user &&
-      (user.roles[0] === 'ROLE_ADMIN' || user.roles[0] === 'ROLE_MODERATOR') ? (
-        <>
-          <Col xs={12}>
+      <Col xs={12}>
+        <Link
+          href="/engines/[clientId]/[engineId]/overview/[tagNr]/[type]"
+          as={`/engines/${clientId}/${engineId}/overview/${engineInfo.tagNr}/${type}`}
+        >
+          <a>
+            <LeftButton variant="primary">Översikt</LeftButton>
+          </a>
+        </Link>
+        {user &&
+        (user.roles[0] === 'ROLE_ADMIN' ||
+          user.roles[0] === 'ROLE_MODERATOR') ? (
+          <>
             <RightButtonDelete
               variant="danger"
               onClick={() => setDeleteModalShow(true)}
@@ -168,11 +186,11 @@ const PowerTrainInfo = ({
             >
               <p>Är du säker på att du vill ta bort {engineInfo.tagNr}?</p>
             </DeleteModal>
-          </Col>
-        </>
-      ) : (
-        <></>
-      )}
+          </>
+        ) : (
+          <></>
+        )}
+      </Col>
     </>
   );
 };

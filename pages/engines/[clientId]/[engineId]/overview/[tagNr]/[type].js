@@ -1,10 +1,13 @@
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import { Col, Row } from 'react-bootstrap';
+import { useReactToPrint } from 'react-to-print';
 import Layout from '../../../../../../components/Layout';
 import Sidebar from '../../../../../../components/Navigation/Sidebar';
 import authHeader from '../../../../../../services/auth-header';
-import { SSpinner } from '../../../../../../styles/styled';
+import { SButton, SSpinner } from '../../../../../../styles/styled';
 import DataOverviewTimeLine from './DataOverviewTimeLine';
+import OverviewEnginePrint from '../../../../../../components/Engine/OverviewEnginePrint';
 
 const EngineDataOverview = () => {
   const router = useRouter();
@@ -13,6 +16,12 @@ const EngineDataOverview = () => {
   const [extraEngineData, setExtraEngineData] = React.useState([]);
   const [engineValues, setEngineValues] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
+
+  const printComponentRef = React.useRef();
+  const handlePrint = useReactToPrint({
+    content: () => printComponentRef.current,
+    copyStyles: true,
+  });
 
   React.useEffect(() => {
     const options = {
@@ -30,7 +39,7 @@ const EngineDataOverview = () => {
         setExtraEngineData(serverResponse.data.engineExtraData);
       })
       .catch(error => {
-        console.log(error.message);
+        console.log(error.response.data.message);
       })
       .finally(() => {
         setIsLoading(false);
@@ -41,17 +50,35 @@ const EngineDataOverview = () => {
   return (
     <Layout>
       <Sidebar page="/">
-        <h4>Översikt över data för {router.query.tagNr}</h4>
+        <Row>
+          <Col>
+            <h4>Översikt över data för {router.query.tagNr}</h4>
+          </Col>
+          <Col>
+            <SButton type="button" onClick={handlePrint}>
+              Skriv ut översikt
+            </SButton>
+          </Col>
+        </Row>
         {!isLoading &&
         engineData &&
         engineData.length > 0 &&
         extraEngineData &&
-        extraEngineData.length > 0 ? (
-          <DataOverviewTimeLine
-            engineData={engineData}
-            extraEngineData={extraEngineData}
-            engineValues={engineValues}
-          />
+        extraEngineData.length >= 0 ? (
+          <>
+            <DataOverviewTimeLine
+              engineData={engineData}
+              extraEngineData={extraEngineData}
+              engineValues={engineValues}
+            />
+            {/* TODO: from the api get the data about the engine aswell not only tag number. need to show when printing */}
+            <div style={{ display: 'block' }}>
+              <OverviewEnginePrint
+                engineData={engineData}
+                ref={printComponentRef}
+              />
+            </div>
+          </>
         ) : (
           <SSpinner animation="border">
             <span>Loading...</span>

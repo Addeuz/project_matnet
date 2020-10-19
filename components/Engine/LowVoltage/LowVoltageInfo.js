@@ -6,6 +6,7 @@ import { Col, Row, Button } from 'react-bootstrap';
 import styled from 'styled-components';
 import axios from 'axios';
 import Link from 'next/link';
+import { useReactToPrint } from 'react-to-print';
 import { SButton, NoMarginBottomH6 } from '../../../styles/styled';
 
 import {
@@ -17,13 +18,14 @@ import EditEngineModal from '../EditEngineModal';
 import DeleteModal from '../../DeleteModal';
 import authHeader from '../../../services/auth-header';
 import { UserContext } from '../../UserContext';
+import OverviewEnginePrint from '../OverviewEnginePrint';
 
 const RightButton = styled(SButton)`
   float: right;
   margin: 0.5rem 0.5rem 0.5rem 0;
 `;
 
-const LeftButton = styled(SButton)`
+export const LeftButton = styled(SButton)`
   float: left;
   margin: 0.5rem 0.5rem 0.5rem 0;
 `;
@@ -53,6 +55,13 @@ const LowVoltageInfo = ({
 }) => {
   const [modalShow, setModalShow] = React.useState(false);
   const [deleteModalShow, setDeleteModalShow] = React.useState(false);
+
+  const printComponentRef = React.useRef();
+  const handlePrint = useReactToPrint({
+    content: () => printComponentRef.current,
+    copyStyles: true,
+  });
+
   const { user } = React.useContext(UserContext);
 
   return (
@@ -293,6 +302,13 @@ const LowVoltageInfo = ({
             <LeftButton variant="primary">Översikt</LeftButton>
           </a>
         </Link>
+        <OverviewEnginePrint
+          array={['hej', 'då', 'mannen']}
+          ref={printComponentRef}
+        />
+        <button type="button" onClick={handlePrint}>
+          Print this out!
+        </button>
         {user &&
         (user.roles[0] === 'ROLE_ADMIN' ||
           user.roles[0] === 'ROLE_MODERATOR') ? (

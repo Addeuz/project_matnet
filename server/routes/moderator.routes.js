@@ -203,81 +203,134 @@ router.delete(
 router.get('/moderator/:engineId/:type/overview', function(req, res) {
   // TODO: still need type because we want to filter out attributes not concerned by that type
   // might not be needed since we have the edit check in the front end so might take away attribute specific stuff anyway
-  if (req.params.type === 'lågspänd') {
-    Engine.findByPk(req.params.engineId, {
-      attributes: [
-        'engineValueId',
-        'motormon',
-        'baker',
-        'meggningstator',
-        'meggningrotor',
-        'driftström',
-        'lindtemp',
-        'vibration',
-        'smörjning',
-        'okulärintern',
-        'okulärextern',
-        'manteltemp',
-        'släpringsyta',
-        'lagerkondde',
-        'lagerkondnde',
-        'spmde',
-        'spmnde',
-        'lagertempde',
-        'lagertempnde',
-        'lagerisolering',
-        'renhet',
-        'kylpaket',
-        'kolborstar',
-        'varvtalsgivare',
-        'extraInputs',
-      ],
-    })
-      .then(engine => {
-        const engineData = [];
-        for (
-          let index = 0;
-          index < engine._options.attributes.length;
-          index++
-        ) {
-          const attributes = engine._options.attributes[index];
-          // TODO: check here if it is attributes we dont want, so that extra fields can get fetched
-          if (attributes !== 'engineValueId' && attributes !== 'extraInputs') {
+  Engine.findByPk(req.params.engineId)
+    .then(engine => {
+      console.log(engine);
+      const engineData = [];
+      for (let index = 0; index < engine._options.attributes.length; index++) {
+        const attributes = engine._options.attributes[index];
+        // TODO: check here if it is attributes we dont want, so that extra fields can get fetched
+        if (req.params.type === 'lågspänd') {
+          if (
+            attributes === 'motormon' ||
+            attributes === 'baker' ||
+            attributes === 'meggningstator' ||
+            attributes === 'meggningrotor' ||
+            attributes === 'driftström' ||
+            attributes === 'lindtemp' ||
+            attributes === 'vibration' ||
+            attributes === 'smörjning' ||
+            attributes === 'okulärintern' ||
+            attributes === 'okulärextern' ||
+            attributes === 'manteltemp' ||
+            attributes === 'släpringsyta' ||
+            attributes === 'lagerkondde' ||
+            attributes === 'lagerkondnde' ||
+            attributes === 'spmde' ||
+            attributes === 'spmnde' ||
+            attributes === 'lagertempde' ||
+            attributes === 'lagertempnde' ||
+            attributes === 'lagerisolering' ||
+            attributes === 'renhet' ||
+            attributes === 'kylpaket' ||
+            attributes === 'kolborstar' ||
+            attributes === 'varvtalsgivare'
+          ) {
+            engineData.push({ [attributes]: engine[attributes].values });
+          }
+        } else if (req.params.type === 'högspänd') {
+          if (
+            attributes === 'motormon' ||
+            attributes === 'baker' ||
+            attributes === 'meggningstator' ||
+            attributes === 'meggningrotor' ||
+            attributes === 'driftström' ||
+            attributes === 'lindtemp' ||
+            attributes === 'vibration' ||
+            attributes === 'smörjning' ||
+            attributes === 'okulärintern' ||
+            attributes === 'okulärextern' ||
+            attributes === 'manteltemp' ||
+            attributes === 'släpringsyta' ||
+            attributes === 'lagerkondde' ||
+            attributes === 'lagerkondnde' ||
+            attributes === 'spmde' ||
+            attributes === 'spmnde' ||
+            attributes === 'lagertempde' ||
+            attributes === 'lagertempnde' ||
+            attributes === 'lagerisolering' ||
+            attributes === 'renhet' ||
+            attributes === 'kylpaket' ||
+            attributes === 'kolborstar' ||
+            attributes === 'varvtalsgivare' ||
+            attributes === 'tan-delta' ||
+            attributes === 'pol-index'
+          ) {
+            console.log('ayyylmao');
+            engineData.push({ [attributes]: engine[attributes].values });
+          }
+        } else if (req.params.type === 'likström') {
+          if (
+            attributes === 'meggningstator' ||
+            attributes === 'meggningrotor' ||
+            attributes === 'driftström' ||
+            attributes === 'lindtemp' ||
+            attributes === 'vibration' ||
+            attributes === 'smörjning' ||
+            attributes === 'okulärintern' ||
+            attributes === 'okulärextern' ||
+            attributes === 'manteltemp' ||
+            attributes === 'lagerkondde' ||
+            attributes === 'lagerkondnde' ||
+            attributes === 'spmde' ||
+            attributes === 'spmnde' ||
+            attributes === 'lagertempde' ||
+            attributes === 'lagertempnde' ||
+            attributes === 'lagerisolering' ||
+            attributes === 'renhet' ||
+            attributes === 'kylpaket' ||
+            attributes === 'kolborstar' ||
+            attributes === 'varvtalsgivare' ||
+            attributes === 'kommutatoryta' ||
+            attributes === 'kollektortemp'
+          ) {
+            engineData.push({ [attributes]: engine[attributes].values });
+          }
+        } else if (req.params.type === 'drivsystem') {
+          if (attributes === 'driftservice' || attributes === 'stoppservice') {
             engineData.push({ [attributes]: engine[attributes].values });
           }
         }
-        // console.log('engineData', engineData);
-        // console.log('extraInputs', engine.extraInputs);
-        // console.log(
-        //   'extraInputsLength',
-        //   Object.keys(engine.extraInputs).length
-        // );
+      }
+      // console.log('engineData', engineData);
+      // console.log('extraInputs', engine.extraInputs);
+      // console.log(
+      //   'extraInputsLength',
+      //   Object.keys(engine.extraInputs).length
+      // );
 
-        const engineExtraData = [];
-        const extraInputKeys = Object.keys(engine.extraInputs);
-        extraInputKeys.forEach(extraInputKey => {
-          // console.log('extraInputKey', extraInputKey);
-          // console.log(engine.extraInputs[extraInputKey].values);
-          engineExtraData.push({
-            [extraInputKey]: engine.extraInputs[extraInputKey].values,
-          });
+      const engineExtraData = [];
+      const extraInputKeys = Object.keys(engine.extraInputs);
+      extraInputKeys.forEach(extraInputKey => {
+        // console.log('extraInputKey', extraInputKey);
+        // console.log(engine.extraInputs[extraInputKey].values);
+        engineExtraData.push({
+          [extraInputKey]: engine.extraInputs[extraInputKey].values,
         });
-
-        // console.log('engineExtraData', engineExtraData);
-        EngineValues.findByPk(engine.engineValueId).then(engineValue => {
-          res.status(200).send({
-            engineData,
-            engineExtraData,
-            engineValues: engineValue.engine_values,
-          });
-        });
-      })
-      .catch(error => {
-        res.status(500).send({ message: error });
       });
-  } else {
-    res.status(200).send(req.params.type);
-  }
+
+      // console.log('engineExtraData', engineExtraData);
+      EngineValues.findByPk(engine.engineValueId).then(engineValue => {
+        res.status(200).send({
+          engineData,
+          engineExtraData,
+          engineValues: engineValue.engine_values,
+        });
+      });
+    })
+    .catch(error => {
+      res.status(500).send({ message: error });
+    });
 });
 
 router.get('/moderator/:engineId/:dataPoint/extra', function(req, res) {

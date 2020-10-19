@@ -23,6 +23,11 @@ const DataOverviewTimeLine = ({
   engineValues,
 }) => {
   const lowerCaseEngineValues = convertKeysToLowerCase(engineValues);
+  React.useEffect(() => {
+    console.log(engineData);
+    console.log(extraEngineData);
+    console.log(engineValues);
+  }, [engineData, engineValues, extraEngineData]);
 
   return (
     <div>
@@ -38,19 +43,24 @@ const DataOverviewTimeLine = ({
           ) : null;
         })}
       </DataDiv>
-      {/** TODO: Add extra inputs here */}
-      <SH5>Data för extra mätpunkter</SH5>
-      <DataDiv>
-        {extraEngineData.map(data => {
-          const header = Object.keys(data)[0];
-          const value = [...Object.values(data)[0]].reverse()[0]; // Get only the first value in the array of added values
-          return (
-            <SingleDataDiv key={header}>
-              <GraphOverviewItem data={value} header={header} extra />
-            </SingleDataDiv>
-          );
-        })}
-      </DataDiv>
+      {extraEngineData.length === 0 ? (
+        <SH5>Det finns inga extra mätpunkter tillagda</SH5>
+      ) : (
+        <>
+          <SH5>Data för extra mätpunkter</SH5>
+          <DataDiv>
+            {extraEngineData.map(data => {
+              const header = Object.keys(data)[0];
+              const value = [...Object.values(data)[0]].reverse()[0]; // Get only the first value in the array of added values
+              return (
+                <SingleDataDiv key={header}>
+                  <GraphOverviewItem data={value} header={header} extra />
+                </SingleDataDiv>
+              );
+            })}
+          </DataDiv>
+        </>
+      )}
     </div>
   );
 };

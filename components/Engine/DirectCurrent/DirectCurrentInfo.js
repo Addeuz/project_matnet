@@ -5,6 +5,7 @@
 import { Col, Row, Button } from 'react-bootstrap';
 import styled from 'styled-components';
 import axios from 'axios';
+import Link from 'next/link';
 import { SButton, NoMarginBottomH6 } from '../../../styles/styled';
 import {
   EngineHeadingData,
@@ -15,6 +16,7 @@ import EditEngineModal from '../EditEngineModal';
 import { UserContext } from '../../UserContext';
 import DeleteModal from '../../DeleteModal';
 import authHeader from '../../../services/auth-header';
+import { LeftButton } from '../LowVoltage/LowVoltageInfo';
 
 const RightButton = styled(SButton)`
   float: right;
@@ -117,46 +119,68 @@ const DirectCurrentInfo = ({
             <EngineHeadingValueData
               header="Meggning stator"
               value={engineValues.meggningStator}
+              engineId={engineId}
+              clientId={clientId}
             />
             <EngineHeadingValueData
               header="Meggning rotor"
               value={engineValues.meggningRotor}
+              engineId={engineId}
+              clientId={clientId}
             />
             <EngineHeadingValueData
               header="Driftström"
               value={engineValues['driftström']}
+              engineId={engineId}
+              clientId={clientId}
             />
             <EngineHeadingValueData
               header="Lind temp"
               value={engineValues.lindTemp}
+              engineId={engineId}
+              clientId={clientId}
             />
             <EngineHeadingValueData
               header="Vibration"
               value={engineValues.vibration}
+              engineId={engineId}
+              clientId={clientId}
             />
             <EngineHeadingValueData
               header="Smörjning"
               value={engineValues['smörjning']}
+              engineId={engineId}
+              clientId={clientId}
             />
             <EngineHeadingValueData
               header="Okulär intern"
               value={engineValues['okulärIntern']}
+              engineId={engineId}
+              clientId={clientId}
             />
             <EngineHeadingValueData
               header="Okulär extern"
               value={engineValues['okulärExtern']}
+              engineId={engineId}
+              clientId={clientId}
             />
             <EngineHeadingValueData
               header="Mantel temp"
               value={engineValues.mantelTemp}
+              engineId={engineId}
+              clientId={clientId}
             />
             <EngineHeadingValueData
               header="Kommutator yta"
               value={engineValues.kommutatorYta}
+              engineId={engineId}
+              clientId={clientId}
             />
             <EngineHeadingValueData
               header="Kollektor temp"
               value={engineValues.kollektorTemp}
+              engineId={engineId}
+              clientId={clientId}
             />
 
             <NoMarginBottomH6>Extra mätpunkter</NoMarginBottomH6>
@@ -168,6 +192,9 @@ const DirectCurrentInfo = ({
                     key={key}
                     header={camelCaseToNormal(key)}
                     value={extraInput[key]}
+                    engineId={engineId}
+                    clientId={clientId}
+                    extra
                   />
                 );
               })
@@ -179,54 +206,85 @@ const DirectCurrentInfo = ({
             <EngineHeadingValueData
               header="Lager kond DE"
               value={engineValues.lagerKondDe}
+              engineId={engineId}
+              clientId={clientId}
             />
             <EngineHeadingValueData
               header="Lager kond NDE"
               value={engineValues.lagerKondNde}
+              engineId={engineId}
+              clientId={clientId}
             />
             <EngineHeadingValueData
               header="Spm DE"
               value={engineValues.spmDE}
+              engineId={engineId}
+              clientId={clientId}
             />
             <EngineHeadingValueData
               header="Spm NDE"
               value={engineValues.spmNDE}
+              engineId={engineId}
+              clientId={clientId}
             />
             <EngineHeadingValueData
               header="Lager temp DE"
               value={engineValues.lagerTempDe}
+              engineId={engineId}
+              clientId={clientId}
             />
             <EngineHeadingValueData
               header="Lager temp NDE"
               value={engineValues.lagerTempNde}
+              engineId={engineId}
+              clientId={clientId}
             />
             <EngineHeadingValueData
               header="Lager isolering"
               value={engineValues.lagerIsolering}
+              engineId={engineId}
+              clientId={clientId}
             />
             <EngineHeadingValueData
               header="Renhet"
               value={engineValues.renhet}
+              engineId={engineId}
+              clientId={clientId}
             />
             <EngineHeadingValueData
               header="Kylpaket"
               value={engineValues.kylpaket}
+              engineId={engineId}
+              clientId={clientId}
             />
             <EngineHeadingValueData
               header="Kolborstar"
               value={engineValues.kolborstar}
+              engineId={engineId}
+              clientId={clientId}
             />
             <EngineHeadingValueData
               header="Varvtalsgivare"
               value={engineValues.varvtalsgivare}
+              engineId={engineId}
+              clientId={clientId}
             />
           </Col>
         </Row>
       </SCol>
-      {user &&
-      (user.roles[0] === 'ROLE_ADMIN' || user.roles[0] === 'ROLE_MODERATOR') ? (
-        <>
-          <Col xs={12}>
+      <Col xs={12}>
+        <Link
+          href="/engines/[clientId]/[engineId]/overview/[tagNr]/[type]"
+          as={`/engines/${clientId}/${engineId}/overview/${engineInfo.tagNr}/${type}`}
+        >
+          <a>
+            <LeftButton variant="primary">Översikt</LeftButton>
+          </a>
+        </Link>
+        {user &&
+        (user.roles[0] === 'ROLE_ADMIN' ||
+          user.roles[0] === 'ROLE_MODERATOR') ? (
+          <>
             <RightButtonDelete
               variant="danger"
               onClick={() => setDeleteModalShow(true)}
@@ -268,11 +326,11 @@ const DirectCurrentInfo = ({
             >
               <p>Är du säker på att du vill ta bort {engineInfo.tagNr}?</p>
             </DeleteModal>
-          </Col>
-        </>
-      ) : (
-        <></>
-      )}
+          </>
+        ) : (
+          <></>
+        )}
+      </Col>
     </>
   );
 };
