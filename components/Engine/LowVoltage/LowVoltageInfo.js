@@ -19,6 +19,7 @@ import DeleteModal from '../../DeleteModal';
 import authHeader from '../../../services/auth-header';
 import { UserContext } from '../../UserContext';
 import OverviewEnginePrint from '../OverviewEnginePrint';
+import AddNoteModal from '../AddNoteModal';
 
 const RightButton = styled(SButton)`
   float: right;
@@ -54,6 +55,7 @@ const LowVoltageInfo = ({
   engineId,
 }) => {
   const [modalShow, setModalShow] = React.useState(false);
+  const [noteModalShow, setNoteModalShow] = React.useState(false);
   const [deleteModalShow, setDeleteModalShow] = React.useState(false);
 
   const printComponentRef = React.useRef();
@@ -302,13 +304,13 @@ const LowVoltageInfo = ({
             <LeftButton variant="primary">Översikt</LeftButton>
           </a>
         </Link>
-        <OverviewEnginePrint
-          array={['hej', 'då', 'mannen']}
-          ref={printComponentRef}
-        />
-        <button type="button" onClick={handlePrint}>
-          Print this out!
-        </button>
+        {/* <OverviewEnginePrint */}
+        {/*  array={['hej', 'då', 'mannen']} */}
+        {/*  ref={printComponentRef} */}
+        {/* /> */}
+        {/* <button type="button" onClick={handlePrint}> */}
+        {/*  Print this out! */}
+        {/* </button> */}
         {user &&
         (user.roles[0] === 'ROLE_ADMIN' ||
           user.roles[0] === 'ROLE_MODERATOR') ? (
@@ -322,7 +324,17 @@ const LowVoltageInfo = ({
             <RightButton
               onClick={() => setModalShow(true)}
             >{`Redigera ${engineInfo.tagNr}`}</RightButton>
-
+            <RightButton onClick={() => setNoteModalShow(true)}>
+              Lägg till not
+            </RightButton>
+            <AddNoteModal
+              show={noteModalShow}
+              onHide={() => setNoteModalShow(false)}
+              engine={{
+                id: engineId,
+                tagNr: engineInfo.tagNr,
+              }}
+            />
             <EditEngineModal
               show={modalShow}
               onHide={() => setModalShow(false)}

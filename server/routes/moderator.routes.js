@@ -454,6 +454,56 @@ router.get('/moderator/:engineId/:dataPoint/:userId', function(req, res) {
   });
 });
 
+router.post(
+  '/moderator/:engineId/notes',
+  [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
+  function(req, res) {
+    const { engineId } = req.params;
+    const { note, date } = req.body;
+
+    Engine.findByPk(engineId).then(engine => {
+      engine
+        .createNote({
+          note,
+          date,
+        })
+        .then(() => {
+          res.status(200).send({ message: 'Not sparad!' });
+        })
+        .catch(err => {
+          res.status(500).send({ message: err.response });
+        });
+    });
+  }
+);
+
+router.get('/moderator/:userId/notes', async function(req, res) {
+  const { userId } = req.params;
+  const engineNotes = [];
+
+  const user = await User.findByPk(userId);
+  const clients = await user.getClients();
+
+  const engines = [];
+  for (const client of clients) {
+    const clientEngines = await client.getEngines();
+
+    engines.push(...clientEngines);
+  }
+
+  const notes = [];
+  for (const engine of engines) {
+    const engineNotes = await engine.getNotes();
+
+    notes.push(...engineNotes);
+  }
+
+  // sort them so that the newest note comes on top
+  notes.sort((a, b) => (a.date > b.date ? -1 : a.date < b.date ? 1 : 0));
+
+  res.status(200).send(notes);
+});
+
 router.post('/moderator/:engineId/:dataPoint', function(req, res) {
   Engine.findByPk(req.params.engineId).then(engine => {
     const oldValues = engine[req.params.dataPoint].values;

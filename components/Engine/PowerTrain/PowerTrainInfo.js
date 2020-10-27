@@ -17,6 +17,7 @@ import authHeader from '../../../services/auth-header';
 import DeleteModal from '../../DeleteModal';
 import { UserContext } from '../../UserContext';
 import { LeftButton } from '../LowVoltage/LowVoltageInfo';
+import AddNoteModal from '../AddNoteModal';
 
 const RightButton = styled(SButton)`
   float: right;
@@ -47,6 +48,7 @@ const PowerTrainInfo = ({
   engineId,
 }) => {
   const [modalShow, setModalShow] = React.useState(false);
+  const [noteModalShow, setNoteModalShow] = React.useState(false);
   const [deleteModalShow, setDeleteModalShow] = React.useState(false);
   const { user } = React.useContext(UserContext);
 
@@ -154,6 +156,17 @@ const PowerTrainInfo = ({
             <RightButton
               onClick={() => setModalShow(true)}
             >{`Redigera ${engineInfo.tagNr}`}</RightButton>
+            <RightButton onClick={() => setNoteModalShow(true)}>
+              Lägg till not
+            </RightButton>
+            <AddNoteModal
+              show={noteModalShow}
+              onHide={() => setNoteModalShow(false)}
+              engine={{
+                id: engineId,
+                tagNr: engineInfo.tagNr,
+              }}
+            />
             <EditEngineModal
               show={modalShow}
               onHide={() => setModalShow(false)}

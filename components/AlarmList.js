@@ -7,9 +7,14 @@ import {
   formatYear,
 } from '../pages/engines/[clientId]/[engineId]/GraphItem';
 
-const InfoText = styled.aside`
+export const InfoText = styled.aside`
   font-size: 0.7rem;
   line-height: 0.8rem;
+`;
+
+const ScrollRow = styled(Row)`
+  height: 50vh;
+  overflow: auto;
 `;
 
 const AssemblinYellowLink = styled.a`
@@ -34,10 +39,12 @@ const AlarmList = ({ data }) => (
       <CenterTextAlignCol xs={4}>Mätpunkt</CenterTextAlignCol>
       <CenterTextAlignCol xs={2}>Värde</CenterTextAlignCol>
       <CenterTextAlignCol xs={6}>Datum</CenterTextAlignCol>
+    </Row>
+    <ScrollRow>
       {data.map(singleData => (
         <AlarmListItem key={singleData.value.date} data={singleData} />
       ))}
-    </Row>
+    </ScrollRow>
   </>
 );
 

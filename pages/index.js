@@ -12,12 +12,16 @@ import authService from '../services/auth.service';
 import AlarmList from '../components/AlarmList';
 import { SSpinner } from '../styles/styled';
 import { adress } from '../utils/hooks/useFetch';
+import NotesList from '../components/NotesList';
 
 const Index = () => {
   const router = useRouter();
   const [loading, setLoading] = React.useState(true);
   const [alarmData, setAlarmData] = React.useState(null);
   const [loadingAlarmData, setLoadingAlarmData] = React.useState(true);
+
+  const [notesData, setNotesData] = React.useState(null);
+  const [loadingNotesData, setLoadingNotesData] = React.useState(true);
 
   const { user } = React.useContext(UserContext);
 
@@ -44,6 +48,18 @@ const Index = () => {
       }
     );
 
+    axios(`${adress}/api/moderator/${user.id}/notes`)
+      .then(response => {
+        console.log(response.data);
+        setNotesData(response.data);
+      })
+      .finally(() => {
+        setLoadingNotesData(false);
+      })
+      .catch(err => {
+        console.log('Error', err);
+      });
+
     axios(`${adress}/api/moderator/${user.id}/alarmList`)
       .then(response => {
         setAlarmData(response.data);
@@ -67,7 +83,17 @@ const Index = () => {
       </Head>
       <Sidebar page={router.pathname}>
         <Row>
-          <Col md={6}>{user && <h3>Välkommen, {user.firstname}</h3>}</Col>
+          <Col xs={12}>{user && <h3>Välkommen, {user.firstname}</h3>}</Col>
+          <Col md={6}>
+            <h4>Noteringar på motorer</h4>
+            {loadingNotesData ? (
+              <SSpinner animation="border">
+                <span>Loading...</span>
+              </SSpinner>
+            ) : (
+              <NotesList data={notesData} />
+            )}
+          </Col>
           <Col md={6}>
             <h4>Larmlista</h4>
             {loadingAlarmData ? (
