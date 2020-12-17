@@ -33,9 +33,9 @@ const EngineDataOverview = () => {
         options
       )
       .then(serverResponse => {
-        console.log(serverResponse.data);
         setEngineValues(serverResponse.data.engineValues);
         setEngineData(serverResponse.data.engineData);
+        console.log('engineData', engineData);
         setExtraEngineData(serverResponse.data.engineExtraData);
       })
       .catch(error => {
@@ -75,6 +75,7 @@ const EngineDataOverview = () => {
             <div style={{ display: 'block' }}>
               <OverviewEnginePrint
                 engineData={engineData}
+                extraEngineData={extraEngineData}
                 ref={printComponentRef}
               />
             </div>

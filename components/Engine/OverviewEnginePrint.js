@@ -15,8 +15,13 @@ const SP = styled.p`
 class OverviewEnginePrint extends Component {
   constructor(props) {
     super(props);
-    this.state = { data: this.props.engineData };
-    console.log(this.state.data);
+    console.log(this.props.engineData);
+    this.state = { data: [...this.props.engineData] };
+    console.log('hello', this.state.data);
+  }
+
+  componentDidMount() {
+    console.log('MOUNTED');
   }
 
   render() {
@@ -34,9 +39,10 @@ class OverviewEnginePrint extends Component {
             />
           </Col>
         </Row>
-        {/* {this.state.data.map(data => ( */}
-        {/*  <SP>{data}</SP> */}
-        {/* ))} */}
+        {this.state.data.map(data => {
+          console.log(data);
+          return <SP>Hello</SP>;
+        })}
       </PrintContainer>
     );
   }
