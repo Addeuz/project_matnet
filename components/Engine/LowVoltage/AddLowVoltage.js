@@ -288,7 +288,6 @@ const AddLowVoltage = ({ engineType }) => {
         handleChange,
       }) => (
         <>
-          {process.env.test}
           <Form onSubmit={handleSubmit}>
             <Row>
               <Col md={6}>

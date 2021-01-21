@@ -324,6 +324,7 @@ router.get('/moderator/:engineId/:type/overview', function(req, res) {
         res.status(200).send({
           engineData,
           engineExtraData,
+          engineInfo: engine.engineInfo,
           engineValues: engineValue.engine_values,
         });
       });
@@ -499,6 +500,7 @@ router.get('/moderator/:userId/notes', async function(req, res) {
   }
 
   // sort them so that the newest note comes on top
+  // eslint-disable-next-line no-nested-ternary
   notes.sort((a, b) => (a.date > b.date ? -1 : a.date < b.date ? 1 : 0));
 
   res.status(200).send(notes);

@@ -23,11 +23,11 @@ const DataOverviewTimeLine = ({
   engineValues,
 }) => {
   const lowerCaseEngineValues = convertKeysToLowerCase(engineValues);
-  React.useEffect(() => {
-    console.log(engineData);
-    console.log(extraEngineData);
-    console.log(engineValues);
-  }, [engineData, engineValues, extraEngineData]);
+  // React.useEffect(() => {
+  //   console.log(engineData);
+  //   // console.log(extraEngineData);
+  //   // console.log(engineValues);
+  // }, [engineData, engineValues, extraEngineData]);
 
   return (
     <div>

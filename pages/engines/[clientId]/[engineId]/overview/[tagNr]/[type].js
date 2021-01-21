@@ -7,7 +7,7 @@ import Sidebar from '../../../../../../components/Navigation/Sidebar';
 import authHeader from '../../../../../../services/auth-header';
 import { SButton, SSpinner } from '../../../../../../styles/styled';
 import DataOverviewTimeLine from './DataOverviewTimeLine';
-import OverviewEnginePrint from '../../../../../../components/Engine/OverviewEnginePrint';
+import OverviewEnginePrint from '../../../../../../components/Engine/EnginePrint/OverviewEnginePrint';
 
 const EngineDataOverview = () => {
   const router = useRouter();
@@ -15,6 +15,7 @@ const EngineDataOverview = () => {
   const [engineData, setEngineData] = React.useState([]);
   const [extraEngineData, setExtraEngineData] = React.useState([]);
   const [engineValues, setEngineValues] = React.useState(null);
+  const [engineInfo, setEngineInfo] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
   const printComponentRef = React.useRef();
@@ -35,8 +36,9 @@ const EngineDataOverview = () => {
       .then(serverResponse => {
         setEngineValues(serverResponse.data.engineValues);
         setEngineData(serverResponse.data.engineData);
-        console.log('engineData', engineData);
         setExtraEngineData(serverResponse.data.engineExtraData);
+        console.log(serverResponse.data.engineInfo);
+        setEngineInfo(serverResponse.data.engineInfo);
       })
       .catch(error => {
         console.log(error.response.data.message);
@@ -72,10 +74,11 @@ const EngineDataOverview = () => {
               engineValues={engineValues}
             />
             {/* TODO: from the api get the data about the engine aswell not only tag number. need to show when printing */}
-            <div style={{ display: 'block' }}>
+            <div style={{ display: 'none' }}>
               <OverviewEnginePrint
                 engineData={engineData}
                 extraEngineData={extraEngineData}
+                engineInfo={engineInfo}
                 ref={printComponentRef}
               />
             </div>

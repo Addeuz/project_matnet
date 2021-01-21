@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import GraphItem from './GraphItem';
 
 const Sh4 = styled.h4`
-  margin-top: 1.5rem;
+  margin-top: 1rem;
 `;
 
 const DataDiv = styled.div`

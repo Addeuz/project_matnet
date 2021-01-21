@@ -66,7 +66,7 @@ const GraphItem = ({ data, limit }) => {
 
 export function formatYear(date) {
   const year = date.getFullYear();
-  let month = date.getMonth();
+  let month = date.getMonth() + 1;
   let day = date.getDate();
 
   if (month < 10) {

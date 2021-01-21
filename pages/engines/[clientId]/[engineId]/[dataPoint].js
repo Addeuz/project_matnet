@@ -4,6 +4,7 @@ import { Col, Form, Row } from 'react-bootstrap';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import axios from 'axios';
+import { useReactToPrint } from 'react-to-print';
 import EditLimitValues from '../../../../components/Engine/LimitValues/EditLimitValues';
 import Layout from '../../../../components/Layout';
 import Sidebar from '../../../../components/Navigation/Sidebar';
@@ -20,6 +21,7 @@ import {
   TdWarning,
 } from '../../../../styles/styled';
 import { UserContext } from '../../../../components/UserContext';
+import SingleMeasurePointPrint from '../../../../components/Engine/EnginePrint/SingleMeasurePointPrint';
 
 const schema = yup.object({
   value: yup
@@ -51,6 +53,12 @@ const AddDataToEngine = () => {
   const [response, setResponse] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
+  const printComponentRef = React.useRef();
+  const handlePrint = useReactToPrint({
+    content: () => printComponentRef.current,
+    copyStyles: true,
+  });
+
   React.useEffect(() => {
     const options = {
       headers: authHeader(),
@@ -81,6 +89,7 @@ const AddDataToEngine = () => {
       setLimitDefault(response.engine.limit_value[dataPoint].default);
       setDataValues(response.engine[dataPoint].values);
       setCanEdit(response.canEdit);
+      console.log(dataValues);
     }
   }, [router.query, dataPoint, limitValues, dataValues, isLoading, response]);
 
@@ -244,8 +253,30 @@ const AddDataToEngine = () => {
               </Formik>
             </>
           )}
+        {}
         {dataValues ? (
-          <DataTimeLine engineData={dataValues.reverse()} header={dataPoint} />
+          <>
+            {dataValues.length !== 0 ? (
+              <>
+                <SButton type="button" onClick={handlePrint} className="mt-3">
+                  Skriv ut data
+                </SButton>
+                <div style={{ display: 'none' }}>
+                  <SingleMeasurePointPrint
+                    ref={printComponentRef}
+                    dataValues={dataValues}
+                    dataPoint={dataPoint}
+                    tagNr={tagNr}
+                  />
+                </div>
+              </>
+            ) : null}
+
+            <DataTimeLine
+              engineData={dataValues.reverse()}
+              header={dataPoint}
+            />
+          </>
         ) : (
           <SSpinner animation="border">
             <span>Loading...</span>

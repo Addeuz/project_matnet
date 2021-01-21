@@ -18,7 +18,6 @@ import EditEngineModal from '../EditEngineModal';
 import DeleteModal from '../../DeleteModal';
 import authHeader from '../../../services/auth-header';
 import { UserContext } from '../../UserContext';
-import OverviewEnginePrint from '../OverviewEnginePrint';
 import AddNoteModal from '../AddNoteModal';
 
 const RightButton = styled(SButton)`
@@ -304,13 +303,6 @@ const LowVoltageInfo = ({
             <LeftButton variant="primary">Översikt</LeftButton>
           </a>
         </Link>
-        {/* <OverviewEnginePrint */}
-        {/*  array={['hej', 'då', 'mannen']} */}
-        {/*  ref={printComponentRef} */}
-        {/* /> */}
-        {/* <button type="button" onClick={handlePrint}> */}
-        {/*  Print this out! */}
-        {/* </button> */}
         {user &&
         (user.roles[0] === 'ROLE_ADMIN' ||
           user.roles[0] === 'ROLE_MODERATOR') ? (
