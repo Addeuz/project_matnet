@@ -5,7 +5,10 @@ import Navigation from './Navigation/Nav';
 export const siteTitle = 'Mätnet';
 
 const SDiv = styled.div`
-  padding: 0;
+  padding: 0 10rem;
+  @media only screen and (max-width: 768px) {
+    padding: 0;
+  }
 `;
 
 // Component used to alter the head of the html document.
@@ -52,7 +55,7 @@ export default function Layout({ children }) {
         <meta name="og:title" content={siteTitle} />
       </Head>
       <Navigation />
-      <SDiv className="container">{children}</SDiv>
+      <SDiv className="container-fluid">{children}</SDiv>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { InputGroup, FormControl, Button } from 'react-bootstrap';
 import { BsSearch } from 'react-icons/bs';
 import Link from 'next/link';
+import Head from 'next/head';
 import {
   SRow,
   SCol,
@@ -32,6 +33,9 @@ const Clients = () => {
   return (
     <AdminDispatch>
       <Layout>
+        <Head>
+          <title>Kunder</title>
+        </Head>
         <Sidebar page={page}>
           <SRow>
             <SCol xs={7} lg={5}>

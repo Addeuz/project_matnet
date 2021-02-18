@@ -2,27 +2,17 @@
 // props:
 //    engineInfo: information about the engine
 
-import { Col, Row, Button } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
+
 import styled from 'styled-components';
-import axios from 'axios';
-import Link from 'next/link';
-import { SButton, NoMarginBottomH6 } from '../../../styles/styled';
+import { NoMarginBottomH6 } from '../../../styles/styled';
 import {
   EngineHeadingData,
   EngineHeadingValueData,
 } from '../../Admin/Utils/EngineHeadingData';
 import { camelCaseToNormal, camelize } from '../../../utils/stringManipulation';
-import EditEngineModal from '../EditEngineModal';
-import DeleteModal from '../../DeleteModal';
-import { UserContext } from '../../UserContext';
-import authHeader from '../../../services/auth-header';
-import { LeftButton } from '../LowVoltage/LowVoltageInfo';
-import AddNoteModal from '../AddNoteModal';
 
-const RightButton = styled(SButton)`
-  float: right;
-  margin: 0.5rem 0.5rem 0.5rem 0;
-`;
+import EngineInfoButtonMenu from '../EngineInfoButtonMenu';
 
 const SCol = styled(Col)`
   padding-left: 0;
@@ -31,27 +21,14 @@ const SCol = styled(Col)`
   }
 `;
 
-const RightButtonDelete = styled(Button)`
-  float: right;
-  margin: 0.5rem 0.5rem 0.5rem 0;
-
-  /* @media only screen and (max-width: 768px) {
-    float: initial;
-  } */
-`;
-
 const HighVoltageInfo = ({
   engineInfo,
   engineValues,
   type,
+  engineFiles,
   clientId,
   engineId,
 }) => {
-  const [modalShow, setModalShow] = React.useState(false);
-  const [noteModalShow, setNoteModalShow] = React.useState(false);
-  const [deleteModalShow, setDeleteModalShow] = React.useState(false);
-  const { user } = React.useContext(UserContext);
-
   React.useEffect(() => {
     console.log(camelize('Tan-delta'));
   }, []);
@@ -297,76 +274,14 @@ const HighVoltageInfo = ({
           </Col>
         </Row>
       </SCol>
-      <Col xs={12}>
-        <Link
-          href="/engines/[clientId]/[engineId]/overview/[tagNr]/[type]"
-          as={`/engines/${clientId}/${engineId}/overview/${engineInfo.tagNr}/${type}`}
-        >
-          <a>
-            <LeftButton variant="primary">Översikt</LeftButton>
-          </a>
-        </Link>
-        {user &&
-        (user.roles[0] === 'ROLE_ADMIN' ||
-          user.roles[0] === 'ROLE_MODERATOR') ? (
-          <>
-            <RightButtonDelete
-              variant="danger"
-              onClick={() => setDeleteModalShow(true)}
-            >
-              Ta bort
-            </RightButtonDelete>
-            <RightButton
-              onClick={() => setModalShow(true)}
-            >{`Redigera ${engineInfo.tagNr}`}</RightButton>
-            <RightButton onClick={() => setNoteModalShow(true)}>
-              Lägg till not
-            </RightButton>
-            <AddNoteModal
-              show={noteModalShow}
-              onHide={() => setNoteModalShow(false)}
-              engine={{
-                id: engineId,
-                tagNr: engineInfo.tagNr,
-              }}
-            />
-            <EditEngineModal
-              show={modalShow}
-              onHide={() => setModalShow(false)}
-              engine={{
-                clientId,
-                engineId,
-                engineInfo: { ...engineInfo },
-                engineValues: { ...engineValues },
-              }}
-              type={type}
-            />
-            <DeleteModal
-              show={deleteModalShow}
-              onHide={() => setDeleteModalShow(false)}
-              onDelete={() => {
-                const options = {
-                  headers: authHeader(),
-                };
-
-                axios
-                  .delete(
-                    `http://localhost:3000/api/moderator/engine/${engineId}`,
-                    options
-                  )
-                  .then(() => {
-                    window.location.reload();
-                  });
-              }}
-              title={engineInfo.tagNr}
-            >
-              <p>Är du säker på att du vill ta bort {engineInfo.tagNr}?</p>
-            </DeleteModal>
-          </>
-        ) : (
-          <></>
-        )}
-      </Col>
+      <EngineInfoButtonMenu
+        clientId={clientId}
+        engineFiles={engineFiles}
+        engineId={engineId}
+        engineInfo={engineInfo}
+        type={type}
+        engineValues={engineValues}
+      />
     </>
   );
 };

@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { Col, Form, Row } from 'react-bootstrap';
 import axios from 'axios';
 import * as yup from 'yup';
+import Head from 'next/head';
 import Layout from '../../../../../components/Layout';
 import Sidebar from '../../../../../components/Navigation/Sidebar';
 import { SAlert, SButton, SSpinner } from '../../../../../styles/styled';
@@ -60,6 +61,9 @@ const ExtraAddDataToEngine = () => {
 
   return (
     <Layout>
+      <Head>
+        <title>{dataPoint || ''}</title>
+      </Head>
       <Sidebar page="/">
         {user &&
           (user.roles[0] === 'ROLE_ADMIN' ||

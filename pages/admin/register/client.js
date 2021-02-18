@@ -5,6 +5,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import * as yup from 'yup';
 import axios from 'axios';
+import Head from 'next/head';
 import Sidebar from '../../../components/Navigation/Sidebar';
 import Layout from '../../../components/Layout';
 import { SButton, SAlert } from '../../../styles/styled';
@@ -40,6 +41,9 @@ const RegisterClient = () => {
   return (
     <AdminDispatch>
       <Layout>
+        <Head>
+          <title>Registrera ny kund</title>
+        </Head>
         <Sidebar page={page}>
           <h3>Registrera ny kund</h3>
           <Formik

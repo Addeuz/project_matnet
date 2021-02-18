@@ -10,12 +10,19 @@ const EngineData = ({ engine }) => {
 
   React.useEffect(() => {
     setEngineValues(engine.engine_value.engine_values);
+    console.log(
+      `Files for ${engine.engineInfo.tagNr}:`,
+      engine.files,
+      'Length of files:',
+      engine.files.length
+    );
   }, [engine]);
 
   return (
     <SRow>
       <EngineDataInfo
         engineInfo={engine.engineInfo}
+        engineFiles={engine.files}
         engineValues={engineValues}
         clientId={engine.clientId}
         engineId={engine.id}

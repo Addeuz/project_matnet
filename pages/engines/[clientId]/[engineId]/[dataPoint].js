@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import * as yup from 'yup';
 import axios from 'axios';
 import { useReactToPrint } from 'react-to-print';
+import Head from 'next/head';
 import EditLimitValues from '../../../../components/Engine/LimitValues/EditLimitValues';
 import Layout from '../../../../components/Layout';
 import Sidebar from '../../../../components/Navigation/Sidebar';
@@ -44,6 +45,7 @@ const AddDataToEngine = () => {
 
   const [dataValues, setDataValues] = React.useState(null);
   const [tagNr, setTagNr] = React.useState(null);
+  const [engineInfo, setEngineInfo] = React.useState(null);
   const [message, setMessage] = React.useState('');
   const [canEdit, setCanEdit] = React.useState(false);
 
@@ -88,6 +90,7 @@ const AddDataToEngine = () => {
       setLimitValues(response.engine.limit_value[dataPoint].limit);
       setLimitDefault(response.engine.limit_value[dataPoint].default);
       setDataValues(response.engine[dataPoint].values);
+      setEngineInfo(response.engine.engineInfo);
       setCanEdit(response.canEdit);
       console.log(dataValues);
     }
@@ -95,6 +98,9 @@ const AddDataToEngine = () => {
 
   return (
     <Layout>
+      <Head>
+        <title>{dataPoint || ''}</title>
+      </Head>
       <Sidebar page="/">
         {user &&
           (canEdit ||
@@ -267,6 +273,7 @@ const AddDataToEngine = () => {
                     dataValues={dataValues}
                     dataPoint={dataPoint}
                     tagNr={tagNr}
+                    engineInfo={engineInfo}
                   />
                 </div>
               </>

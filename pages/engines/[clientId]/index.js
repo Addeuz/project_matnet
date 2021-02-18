@@ -1,8 +1,17 @@
 import styled from 'styled-components';
 import axios from 'axios';
-import { InputGroup, FormControl, Button } from 'react-bootstrap';
+import {
+  InputGroup,
+  FormControl,
+  Button,
+  Card,
+  Row,
+  Col,
+  AccordionToggle,
+} from 'react-bootstrap';
 import { BsSearch } from 'react-icons/bs';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import {
   SCol,
   SAccordion,
@@ -20,6 +29,15 @@ import { UserContext } from '../../../components/UserContext';
 
 const RightButton = styled(SButton)`
   float: right;
+`;
+
+const Header = styled(AccordionToggle)`
+  background: var(--green_10);
+  font-weight: 500;
+  cursor: default !important;
+  /* :hover {
+    cursor: default;
+  } */
 `;
 
 const ClientHeader = styled.h5`
@@ -61,6 +79,9 @@ const EngineAccordion = () => {
 
   return (
     <Layout>
+      <Head>
+        <title>{client?.clientName || ''}</title>
+      </Head>
       <Sidebar page="/">
         <SRow>
           <SCol xs={5} lg={3}>
@@ -117,11 +138,26 @@ const EngineAccordion = () => {
               {!isError && response.length === 0 && !loadingData && client && (
                 <span>Inga motorer tillägda hos {client.clientName}</span>
               )}
-              {!isError &&
-                response &&
-                response.map(engine => (
-                  <EngineCard engine={engine} filter={filter} key={engine.id} />
-                ))}
+              {!isError && response && !loadingData && response?.length !== 0 && (
+                <Card>
+                  <Header as={Card.Header} className="">
+                    <Row className="text-center">
+                      <Col>Tag NR</Col>
+                      <Col>Position</Col>
+                      <Col>Fabrikat</Col>
+                    </Row>
+                  </Header>
+                  {!isError &&
+                    response &&
+                    response.map(engine => (
+                      <EngineCard
+                        engine={engine}
+                        filter={filter}
+                        key={engine.id}
+                      />
+                    ))}
+                </Card>
+              )}
             </SAccordion>
           </SCol>
         </SRow>

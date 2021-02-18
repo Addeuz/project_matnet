@@ -1,6 +1,6 @@
 import { Button, Col, Row } from 'react-bootstrap';
 import styled from 'styled-components';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { InfoText } from './AlarmList';
 import { formatYear } from '../pages/engines/[clientId]/[engineId]/GraphItem';
 import NoteModal from './NoteModal';
@@ -44,9 +44,8 @@ const NotesList = ({ data }) => {
       </Row>
       <ScrollRow>
         {data.map(singleData => (
-          <>
+          <React.Fragment key={singleData.date}>
             <NotesListItem
-              key={singleData.date}
               data={singleData}
               setShow={() => {
                 setModalShow(singleData.date);
@@ -57,7 +56,7 @@ const NotesList = ({ data }) => {
               onHide={() => setModalShow(null)}
               data={singleData}
             />
-          </>
+          </React.Fragment>
         ))}
       </ScrollRow>
     </>
@@ -81,7 +80,7 @@ const NotesListItem = ({ data, setShow }) => {
           {data.note}
         </NoteButton>
       </NoteCol>
-      <Col xs={4}>{`${formatYear(date)}`}</Col>
+      <Col className="text-center" xs={4}>{`${formatYear(date)}`}</Col>
     </>
   );
 };

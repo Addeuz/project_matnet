@@ -128,7 +128,7 @@ export const AddButtonCol = styled(SCol)`
 `;
 
 export const SAccordion = styled(Accordion)`
-  height: 74vh;
+  height: 78vh;
   overflow: auto;
   margin-top: 0.5rem;
 

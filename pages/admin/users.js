@@ -3,6 +3,7 @@ import { BsSearch } from 'react-icons/bs';
 import { InputGroup, FormControl, Button } from 'react-bootstrap';
 
 import Link from 'next/link';
+import Head from 'next/head';
 import Layout from '../../components/Layout';
 // import adminService from '../../services/admin.service';
 import Sidebar from '../../components/Navigation/Sidebar';
@@ -33,6 +34,9 @@ const HandleUsers = () => {
   return (
     <AdminDispatch>
       <Layout>
+        <Head>
+          <title>Användare</title>
+        </Head>
         <Sidebar page={page}>
           <SRow>
             <SCol xs={7} lg={5}>

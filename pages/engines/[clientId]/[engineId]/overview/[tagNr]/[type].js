@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { Col, Row } from 'react-bootstrap';
 import { useReactToPrint } from 'react-to-print';
+import Head from 'next/head';
 import Layout from '../../../../../../components/Layout';
 import Sidebar from '../../../../../../components/Navigation/Sidebar';
 import authHeader from '../../../../../../services/auth-header';
@@ -51,6 +52,9 @@ const EngineDataOverview = () => {
 
   return (
     <Layout>
+      <Head>
+        <title>{`Översikt - ${router.query.tagNr}`}</title>
+      </Head>
       <Sidebar page="/">
         <Row>
           <Col>

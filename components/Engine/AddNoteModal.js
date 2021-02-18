@@ -12,6 +12,7 @@ import EditPowerTrain from './PowerTrain/EditPowerTrain';
 import authHeader from '../../services/auth-header';
 import { SAlert, SButton } from '../../styles/styled';
 import { InfoText } from '../AlarmList';
+import { UserContext } from '../UserContext';
 
 const schema = yup.object({
   note: yup.string().required('Noten får ej lämnas tom'),
@@ -21,9 +22,7 @@ const AddNoteModal = ({ show, onHide, engine }) => {
   const [message, setMessage] = React.useState('');
   const [error, setError] = React.useState('');
 
-  React.useEffect(() => {
-    // console.log(type);
-  }, []);
+  const { user } = React.useContext(UserContext);
 
   return (
     <Modal
@@ -54,7 +53,7 @@ const AddNoteModal = ({ show, onHide, engine }) => {
 
             axios
               .post(
-                `http://localhost:3000/api/moderator/${engine.id}/notes`,
+                `http://localhost:3000/api/moderator/${engine.id}/${user.id}/notes`,
                 {
                   note: values.note,
                   date,

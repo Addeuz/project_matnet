@@ -67,7 +67,7 @@ export default function Navigation() {
 
   return (
     <SNavbar collapseOnSelect variant="light">
-      <div className="container">
+      <div className="container-fluid">
         <Link href="/" passHref>
           <Navbar.Brand>
             <SNavbarLogo

@@ -53,6 +53,7 @@ const UserData = ({ user, roles, clients }) => {
           <HeadingData header="Förnamn">{user.firstname}</HeadingData>
           <HeadingData header="Efternamn">{user.lastname}</HeadingData>
           <HeadingData header="Email">{user.email}</HeadingData>
+          <HeadingData header="Telefonnummer">{user.phonenumber}</HeadingData>
         </Col>
         <Col xs={12} md={4}>
           {user.roles[0] ? (

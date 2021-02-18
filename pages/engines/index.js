@@ -4,6 +4,7 @@ import { BsSearch } from 'react-icons/bs';
 import axios from 'axios';
 import styled from 'styled-components';
 import Link from 'next/link';
+import Head from 'next/head';
 import Layout from '../../components/Layout';
 import { UserContext } from '../../components/UserContext';
 import Sidebar from '../../components/Navigation/Sidebar';
@@ -64,6 +65,9 @@ const EngineIndex = () => {
 
   return (
     <Layout>
+      <Head>
+        <title>Välj kund</title>
+      </Head>
       <Sidebar page="/">
         <SRow>
           <SCol xs={5} lg={3}>

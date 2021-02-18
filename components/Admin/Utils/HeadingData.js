@@ -10,6 +10,10 @@ const SDiv = styled.div`
   margin-bottom: 0.5rem;
 `;
 
+const WordBreakSpan = styled.span`
+  overflow-wrap: break-word;
+`;
+
 // Component used to in ...Data.js components to show of the data
 // props:
 //    header - the header of the data
@@ -17,7 +21,7 @@ const SDiv = styled.div`
 const HeadingData = ({ header, children }) => (
   <SDiv>
     <NoMarginH6>{header}</NoMarginH6>
-    {children}
+    <WordBreakSpan>{children}</WordBreakSpan>
   </SDiv>
 );
 

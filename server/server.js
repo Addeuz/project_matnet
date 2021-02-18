@@ -31,9 +31,9 @@ nextApp
     // server settings
     server.use(cors(corsOptions));
     // tells the server that we parse content-type: application/json
-    server.use(bodyParser.json());
+    server.use(bodyParser.json({ limit: '3mb' }));
     // tells the server that we parse content-type: application/x-www-form-urlencoded
-    server.use(bodyParser.urlencoded({ extended: true }));
+    server.use(bodyParser.urlencoded({ limit: '3mb', extended: true }));
 
     // Use this in production.
     db.sequelize.sync();

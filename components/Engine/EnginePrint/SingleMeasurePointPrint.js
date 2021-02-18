@@ -33,22 +33,8 @@ const HeaderCol = styled(Col)`
   font-weight: bold;
 `;
 
-const MeasureHeaderCol = styled(Col)`
-  font-weight: 500;
-`;
-
 const PrintLogo = styled(Col)`
   align-self: center;
-`;
-
-const VGSpan = styled.span`
-  color: var(--success);
-`;
-const GSpan = styled.span`
-  color: var(--warning);
-`;
-const EGSpan = styled.span`
-  color: var(--danger);
 `;
 
 class SingleMeasurePointPrint extends Component {
@@ -56,10 +42,12 @@ class SingleMeasurePointPrint extends Component {
     super(props);
     this.state = {
       dataValues: this.props.dataValues,
+      engineInfo: this.props.engineInfo,
+      engineInfoKeys: Object.keys(this.props.engineInfo),
       dataPoint: this.props.dataPoint,
       tagNr: this.props.tagNr,
     };
-
+    console.log(this.state.engineInfo);
     console.log(this.state.dataValues);
     console.log(this.state.dataPoint);
     console.log(this.state.tagNr);
@@ -87,6 +75,97 @@ class SingleMeasurePointPrint extends Component {
         </PrintRow>
         <PrintRow>
           <PrintCol>
+            <h4>Motorinformation</h4>
+          </PrintCol>
+        </PrintRow>
+        <PrintRow>
+          <PrintCol>
+            {this.state.engineInfoKeys.map((key, index) => {
+              if (index < 9) {
+                // drivsystem
+                if (key === 'strömR' && this.state.engineInfo[key] === true) {
+                  return (
+                    <PrintRow>
+                      <PrintCol>{key}</PrintCol>
+                      <PrintCol>Ja</PrintCol>
+                    </PrintRow>
+                  );
+                }
+                if (key === 'strömR' && this.state.engineInfo[key] === false) {
+                  return (
+                    <PrintRow>
+                      <PrintCol>{key}</PrintCol>
+                      <PrintCol>Nej</PrintCol>
+                    </PrintRow>
+                  );
+                }
+
+                if (key === 'fromR' && this.state.engineInfo[key] === true) {
+                  return (
+                    <PrintRow>
+                      <PrintCol>{key}</PrintCol>
+                      <PrintCol>Ja</PrintCol>
+                    </PrintRow>
+                  );
+                }
+                if (key === 'fromR' && this.state.engineInfo[key] === false) {
+                  return (
+                    <PrintRow>
+                      <PrintCol>{key}</PrintCol>
+                      <PrintCol>Nej</PrintCol>
+                    </PrintRow>
+                  );
+                }
+                return (
+                  <PrintRow>
+                    <PrintCol>{key}</PrintCol>
+                    <PrintCol>{this.state.engineInfo[key]}</PrintCol>
+                  </PrintRow>
+                );
+              }
+              return null;
+            })}
+          </PrintCol>
+          <PrintCol>
+            {this.state.engineInfoKeys.map((key, index) => {
+              console.log(key);
+              if (index > 9) {
+                if (
+                  key === 'lagerIsolerad' &&
+                  this.state.engineInfo[key] === true
+                ) {
+                  return (
+                    <PrintRow>
+                      <PrintCol>{key}</PrintCol>
+                      <PrintCol>Ja</PrintCol>
+                    </PrintRow>
+                  );
+                }
+                if (
+                  key === 'lagerIsolerad' &&
+                  this.state.engineInfo[key] === false
+                ) {
+                  return (
+                    <PrintRow>
+                      <PrintCol>{key}</PrintCol>
+                      <PrintCol>Nej</PrintCol>
+                    </PrintRow>
+                  );
+                }
+
+                return (
+                  <PrintRow>
+                    <PrintCol>{key}</PrintCol>
+                    <PrintCol>{this.state.engineInfo[key]}</PrintCol>
+                  </PrintRow>
+                );
+              }
+              return null;
+            })}
+          </PrintCol>
+        </PrintRow>
+        <PrintRow>
+          <PrintCol className="mt-3">
             <h5>Mätvärden</h5>
           </PrintCol>
         </PrintRow>
@@ -106,11 +185,11 @@ class SingleMeasurePointPrint extends Component {
               <PrintCol>{data.value}</PrintCol>
               <PrintCol>
                 {data.limit === 'green' ? (
-                  <VGSpan>Väl godkänt</VGSpan>
+                  <span>Väl godkänt</span>
                 ) : data.limit === 'yellow' ? (
-                  <GSpan>Godkänt</GSpan>
+                  <span>Godkänt</span>
                 ) : data.limit === 'red' ? (
-                  <EGSpan>Ej godkänt</EGSpan>
+                  <span>Ej godkänt</span>
                 ) : (
                   ''
                 )}

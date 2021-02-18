@@ -66,6 +66,9 @@ const EditUserModal = ({ user, roles, clients, show, onHide }) => {
             if (!values.email) {
               errors.email = 'Detta fältet krävs';
             }
+            if (!values.phonenumber) {
+              errors.phonenumber = 'Detta fältet krävs';
+            }
             if (
               !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
             ) {
@@ -95,6 +98,7 @@ const EditUserModal = ({ user, roles, clients, show, onHide }) => {
           initialValues={{
             username: user.username,
             email: user.email,
+            phonenumber: user.phonenumber,
             firstname: user.firstname,
             lastname: user.lastname,
             role: user.roles[0] ? user.roles[0].name : '',
@@ -142,6 +146,7 @@ const EditUserModal = ({ user, roles, clients, show, onHide }) => {
                 {
                   username: values.username,
                   email: values.email,
+                  phonenumber: values.phonenumber,
                   firstname: values.firstname,
                   lastname: values.lastname,
                   role: values.role,
@@ -227,6 +232,21 @@ const EditUserModal = ({ user, roles, clients, show, onHide }) => {
                 />
                 <Form.Control.Feedback tooltip="true" type="invalid">
                   {errors.email}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group controlId="formGroupPhonenumber">
+                <Form.Label>Telefonnummer</Form.Label>
+                <Form.Control
+                  type="phonenumber"
+                  name="phonenumber"
+                  value={values.phonenumber}
+                  isValid={touched.phonenumber && !errors.phonenumber}
+                  isInvalid={touched.phonenumber && errors.phonenumber}
+                  onChange={handleChange}
+                  placeholder="Fyll i telefonnummer"
+                />
+                <Form.Control.Feedback tooltip="true" type="invalid">
+                  {errors.phonenumber}
                 </Form.Control.Feedback>
               </Form.Group>
               <Form.Group controlId="formGroupFirstname">

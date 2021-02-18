@@ -198,11 +198,11 @@ class OverviewEnginePrint extends Component {
               </PrintCol>
               <PrintCol>
                 {data[header][0]?.limit === 'green' ? (
-                  <VGSpan>Väl godkänt</VGSpan>
+                  <span>Väl godkänt</span>
                 ) : data[header][0]?.limit === 'yellow' ? (
-                  <GSpan>Godkänt</GSpan>
+                  <span>Godkänt</span>
                 ) : data[header][0]?.limit === 'red' ? (
-                  <EGSpan>Ej godkänt</EGSpan>
+                  <span>Ej godkänt</span>
                 ) : (
                   ''
                 )}
@@ -239,11 +239,11 @@ class OverviewEnginePrint extends Component {
                   </PrintCol>
                   <PrintCol>
                     {data[header][0]?.limit === 'green' ? (
-                      <VGSpan>Väl godkänt</VGSpan>
+                      <span>Väl godkänt</span>
                     ) : data[header][0]?.limit === 'yellow' ? (
-                      <GSpan>Godkänt</GSpan>
+                      <span>Godkänt</span>
                     ) : data[header][0]?.limit === 'red' ? (
-                      <EGSpan>Ej godkänt</EGSpan>
+                      <span>Ej godkänt</span>
                     ) : (
                       ''
                     )}

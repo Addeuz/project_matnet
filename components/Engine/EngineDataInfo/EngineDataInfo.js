@@ -11,6 +11,7 @@ import PowerTrainInfo from '../PowerTrain/PowerTrainInfo';
 const EngineDataInfo = ({
   engineInfo,
   type,
+  engineFiles,
   engineValues,
   clientId,
   engineId,
@@ -18,6 +19,7 @@ const EngineDataInfo = ({
   (type === 'lågspänd' && (
     <LowVoltageInfo
       engineInfo={engineInfo}
+      engineFiles={engineFiles}
       engineValues={engineValues}
       type={type}
       engineId={engineId}
@@ -27,6 +29,7 @@ const EngineDataInfo = ({
   (type === 'högspänd' && (
     <HighVoltageInfo
       engineInfo={engineInfo}
+      engineFiles={engineFiles}
       engineValues={engineValues}
       type={type}
       engineId={engineId}
@@ -36,6 +39,7 @@ const EngineDataInfo = ({
   (type === 'likström' && (
     <DirectCurrentInfo
       engineInfo={engineInfo}
+      engineFiles={engineFiles}
       engineValues={engineValues}
       type={type}
       engineId={engineId}
@@ -45,6 +49,7 @@ const EngineDataInfo = ({
   (type === 'drivsystem' && (
     <PowerTrainInfo
       engineInfo={engineInfo}
+      engineFiles={engineFiles}
       engineValues={engineValues}
       type={type}
       engineId={engineId}

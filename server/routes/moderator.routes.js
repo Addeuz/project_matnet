@@ -10,6 +10,7 @@ const EngineValues = db.engine_values;
 const Engine = db.engine;
 const LimitValues = db.limit_values;
 const AlarmList = db.alarm_list;
+const Files = db.files;
 
 router.use(function(req, res, next) {
   res.header(
@@ -35,7 +36,7 @@ router.get('/moderator/engines/:clientId', function(req, res) {
         .send({ message: 'Ingen kund med det id-numret existerar' });
     }
     client
-      .getEngines({ include: { model: EngineValues } })
+      .getEngines({ include: [{ model: EngineValues }, { model: Files }] })
       .then(engines => {
         res.status(200).send({ engines, client });
       })
@@ -456,10 +457,10 @@ router.get('/moderator/:engineId/:dataPoint/:userId', function(req, res) {
 });
 
 router.post(
-  '/moderator/:engineId/notes',
+  '/moderator/:engineId/:userId/notes',
   [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
   function(req, res) {
-    const { engineId } = req.params;
+    const { engineId, userId } = req.params;
     const { note, date } = req.body;
 
     Engine.findByPk(engineId).then(engine => {
@@ -468,8 +469,10 @@ router.post(
           note,
           date,
         })
-        .then(() => {
-          res.status(200).send({ message: 'Not sparad!' });
+        .then(note => {
+          note.setUser(userId).then(() => {
+            res.status(200).send({ message: 'Not sparad!' });
+          });
         })
         .catch(err => {
           res.status(500).send({ message: err.response });
@@ -478,9 +481,62 @@ router.post(
   }
 );
 
+router.get('/moderator/notes/:engineId', function(req, res) {
+  const { engineId } = req.params;
+
+  Engine.findByPk(engineId).then(engine => {
+    engine
+      .getNotes({
+        include: [
+          { model: User, attributes: ['firstname', 'lastname', 'username'] },
+          { model: Engine, attributes: ['engineInfo'] },
+        ],
+      })
+      .then(notes => {
+        // res.status(200).send({ notes });
+
+        // console
+        // sort them so that the newest note comes on top
+        const sortedNotes = notes.sort((a, b) =>
+          // eslint-disable-next-line no-nested-ternary
+          a.date > b.date ? -1 : a.date < b.date ? 1 : 0
+        );
+        // console.log(sortedNotes);
+        res.status(200).send({ notes: sortedNotes });
+      })
+      .catch(err => {
+        res.status(500).send({ message: err.response });
+      });
+  });
+});
+
+router.delete(
+  '/moderator/notes/:noteId/:engineId',
+  [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
+  function(req, res) {
+    const { noteId, engineId } = req.params;
+
+    console.log('noteid', noteId);
+    console.log('engineId', engineId);
+    Engine.findByPk(engineId)
+      .then(engine => {
+        engine
+          .removeNote(noteId)
+          .then(() => {
+            res.status(200).send({ message: 'Not borttagen! Ladda om sidan.' });
+          })
+          .catch(err => {
+            res.status(500).send({ message: err.response });
+          });
+      })
+      .catch(err => {
+        res.status(500).send({ message: err.response });
+      });
+  }
+);
+
 router.get('/moderator/:userId/notes', async function(req, res) {
   const { userId } = req.params;
-  const engineNotes = [];
 
   const user = await User.findByPk(userId);
   const clients = await user.getClients();
@@ -494,7 +550,12 @@ router.get('/moderator/:userId/notes', async function(req, res) {
 
   const notes = [];
   for (const engine of engines) {
-    const engineNotes = await engine.getNotes();
+    const engineNotes = await engine.getNotes({
+      include: [
+        { model: User, attributes: ['firstname', 'lastname', 'username'] },
+        { model: Engine, attributes: ['engineInfo'] },
+      ],
+    });
 
     notes.push(...engineNotes);
   }
@@ -502,7 +563,6 @@ router.get('/moderator/:userId/notes', async function(req, res) {
   // sort them so that the newest note comes on top
   // eslint-disable-next-line no-nested-ternary
   notes.sort((a, b) => (a.date > b.date ? -1 : a.date < b.date ? 1 : 0));
-
   res.status(200).send(notes);
 });
 
@@ -611,6 +671,63 @@ router.put(
           })
           .catch(err => res.status(500).send({ message: err.message }));
       });
+    });
+  }
+);
+
+router.post(
+  '/moderator/:engineId/:userId/file',
+  [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
+  function(req, res) {
+    const { name, baseUrl, mimeType, extension } = req.body;
+    const { engineId, userId } = req.params;
+    console.log(req.body);
+    console.log('Length of url', baseUrl.length);
+    console.log('length in bytes: ', Buffer.byteLength(baseUrl, 'utf8'));
+    console.log(typeof baseUrl);
+    Files.create({
+      name,
+      baseUrl,
+      mimeType,
+      extension,
+    })
+      .then(file => {
+        file.setUser(userId).then(() => {
+          file.setEngine(engineId).then(() => {
+            res.status(200).send({
+              message:
+                'Dokumentet är uppladdat! Ladda om sidan för att se det.',
+            });
+          });
+        });
+      })
+      .catch(error => {
+        console.log(error);
+        res.status(500).send({
+          message: error.message,
+        });
+      });
+  }
+);
+
+router.delete(
+  '/moderator/:fileId/file',
+  [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
+  function(req, res) {
+    const { fileId } = req.params;
+    Files.findByPk(fileId).then(file => {
+      file
+        .destroy()
+        .then(() => {
+          res.status(200).send({
+            message: 'Dokument borttaget! Ladda om sidan.',
+          });
+        })
+        .catch(error => {
+          res.status(500).send({
+            message: error.message,
+          });
+        });
     });
   }
 );

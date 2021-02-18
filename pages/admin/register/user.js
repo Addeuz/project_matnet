@@ -4,6 +4,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
 import styled from 'styled-components';
+import Head from 'next/head';
 import Layout from '../../../components/Layout';
 import Sidebar from '../../../components/Navigation/Sidebar';
 import { SButton, SSpinner, SAlert } from '../../../styles/styled';
@@ -65,6 +66,7 @@ const schema = yup.object({
     .string()
     .required('Detta fältet krävs')
     .email('Måste vara en giltig e-mailadress'),
+  phonenumber: yup.string().required('Detta fältet krävs'),
   firstname: yup.string().required('Detta fältet krävs'),
   lastname: yup.string().required('Detta fältet krävs'),
   password: yup
@@ -98,6 +100,9 @@ const RegisterUser = () => {
   return (
     <AdminDispatch>
       <Layout>
+        <Head>
+          <title>Registrera ny användare</title>
+        </Head>
         <Sidebar page={page}>
           <h3>Registrera ny användare</h3>
           <Formik
@@ -106,6 +111,7 @@ const RegisterUser = () => {
             initialValues={{
               username: '',
               email: '',
+              phonenumber: '',
               firstname: '',
               lastname: '',
               password: '',
@@ -153,6 +159,7 @@ const RegisterUser = () => {
                   {
                     username: values.username,
                     email: values.email,
+                    phonenumber: values.phonenumber,
                     firstname: values.firstname,
                     lastname: values.lastname,
                     password: values.password,
@@ -243,6 +250,21 @@ const RegisterUser = () => {
                       />
                       <Form.Control.Feedback tooltip="true" type="invalid">
                         {errors.email}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group controlId="formGroupPhonenumber">
+                      <Form.Label>Telefonnummer</Form.Label>
+                      <Form.Control
+                        type="phonenumber"
+                        name="phonenumber"
+                        value={values.phonenumber}
+                        isValid={touched.phonenumber && !errors.phonenumber}
+                        isInvalid={touched.phonenumber && errors.phonenumber}
+                        onChange={handleChange}
+                        placeholder="Fyll i telefonnummer"
+                      />
+                      <Form.Control.Feedback tooltip="true" type="invalid">
+                        {errors.phonenumber}
                       </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group controlId="formGroupFirstname">

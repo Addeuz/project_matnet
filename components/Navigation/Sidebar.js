@@ -51,7 +51,7 @@ const Sidebar = ({ page, children }) => {
 
   return (
     <SRow>
-      <SCol xs={12} md={3}>
+      <SCol xs={12} md={2}>
         {viewPort === 'desktop' ? (
           <SNav>
             <SidebarItems page={page} viewPort={viewPort} />
@@ -62,7 +62,7 @@ const Sidebar = ({ page, children }) => {
           </SNav>
         )}
       </SCol>
-      <ContainerCol md={9} xs={12}>
+      <ContainerCol md={10} xs={12}>
         {children}
       </ContainerCol>
     </SRow>

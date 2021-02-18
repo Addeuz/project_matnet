@@ -18,6 +18,7 @@ exports.signUp = (req, res) => {
     firstname: req.body.firstname,
     lastname: req.body.lastname,
     email: req.body.email,
+    phonenumber: req.body.phonenumber,
     password: bcrypt.hashSync(req.body.password),
     motormon: req.body.motormon,
     baker: req.body.baker,
