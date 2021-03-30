@@ -41,6 +41,13 @@ const schema = yup.object({
   tagNr: yup.string().required('Tag nr krävs'),
 });
 
+function YesOrNoFromBoolean(value) {
+  if (value) {
+    return `Ja -> Nej`;
+  }
+  return `Nej -> Ja`;
+}
+
 // Component used to display the editing forms for an engine with the type of 'lågspänd'
 // props:
 //    engine - data from the engine being edited
@@ -59,6 +66,8 @@ const EditDirectCurrent = ({ engine }) => {
   const [extraName, setExtraName] = React.useState('');
   const { user } = React.useContext(UserContext);
   const [engineClient, setEngineClient] = React.useState(null);
+  const [changedValues, setChangedValues] = React.useState([]);
+  const [changedMeasurePoints, setChangedMeasurePoints] = React.useState([]);
 
   React.useEffect(() => {
     console.log(engine);
@@ -187,7 +196,48 @@ const EditDirectCurrent = ({ engine }) => {
           )
           .then(
             response => {
-              setMessage(response.data.message);
+              const date = new Date(Date.now());
+
+              let note = `Motordata ändrad för motor: ${engine.engineInfo.tagNr}\n\n`;
+
+              if (changedValues.length > 0) {
+                note += 'Motordata:\n';
+                for (const item of changedValues) {
+                  note += `${item}: ${
+                    engine.engineInfo[item] === ''
+                      ? 'Tomt'
+                      : engine.engineInfo[item]
+                  } -> ${values[item]}\n`;
+                }
+                note += '\n';
+              }
+
+              if (changedMeasurePoints.length > 0) {
+                note += 'Mätpunkter:\n';
+                for (const item of changedMeasurePoints) {
+                  note += `${item}: ${YesOrNoFromBoolean(
+                    engine.engineValues[item]
+                  )}\n`;
+                }
+              }
+
+              axios
+                .post(
+                  `http://localhost:3000/api/moderator/${engine.engineId}/${user.id}/notes`,
+                  {
+                    note,
+                    date,
+                  },
+                  options
+                )
+                .then(
+                  () => {
+                    setMessage(response.data.message);
+                  },
+                  error => {
+                    setError(error.response.data.message);
+                  }
+                );
             },
             error => {
               console.log(error.response);
@@ -218,7 +268,19 @@ const EditDirectCurrent = ({ engine }) => {
                     type="text"
                     value={values.tagNr || ''}
                     name="tagNr"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched.tagNr && !errors.tagNr}
                     isInvalid={touched.tagNr && errors.tagNr}
                   />
@@ -236,7 +298,19 @@ const EditDirectCurrent = ({ engine }) => {
                     type="text"
                     value={values.artNr || ''}
                     name="artNr"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched.artNr && !errors.artNr}
                     isInvalid={touched.artNr && errors.artNr}
                   />
@@ -254,7 +328,19 @@ const EditDirectCurrent = ({ engine }) => {
                     type="text"
                     value={values.position || ''}
                     name="position"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched.position && !errors.position}
                     isInvalid={touched.position && errors.position}
                   />
@@ -272,7 +358,19 @@ const EditDirectCurrent = ({ engine }) => {
                     type="text"
                     value={values.diverse || ''}
                     name="diverse"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched.diverse && !errors.diverse}
                     isInvalid={touched.diverse && errors.diverse}
                   />
@@ -290,7 +388,19 @@ const EditDirectCurrent = ({ engine }) => {
                     type="text"
                     value={values.fabrikat || ''}
                     name="fabrikat"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched.fabrikat && !errors.fabrikat}
                     isInvalid={touched.fabrikat && errors.fabrikat}
                   />
@@ -308,7 +418,19 @@ const EditDirectCurrent = ({ engine }) => {
                     type="text"
                     value={values.typ || ''}
                     name="typ"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched.typ && !errors.typ}
                     isInvalid={touched.typ && errors.typ}
                   />
@@ -326,7 +448,19 @@ const EditDirectCurrent = ({ engine }) => {
                     type="text"
                     value={values.motorNr || ''}
                     name="motorNr"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched.motorNr && !errors.motorNr}
                     isInvalid={touched.motorNr && errors.motorNr}
                   />
@@ -344,7 +478,19 @@ const EditDirectCurrent = ({ engine }) => {
                     type="text"
                     value={values.varvtal || ''}
                     name="varvtal"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched.varvtal && !errors.varvtal}
                     isInvalid={touched.varvtal && errors.varvtal}
                   />
@@ -363,7 +509,19 @@ const EditDirectCurrent = ({ engine }) => {
                     type="text"
                     value={values.effekt || ''}
                     name="effekt"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched.effekt && !errors.effekt}
                     isInvalid={touched.effekt && errors.effekt}
                   />
@@ -381,7 +539,19 @@ const EditDirectCurrent = ({ engine }) => {
                     type="text"
                     value={values['spänning'] || ''}
                     name="spänning"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched['spänning'] && !errors['spänning']}
                     isInvalid={touched['spänning'] && errors['spänning']}
                   />
@@ -399,7 +569,19 @@ const EditDirectCurrent = ({ engine }) => {
                     type="text"
                     value={values['ström'] || ''}
                     name="ström"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched['ström'] && !errors['ström']}
                     isInvalid={touched['ström'] && errors['ström']}
                   />
@@ -417,7 +599,19 @@ const EditDirectCurrent = ({ engine }) => {
                     type="text"
                     value={values.magnetiseringV || ''}
                     name="magnetiseringV"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched.magnetiseringV && !errors.magnetiseringV}
                     isInvalid={touched.magnetiseringV && errors.magnetiseringV}
                   />
@@ -435,7 +629,19 @@ const EditDirectCurrent = ({ engine }) => {
                     type="text"
                     value={values.magnetiseringA || ''}
                     name="magnetiseringA"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched.magnetiseringA && !errors.magnetiseringA}
                     isInvalid={touched.magnetiseringA && errors.magnetiseringA}
                   />
@@ -453,7 +659,19 @@ const EditDirectCurrent = ({ engine }) => {
                     type="text"
                     value={values.ohm || ''}
                     name="ohm"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched.ohm && !errors.ohm}
                     isInvalid={touched.ohm && errors.magnetiseringA}
                   />
@@ -473,7 +691,20 @@ const EditDirectCurrent = ({ engine }) => {
                     className="mt-2"
                     checked={values.lagerIsolerad}
                     name="lagerIsolerad"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, checked } = e.target;
+                      console.log(name, checked);
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === checked) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched.lagerIsolerad && !errors.lagerIsolerad}
                     isInvalid={touched.lagerIsolerad && errors.lagerIsolerad}
                   />
@@ -493,7 +724,19 @@ const EditDirectCurrent = ({ engine }) => {
                     rows={2}
                     value={values.lagerDE || ''}
                     name="lagerDE"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched.lagerDE && !errors.lagerDE}
                     isInvalid={touched.lagerDE && errors.lagerDE}
                   />
@@ -513,7 +756,19 @@ const EditDirectCurrent = ({ engine }) => {
                     rows={2}
                     value={values.lagerNDE || ''}
                     name="lagerNDE"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched.lagerNDE && !errors.lagerNDE}
                     isInvalid={touched.lagerNDE && errors.lagerNDE}
                   />
@@ -533,7 +788,19 @@ const EditDirectCurrent = ({ engine }) => {
                     rows={2}
                     value={values.kolborstar || ''}
                     name="kolborstar"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched.kolborstar && !errors.kolborstar}
                     isInvalid={touched.kolborstar && errors.kolborstar}
                   />
@@ -553,7 +820,19 @@ const EditDirectCurrent = ({ engine }) => {
                     rows={2}
                     value={values.friText || ''}
                     name="friText"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched.friText && !errors.friText}
                     isInvalid={touched.friText && errors.friText}
                   />
@@ -572,7 +851,22 @@ const EditDirectCurrent = ({ engine }) => {
                     type="checkbox"
                     label="Meggning stator"
                     checked={values.engineMeasureData.meggningStator}
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { id, checked } = e.target;
+                      const idType = id.split('.')[1];
+                      console.log(idType, engine.engineValues[idType]);
+                      if (!changedMeasurePoints.includes(idType)) {
+                        setChangedMeasurePoints([
+                          ...changedMeasurePoints,
+                          idType,
+                        ]);
+                      } else if (engine.engineValues[idType] === checked) {
+                        setChangedMeasurePoints(
+                          changedMeasurePoints.filter(value => value !== idType)
+                        );
+                      }
+                    }}
                   />
                   <Form.Check
                     id="engineMeasureData.meggningRotor"
@@ -580,7 +874,22 @@ const EditDirectCurrent = ({ engine }) => {
                     type="checkbox"
                     label="Meggning rotor"
                     checked={values.engineMeasureData.meggningRotor}
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { id, checked } = e.target;
+                      const idType = id.split('.')[1];
+                      console.log(idType, engine.engineValues[idType]);
+                      if (!changedMeasurePoints.includes(idType)) {
+                        setChangedMeasurePoints([
+                          ...changedMeasurePoints,
+                          idType,
+                        ]);
+                      } else if (engine.engineValues[idType] === checked) {
+                        setChangedMeasurePoints(
+                          changedMeasurePoints.filter(value => value !== idType)
+                        );
+                      }
+                    }}
                   />
                   <Form.Check
                     id="engineMeasureData['driftström']"
@@ -588,7 +897,22 @@ const EditDirectCurrent = ({ engine }) => {
                     type="checkbox"
                     label="Driftström"
                     checked={values.engineMeasureData['driftström']}
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { id, checked } = e.target;
+                      const idType = id.split("'")[1];
+                      console.log(idType, engine.engineValues[idType]);
+                      if (!changedMeasurePoints.includes(idType)) {
+                        setChangedMeasurePoints([
+                          ...changedMeasurePoints,
+                          idType,
+                        ]);
+                      } else if (engine.engineValues[idType] === checked) {
+                        setChangedMeasurePoints(
+                          changedMeasurePoints.filter(value => value !== idType)
+                        );
+                      }
+                    }}
                   />
                   <Form.Check
                     id="engineMeasureData.lindTemp"
@@ -596,7 +920,22 @@ const EditDirectCurrent = ({ engine }) => {
                     type="checkbox"
                     label="Lind temp"
                     checked={values.engineMeasureData.lindTemp}
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { id, checked } = e.target;
+                      const idType = id.split('.')[1];
+                      console.log(idType, engine.engineValues[idType]);
+                      if (!changedMeasurePoints.includes(idType)) {
+                        setChangedMeasurePoints([
+                          ...changedMeasurePoints,
+                          idType,
+                        ]);
+                      } else if (engine.engineValues[idType] === checked) {
+                        setChangedMeasurePoints(
+                          changedMeasurePoints.filter(value => value !== idType)
+                        );
+                      }
+                    }}
                   />
                   <Form.Check
                     id="engineMeasureData.vibration"
@@ -604,7 +943,22 @@ const EditDirectCurrent = ({ engine }) => {
                     type="checkbox"
                     label="Vibration"
                     checked={values.engineMeasureData.vibration}
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { id, checked } = e.target;
+                      const idType = id.split('.')[1];
+                      console.log(idType, engine.engineValues[idType]);
+                      if (!changedMeasurePoints.includes(idType)) {
+                        setChangedMeasurePoints([
+                          ...changedMeasurePoints,
+                          idType,
+                        ]);
+                      } else if (engine.engineValues[idType] === checked) {
+                        setChangedMeasurePoints(
+                          changedMeasurePoints.filter(value => value !== idType)
+                        );
+                      }
+                    }}
                   />
                   <Form.Check
                     id="engineMeasureData['smörjning']"
@@ -612,7 +966,22 @@ const EditDirectCurrent = ({ engine }) => {
                     type="checkbox"
                     label="Smörjning"
                     checked={values.engineMeasureData['smörjning']}
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { id, checked } = e.target;
+                      const idType = id.split("'")[1];
+                      console.log(idType, engine.engineValues[idType]);
+                      if (!changedMeasurePoints.includes(idType)) {
+                        setChangedMeasurePoints([
+                          ...changedMeasurePoints,
+                          idType,
+                        ]);
+                      } else if (engine.engineValues[idType] === checked) {
+                        setChangedMeasurePoints(
+                          changedMeasurePoints.filter(value => value !== idType)
+                        );
+                      }
+                    }}
                   />
                   <Form.Check
                     id="engineMeasureData['okulärIntern']"
@@ -620,7 +989,22 @@ const EditDirectCurrent = ({ engine }) => {
                     type="checkbox"
                     label="Okulär intern"
                     checked={values.engineMeasureData['okulärIntern']}
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { id, checked } = e.target;
+                      const idType = id.split("'")[1];
+                      console.log(idType, engine.engineValues[idType]);
+                      if (!changedMeasurePoints.includes(idType)) {
+                        setChangedMeasurePoints([
+                          ...changedMeasurePoints,
+                          idType,
+                        ]);
+                      } else if (engine.engineValues[idType] === checked) {
+                        setChangedMeasurePoints(
+                          changedMeasurePoints.filter(value => value !== idType)
+                        );
+                      }
+                    }}
                   />
                   <Form.Check
                     id="engineMeasureData['okulärExtern']"
@@ -628,7 +1012,22 @@ const EditDirectCurrent = ({ engine }) => {
                     type="checkbox"
                     label="Okulär extern"
                     checked={values.engineMeasureData['okulärExtern']}
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { id, checked } = e.target;
+                      const idType = id.split("'")[1];
+                      console.log(idType, engine.engineValues[idType]);
+                      if (!changedMeasurePoints.includes(idType)) {
+                        setChangedMeasurePoints([
+                          ...changedMeasurePoints,
+                          idType,
+                        ]);
+                      } else if (engine.engineValues[idType] === checked) {
+                        setChangedMeasurePoints(
+                          changedMeasurePoints.filter(value => value !== idType)
+                        );
+                      }
+                    }}
                   />
                   <Form.Check
                     id="engineMeasureData.mantelTemp"
@@ -636,7 +1035,22 @@ const EditDirectCurrent = ({ engine }) => {
                     type="checkbox"
                     label="Mantel temp"
                     checked={values.engineMeasureData.mantelTemp}
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { id, checked } = e.target;
+                      const idType = id.split('.')[1];
+                      console.log(idType, engine.engineValues[idType]);
+                      if (!changedMeasurePoints.includes(idType)) {
+                        setChangedMeasurePoints([
+                          ...changedMeasurePoints,
+                          idType,
+                        ]);
+                      } else if (engine.engineValues[idType] === checked) {
+                        setChangedMeasurePoints(
+                          changedMeasurePoints.filter(value => value !== idType)
+                        );
+                      }
+                    }}
                   />
                   <Form.Check
                     id="engineMeasureData.mantelTemp"
@@ -644,7 +1058,22 @@ const EditDirectCurrent = ({ engine }) => {
                     type="checkbox"
                     label="Kommutator yta"
                     checked={values.engineMeasureData.kommutatorYta}
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { id, checked } = e.target;
+                      const idType = id.split('.')[1];
+                      console.log(idType, engine.engineValues[idType]);
+                      if (!changedMeasurePoints.includes(idType)) {
+                        setChangedMeasurePoints([
+                          ...changedMeasurePoints,
+                          idType,
+                        ]);
+                      } else if (engine.engineValues[idType] === checked) {
+                        setChangedMeasurePoints(
+                          changedMeasurePoints.filter(value => value !== idType)
+                        );
+                      }
+                    }}
                   />
                   <Form.Check
                     id="engineMeasureData.mantelTemp"
@@ -652,7 +1081,22 @@ const EditDirectCurrent = ({ engine }) => {
                     type="checkbox"
                     label="Kollektor temp"
                     checked={values.engineMeasureData.kollektorTemp}
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { id, checked } = e.target;
+                      const idType = id.split('.')[1];
+                      console.log(idType, engine.engineValues[idType]);
+                      if (!changedMeasurePoints.includes(idType)) {
+                        setChangedMeasurePoints([
+                          ...changedMeasurePoints,
+                          idType,
+                        ]);
+                      } else if (engine.engineValues[idType] === checked) {
+                        setChangedMeasurePoints(
+                          changedMeasurePoints.filter(value => value !== idType)
+                        );
+                      }
+                    }}
                   />
                 </Col>
                 <Col xs={6}>
@@ -662,7 +1106,22 @@ const EditDirectCurrent = ({ engine }) => {
                     type="checkbox"
                     label="Lager kond DE"
                     checked={values.engineMeasureData.lagerKondDe}
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { id, checked } = e.target;
+                      const idType = id.split('.')[1];
+                      console.log(idType, engine.engineValues[idType]);
+                      if (!changedMeasurePoints.includes(idType)) {
+                        setChangedMeasurePoints([
+                          ...changedMeasurePoints,
+                          idType,
+                        ]);
+                      } else if (engine.engineValues[idType] === checked) {
+                        setChangedMeasurePoints(
+                          changedMeasurePoints.filter(value => value !== idType)
+                        );
+                      }
+                    }}
                   />
                   <Form.Check
                     id="engineMeasureData.lagerKondNde"
@@ -670,7 +1129,22 @@ const EditDirectCurrent = ({ engine }) => {
                     type="checkbox"
                     label="Lager kond NDE"
                     checked={values.engineMeasureData.lagerKondNde}
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { id, checked } = e.target;
+                      const idType = id.split('.')[1];
+                      console.log(idType, engine.engineValues[idType]);
+                      if (!changedMeasurePoints.includes(idType)) {
+                        setChangedMeasurePoints([
+                          ...changedMeasurePoints,
+                          idType,
+                        ]);
+                      } else if (engine.engineValues[idType] === checked) {
+                        setChangedMeasurePoints(
+                          changedMeasurePoints.filter(value => value !== idType)
+                        );
+                      }
+                    }}
                   />
                   <Form.Check
                     id="engineMeasureData.spmDE"
@@ -678,7 +1152,22 @@ const EditDirectCurrent = ({ engine }) => {
                     type="checkbox"
                     label="Spm DE"
                     checked={values.engineMeasureData.spmDE}
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { id, checked } = e.target;
+                      const idType = id.split('.')[1];
+                      console.log(idType, engine.engineValues[idType]);
+                      if (!changedMeasurePoints.includes(idType)) {
+                        setChangedMeasurePoints([
+                          ...changedMeasurePoints,
+                          idType,
+                        ]);
+                      } else if (engine.engineValues[idType] === checked) {
+                        setChangedMeasurePoints(
+                          changedMeasurePoints.filter(value => value !== idType)
+                        );
+                      }
+                    }}
                   />
                   <Form.Check
                     id="engineMeasureData.spmNDE"
@@ -686,7 +1175,22 @@ const EditDirectCurrent = ({ engine }) => {
                     type="checkbox"
                     label="Spm NDE"
                     checked={values.engineMeasureData.spmNDE}
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { id, checked } = e.target;
+                      const idType = id.split('.')[1];
+                      console.log(idType, engine.engineValues[idType]);
+                      if (!changedMeasurePoints.includes(idType)) {
+                        setChangedMeasurePoints([
+                          ...changedMeasurePoints,
+                          idType,
+                        ]);
+                      } else if (engine.engineValues[idType] === checked) {
+                        setChangedMeasurePoints(
+                          changedMeasurePoints.filter(value => value !== idType)
+                        );
+                      }
+                    }}
                   />
                   <Form.Check
                     id="engineMeasureData.lagerTempDe"
@@ -694,7 +1198,22 @@ const EditDirectCurrent = ({ engine }) => {
                     type="checkbox"
                     label="Lager temp DE"
                     checked={values.engineMeasureData.lagerTempDe}
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { id, checked } = e.target;
+                      const idType = id.split('.')[1];
+                      console.log(idType, engine.engineValues[idType]);
+                      if (!changedMeasurePoints.includes(idType)) {
+                        setChangedMeasurePoints([
+                          ...changedMeasurePoints,
+                          idType,
+                        ]);
+                      } else if (engine.engineValues[idType] === checked) {
+                        setChangedMeasurePoints(
+                          changedMeasurePoints.filter(value => value !== idType)
+                        );
+                      }
+                    }}
                   />
                   <Form.Check
                     id="engineMeasureData.lagerTempNde"
@@ -702,7 +1221,22 @@ const EditDirectCurrent = ({ engine }) => {
                     type="checkbox"
                     label="Lager temp NDE"
                     checked={values.engineMeasureData.lagerTempNde}
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { id, checked } = e.target;
+                      const idType = id.split('.')[1];
+                      console.log(idType, engine.engineValues[idType]);
+                      if (!changedMeasurePoints.includes(idType)) {
+                        setChangedMeasurePoints([
+                          ...changedMeasurePoints,
+                          idType,
+                        ]);
+                      } else if (engine.engineValues[idType] === checked) {
+                        setChangedMeasurePoints(
+                          changedMeasurePoints.filter(value => value !== idType)
+                        );
+                      }
+                    }}
                   />
                   <Form.Check
                     id="engineMeasureData.lagerIsolering"
@@ -710,7 +1244,22 @@ const EditDirectCurrent = ({ engine }) => {
                     type="checkbox"
                     label="Lager isolering"
                     checked={values.engineMeasureData.lagerIsolering}
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { id, checked } = e.target;
+                      const idType = id.split('.')[1];
+                      console.log(idType, engine.engineValues[idType]);
+                      if (!changedMeasurePoints.includes(idType)) {
+                        setChangedMeasurePoints([
+                          ...changedMeasurePoints,
+                          idType,
+                        ]);
+                      } else if (engine.engineValues[idType] === checked) {
+                        setChangedMeasurePoints(
+                          changedMeasurePoints.filter(value => value !== idType)
+                        );
+                      }
+                    }}
                   />
                   <Form.Check
                     id="engineMeasureData.renhet"
@@ -718,7 +1267,22 @@ const EditDirectCurrent = ({ engine }) => {
                     type="checkbox"
                     label="Renhet"
                     checked={values.engineMeasureData.renhet}
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { id, checked } = e.target;
+                      const idType = id.split('.')[1];
+                      console.log(idType, engine.engineValues[idType]);
+                      if (!changedMeasurePoints.includes(idType)) {
+                        setChangedMeasurePoints([
+                          ...changedMeasurePoints,
+                          idType,
+                        ]);
+                      } else if (engine.engineValues[idType] === checked) {
+                        setChangedMeasurePoints(
+                          changedMeasurePoints.filter(value => value !== idType)
+                        );
+                      }
+                    }}
                   />
                   <Form.Check
                     id="engineMeasureData.kylpaket"
@@ -726,7 +1290,22 @@ const EditDirectCurrent = ({ engine }) => {
                     type="checkbox"
                     label="Kylpaket"
                     checked={values.engineMeasureData.kylpaket}
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { id, checked } = e.target;
+                      const idType = id.split('.')[1];
+                      console.log(idType, engine.engineValues[idType]);
+                      if (!changedMeasurePoints.includes(idType)) {
+                        setChangedMeasurePoints([
+                          ...changedMeasurePoints,
+                          idType,
+                        ]);
+                      } else if (engine.engineValues[idType] === checked) {
+                        setChangedMeasurePoints(
+                          changedMeasurePoints.filter(value => value !== idType)
+                        );
+                      }
+                    }}
                   />
                   <Form.Check
                     id="engineMeasureData.kolborstar"
@@ -734,7 +1313,22 @@ const EditDirectCurrent = ({ engine }) => {
                     type="checkbox"
                     label="Kolborstar"
                     checked={values.engineMeasureData.kolborstar}
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { id, checked } = e.target;
+                      const idType = id.split('.')[1];
+                      console.log(idType, engine.engineValues[idType]);
+                      if (!changedMeasurePoints.includes(idType)) {
+                        setChangedMeasurePoints([
+                          ...changedMeasurePoints,
+                          idType,
+                        ]);
+                      } else if (engine.engineValues[idType] === checked) {
+                        setChangedMeasurePoints(
+                          changedMeasurePoints.filter(value => value !== idType)
+                        );
+                      }
+                    }}
                   />
                   <Form.Check
                     id="engineMeasureData.varvtalsgivare"
@@ -742,7 +1336,22 @@ const EditDirectCurrent = ({ engine }) => {
                     type="checkbox"
                     label="Varvtalsgivare"
                     checked={values.engineMeasureData.varvtalsgivare}
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { id, checked } = e.target;
+                      const idType = id.split('.')[1];
+                      console.log(idType, engine.engineValues[idType]);
+                      if (!changedMeasurePoints.includes(idType)) {
+                        setChangedMeasurePoints([
+                          ...changedMeasurePoints,
+                          idType,
+                        ]);
+                      } else if (engine.engineValues[idType] === checked) {
+                        setChangedMeasurePoints(
+                          changedMeasurePoints.filter(value => value !== idType)
+                        );
+                      }
+                    }}
                   />
                 </Col>
               </SFormGroup>

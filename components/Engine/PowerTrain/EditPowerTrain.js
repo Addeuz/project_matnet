@@ -41,6 +41,13 @@ const schema = yup.object({
   tagNr: yup.string().required('Tag nr krävs'),
 });
 
+function YesOrNoFromBoolean(value) {
+  if (value) {
+    return `Ja -> Nej`;
+  }
+  return `Nej -> Ja`;
+}
+
 // Component used to display the editing forms for an engine with the type of 'lågspänd'
 // props:
 //    engine - data from the engine being edited
@@ -59,6 +66,8 @@ const EditPowerTrain = ({ engine }) => {
   const [extraName, setExtraName] = React.useState('');
   const { user } = React.useContext(UserContext);
   const [engineClient, setEngineClient] = React.useState(null);
+  const [changedValues, setChangedValues] = React.useState([]);
+  const [changedMeasurePoints, setChangedMeasurePoints] = React.useState([]);
 
   const [stromR, setStromR] = React.useState(true);
   const [fromR, setFromR] = React.useState(true);
@@ -158,7 +167,48 @@ const EditPowerTrain = ({ engine }) => {
           )
           .then(
             response => {
-              setMessage(response.data.message);
+              const date = new Date(Date.now());
+
+              let note = `Motordata ändrad för motor: ${engine.engineInfo.tagNr}\n\n`;
+
+              if (changedValues.length > 0) {
+                note += 'Motordata:\n';
+                for (const item of changedValues) {
+                  note += `${item}: ${
+                    engine.engineInfo[item] === ''
+                      ? 'Tomt'
+                      : engine.engineInfo[item]
+                  } -> ${values[item]}\n`;
+                }
+                note += '\n';
+              }
+
+              if (changedMeasurePoints.length > 0) {
+                note += 'Mätpunkter:\n';
+                for (const item of changedMeasurePoints) {
+                  note += `${item}: ${YesOrNoFromBoolean(
+                    engine.engineValues[item]
+                  )}\n`;
+                }
+              }
+
+              axios
+                .post(
+                  `http://localhost:3000/api/moderator/${engine.engineId}/${user.id}/notes`,
+                  {
+                    note,
+                    date,
+                  },
+                  options
+                )
+                .then(
+                  () => {
+                    setMessage(response.data.message);
+                  },
+                  error => {
+                    setError(error.response.data.message);
+                  }
+                );
             },
             error => {
               console.log(error.response);
@@ -231,7 +281,19 @@ const EditPowerTrain = ({ engine }) => {
                     type="text"
                     value={values.tagNr || ''}
                     name="tagNr"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched.tagNr && !errors.tagNr}
                     isInvalid={touched.tagNr && errors.tagNr}
                   />
@@ -249,7 +311,19 @@ const EditPowerTrain = ({ engine }) => {
                     type="text"
                     value={values.artNr || ''}
                     name="artNr"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched.artNr && !errors.artNr}
                     isInvalid={touched.artNr && errors.artNr}
                   />
@@ -267,7 +341,19 @@ const EditPowerTrain = ({ engine }) => {
                     type="text"
                     value={values.position || ''}
                     name="position"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched.position && !errors.position}
                     isInvalid={touched.position && errors.position}
                   />
@@ -285,7 +371,19 @@ const EditPowerTrain = ({ engine }) => {
                     type="text"
                     value={values.fabrikat || ''}
                     name="fabrikat"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched.fabrikat && !errors.fabrikat}
                     isInvalid={touched.fabrikat && errors.fabrikat}
                   />
@@ -303,7 +401,19 @@ const EditPowerTrain = ({ engine }) => {
                     type="text"
                     value={values.typ || ''}
                     name="typ"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched.typ && !errors.typ}
                     isInvalid={touched.typ && errors.typ}
                   />
@@ -321,7 +431,19 @@ const EditPowerTrain = ({ engine }) => {
                     type="text"
                     value={values.serieNr || ''}
                     name="serieNr"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched.serieNr && !errors.serieNr}
                     isInvalid={touched.serieNr && errors.serieNr}
                   />
@@ -339,7 +461,19 @@ const EditPowerTrain = ({ engine }) => {
                     type="text"
                     value={values.effekt || ''}
                     name="effekt"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched.effekt && !errors.effekt}
                     isInvalid={touched.effekt && errors.effekt}
                   />
@@ -357,7 +491,19 @@ const EditPowerTrain = ({ engine }) => {
                     type="text"
                     value={values['spänning'] || ''}
                     name="spänning"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched['spänning'] && !errors['spänning']}
                     isInvalid={touched['spänning'] && errors['spänning']}
                   />
@@ -375,7 +521,19 @@ const EditPowerTrain = ({ engine }) => {
                     type="text"
                     value={values['ström'] || ''}
                     name="ström"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched['ström'] && !errors['ström']}
                     isInvalid={touched['ström'] && errors['ström']}
                   />
@@ -395,7 +553,19 @@ const EditPowerTrain = ({ engine }) => {
                     rows={2}
                     value={values.friText || ''}
                     name="friText"
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { name, value } = e.target;
+                      if (!changedValues.includes(name)) {
+                        setChangedValues([...changedValues, name]);
+                      } else if (engine.engineInfo[name] === value) {
+                        setChangedValues(
+                          changedValues.filter(
+                            filterValue => filterValue !== name
+                          )
+                        );
+                      }
+                    }}
                     isValid={touched.friText && !errors.friText}
                     isInvalid={touched.friText && errors.friText}
                   />
@@ -414,7 +584,22 @@ const EditPowerTrain = ({ engine }) => {
                     type="checkbox"
                     label="Driftservice"
                     checked={values.engineMeasureData.driftservice}
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { id, checked } = e.target;
+                      const idType = id.split('.')[1];
+                      console.log(idType, engine.engineValues[idType]);
+                      if (!changedMeasurePoints.includes(idType)) {
+                        setChangedMeasurePoints([
+                          ...changedMeasurePoints,
+                          idType,
+                        ]);
+                      } else if (engine.engineValues[idType] === checked) {
+                        setChangedMeasurePoints(
+                          changedMeasurePoints.filter(value => value !== idType)
+                        );
+                      }
+                    }}
                   />
                   <Form.Check
                     id="engineMeasureData.stoppservice"
@@ -422,7 +607,22 @@ const EditPowerTrain = ({ engine }) => {
                     type="checkbox"
                     label="Stoppservice"
                     checked={values.engineMeasureData.stoppservice}
-                    onChange={handleChange}
+                    onChange={e => {
+                      handleChange(e);
+                      const { id, checked } = e.target;
+                      const idType = id.split('.')[1];
+                      console.log(idType, engine.engineValues[idType]);
+                      if (!changedMeasurePoints.includes(idType)) {
+                        setChangedMeasurePoints([
+                          ...changedMeasurePoints,
+                          idType,
+                        ]);
+                      } else if (engine.engineValues[idType] === checked) {
+                        setChangedMeasurePoints(
+                          changedMeasurePoints.filter(value => value !== idType)
+                        );
+                      }
+                    }}
                   />
                 </Col>
                 <Col xs={6}></Col>

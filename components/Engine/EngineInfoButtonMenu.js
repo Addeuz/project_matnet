@@ -11,6 +11,7 @@ import EditEngineModal from './EditEngineModal';
 import FileModal from './FileModal';
 import DeleteModal from '../DeleteModal';
 import { SButton } from '../../styles/styled';
+import authHeader from '../../services/auth-header';
 
 export const RightButton = styled(SButton)`
   float: right;
