@@ -634,21 +634,23 @@ router.post('/moderator/:engineId/:dataPoint', function(req, res) {
   });
 });
 
-router.get('/moderator/:userId/alarmList', function(req, res) {
-  User.findByPk(req.params.userId).then(user => {
-    user.getClients().then(clients => {
-      const clientIdArray = [];
-      clients.forEach(client => {
-        clientIdArray.push(client.id);
-      });
-
-      AlarmList.findAll({
-        where: { clientId: { [Op.or]: clientIdArray } },
-      }).then(alarms => {
-        res.status(200).send(alarms);
-      });
-    });
+router.get('/moderator/:clientId/alarmList', function(req, res) {
+  console.log(req.params.clientId);
+  AlarmList.findAll({
+    where: { clientId: req.params.clientId },
+  }).then(alarms => {
+    console.log(alarms);
+    res.status(200).send(alarms);
   });
+  // User.findByPk(req.params.userId).then(user => {
+  //   user.getClients().then(clients => {
+  //     const clientIdArray = [];
+  //     clients.forEach(client => {
+  //       clientIdArray.push(client.id);
+  //     });
+
+  //   });
+  // });
 });
 
 router.put(

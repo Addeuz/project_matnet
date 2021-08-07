@@ -79,7 +79,7 @@ db.files.belongsTo(db.user);
 db.user.hasMany(db.files);
 
 // used to see mixins for the models that sequelize generate because of the associations above
-const model = db.files;
+const model = db.client;
 for (const assoc of Object.keys(model.associations)) {
   for (const accessor of Object.keys(model.associations[assoc].accessors)) {
     console.log(

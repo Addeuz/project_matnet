@@ -22,13 +22,19 @@ import {
 } from '../../../styles/styled';
 import EngineCard from '../../../components/Engine/EngineCard';
 import AddEngineModal from '../../../components/Engine/AddEngineModal';
-import Sidebar from '../../../components/Navigation/Sidebar';
+import AlarmListModal from '../../../components/Engine/AlarmListModal';
 import Layout from '../../../components/Layout';
 import { adress } from '../../../utils/hooks/useFetch';
 import { UserContext } from '../../../components/UserContext';
 
 const RightButton = styled(SButton)`
   float: right;
+  margin-left: 1rem;
+
+  @media only screen and (max-width: 768px) {
+    margin-bottom: 0.25rem;
+    margin-left: 0.5rem;
+  }
 `;
 
 const Header = styled(AccordionToggle)`
@@ -53,6 +59,9 @@ const EngineAccordion = () => {
   const [loadingUser, setLoadingUser] = React.useState(true);
 
   const [modalShow, setModalShow] = React.useState(false);
+  const [larmListModalShow, setLarmListModalShow] = React.useState(false);
+
+  const [alarmData, setAlarmData] = React.useState(null);
 
   const [isError, setError] = React.useState(null);
   const [response, setResponse] = React.useState([]);
@@ -66,6 +75,7 @@ const EngineAccordion = () => {
       axios(`${adress}/api/moderator/engines/${clientId}`)
         .then(response => {
           setLoadingData(false);
+          console.log(response.data.engines);
           setResponse(response.data.engines);
           setClient(response.data.client);
         })
@@ -75,94 +85,115 @@ const EngineAccordion = () => {
 
       setLoadingUser(false);
     }
-  }, [clientId]);
+
+    if (user) {
+      axios(`${adress}/api/moderator/${clientId}/alarmList`)
+        .then(response => {
+          setAlarmData(response.data);
+        })
+        .catch(err => {
+          console.log('Error', err);
+        });
+    }
+  }, [clientId, user]);
 
   return (
     <Layout>
       <Head>
         <title>{client?.clientName || ''}</title>
       </Head>
-      <Sidebar page="/">
-        <SRow>
-          <SCol xs={5} lg={3}>
-            <h3>Motorer</h3>
-          </SCol>
-
-          <AddButtonCol xs={7} lg={5}>
-            {!loadingUser &&
-              user &&
-              (user.roles[0] === 'ROLE_ADMIN' ||
-                user.roles[0] === 'ROLE_MODERATOR') && (
-                <Button variant="success" onClick={() => setModalShow(true)}>
-                  <span>Lägg till ny motor</span>
-                </Button>
-              )}
-          </AddButtonCol>
-          <SCol xs={12} lg={4}>
-            <InputGroup>
-              <FormControl
-                placeholder="Filtrera"
-                aria-label="Filtrera"
-                value={filter}
-                onChange={e => {
-                  setFilter(e.target.value);
-                }}
-              />
-              <InputGroup.Append>
-                <InputGroup.Text>
-                  <BsSearch />
-                </InputGroup.Text>
-              </InputGroup.Append>
-            </InputGroup>
-          </SCol>
-        </SRow>
-        <SRow>
-          <SCol xs={9}>
-            {client && <ClientHeader>{client.clientName}</ClientHeader>}
-          </SCol>
-          <SCol xs={3}>
-            {client && (
-              <RightButton onClick={() => router.back()}>Byt kund</RightButton>
+      <SRow>
+        <SCol xs={5} lg={7}>
+          <h3>Motorer</h3>
+        </SCol>
+        <AddButtonCol xs={7} lg={2}>
+          {!loadingUser &&
+            user &&
+            (user.roles[0] === 'ROLE_ADMIN' ||
+              user.roles[0] === 'ROLE_MODERATOR') && (
+              <Button variant="success" onClick={() => setModalShow(true)}>
+                <span>Lägg till ny motor</span>
+              </Button>
             )}
-          </SCol>
-          <SCol xs={12}>
-            <SAccordion>
-              {isError && <div>{isError.response.data.message}</div>}
-              {loadingData && (
-                <SSpinner animation="border">
-                  <span>Loading...</span>
-                </SSpinner>
-              )}
-              {/* // <EngineCard key={engine.id} engine={engine} filter={filter} /> */}
-              {/** TODO: Fix this */}
-              {!isError && response.length === 0 && !loadingData && client && (
-                <span>Inga motorer tillägda hos {client.clientName}</span>
-              )}
-              {!isError && response && !loadingData && response?.length !== 0 && (
-                <Card>
-                  <Header as={Card.Header} className="">
-                    <Row className="text-center">
-                      <Col>Tag NR</Col>
-                      <Col>Position</Col>
-                      <Col>Fabrikat</Col>
-                    </Row>
-                  </Header>
-                  {!isError &&
-                    response &&
-                    response.map(engine => (
-                      <EngineCard
-                        engine={engine}
-                        filter={filter}
-                        key={engine.id}
-                      />
-                    ))}
-                </Card>
-              )}
-            </SAccordion>
-          </SCol>
-        </SRow>
-      </Sidebar>
+        </AddButtonCol>
+        <SCol xs={12} lg={3}>
+          <InputGroup>
+            <FormControl
+              placeholder="Filtrera"
+              aria-label="Filtrera"
+              value={filter}
+              onChange={e => {
+                setFilter(e.target.value);
+              }}
+            />
+            <InputGroup.Append>
+              <InputGroup.Text>
+                <BsSearch />
+              </InputGroup.Text>
+            </InputGroup.Append>
+          </InputGroup>
+        </SCol>
+      </SRow>
+      <SRow>
+        <SCol xs={6}>
+          {client && <ClientHeader>{client.clientName}</ClientHeader>}
+        </SCol>
+        <SCol xs={6}>
+          {user?.clients.length > 1 && client && (
+            <RightButton onClick={() => router.back()}>Byt kund</RightButton>
+          )}
+          <Button
+            style={{ cssFloat: 'right' }}
+            variant="danger"
+            onClick={() => setLarmListModalShow(true)}
+          >
+            Larmlistan
+          </Button>
+        </SCol>
+        <SCol xs={12}>
+          <SAccordion>
+            {isError && <div>{isError.response.data.message}</div>}
+            {loadingData && (
+              <SSpinner animation="border">
+                <span>Loading...</span>
+              </SSpinner>
+            )}
+            {/* // <EngineCard key={engine.id} engine={engine} filter={filter} /> */}
+            {/** TODO: Fix this */}
+            {!isError && response.length === 0 && !loadingData && client && (
+              <span>Inga motorer tillägda hos {client.clientName}</span>
+            )}
+            {!isError && response && !loadingData && response?.length !== 0 && (
+              <Card>
+                <Header as={Card.Header} className="">
+                  <Row className="text-center">
+                    <Col>Tag NR</Col>
+                    <Col>Position</Col>
+                    <Col>Fabrikat</Col>
+                    <Col>Typ</Col>
+                  </Row>
+                </Header>
+                {!isError &&
+                  response &&
+                  response.map(engine => (
+                    <EngineCard
+                      engine={engine}
+                      filter={filter}
+                      key={engine.id}
+                    />
+                  ))}
+              </Card>
+            )}
+          </SAccordion>
+        </SCol>
+      </SRow>
       <AddEngineModal show={modalShow} onHide={() => setModalShow(false)} />
+      <AlarmListModal
+        show={larmListModalShow}
+        onHide={() => setLarmListModalShow(false)}
+        alarmData={alarmData}
+        clientName={client?.clientName}
+      />
     </Layout>
   );
 };

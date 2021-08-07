@@ -172,7 +172,7 @@ const FileModal = ({ show, onHide, files, engineId }) => {
                             type="file"
                             id="file"
                             name="file"
-                            accept="image/heic, image/jpeg, image/png, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/pdf"
+                            accept="image/heic, image/jpeg, image/png, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/pdf, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                             label="Välj dokument"
                             onChange={event => {
                               console.log(event.currentTarget.files);

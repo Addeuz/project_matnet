@@ -30,14 +30,16 @@ const EngineCard = ({ engine, filter }) => (
       -1 ||
     engine.engineInfo.fabrikat.toLowerCase().indexOf(filter.toLowerCase()) !==
       -1 ||
+    engine.engineInfo.typ.toLowerCase().indexOf(filter.toLowerCase()) !== -1 ||
     engine.engineInfo.position.toLowerCase().indexOf(filter.toLowerCase()) !==
       -1 ? (
       <>
         <Accordion.Toggle as={Card.Header} eventKey={engine.id}>
           <Row className="text-center">
-            <Col>{engine.engineInfo.tagNr}</Col>
-            <Col>{engine.engineInfo.position}</Col>
-            <Col>{engine.engineInfo.fabrikat}</Col>
+            <Col>{engine.engineInfo.tagNr || '-'}</Col>
+            <Col>{engine.engineInfo.position || '-'}</Col>
+            <Col>{engine.engineInfo.fabrikat || '-'}</Col>
+            <Col>{engine.engineInfo.typ || '-'}</Col>
           </Row>
         </Accordion.Toggle>
         <Accordion.Collapse eventKey={engine.id}>

@@ -1,12 +1,11 @@
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import { Col, Row } from 'react-bootstrap';
+import { Col, Container, Row } from 'react-bootstrap';
 import { useReactToPrint } from 'react-to-print';
 import Head from 'next/head';
 import Layout from '../../../../../../components/Layout';
-import Sidebar from '../../../../../../components/Navigation/Sidebar';
 import authHeader from '../../../../../../services/auth-header';
-import { SButton, SSpinner } from '../../../../../../styles/styled';
+import { SButton, SRow, SSpinner } from '../../../../../../styles/styled';
 import DataOverviewTimeLine from './DataOverviewTimeLine';
 import OverviewEnginePrint from '../../../../../../components/Engine/EnginePrint/OverviewEnginePrint';
 
@@ -55,44 +54,46 @@ const EngineDataOverview = () => {
       <Head>
         <title>{`Översikt - ${router.query.tagNr}`}</title>
       </Head>
-      <Sidebar page="/">
-        <Row>
-          <Col>
-            <h4>Översikt över data för {router.query.tagNr}</h4>
-          </Col>
-          <Col>
-            <SButton type="button" onClick={handlePrint}>
-              Skriv ut översikt
-            </SButton>
-          </Col>
-        </Row>
-        {!isLoading &&
-        engineData &&
-        engineData.length > 0 &&
-        extraEngineData &&
-        extraEngineData.length >= 0 ? (
-          <>
-            <DataOverviewTimeLine
+      <SRow>
+        <Col xs={12} lg={10}>
+          <h4>Översikt över data för {router.query.tagNr}</h4>
+        </Col>
+        <Col xs={12} lg={2}>
+          <SButton
+            type="button"
+            style={{ cssFloat: 'right' }}
+            onClick={handlePrint}
+          >
+            Skriv ut översikt
+          </SButton>
+        </Col>
+      </SRow>
+      {!isLoading &&
+      engineData &&
+      engineData.length > 0 &&
+      extraEngineData &&
+      extraEngineData.length >= 0 ? (
+        <>
+          <DataOverviewTimeLine
+            engineData={engineData}
+            extraEngineData={extraEngineData}
+            engineValues={engineValues}
+          />
+          {/* TODO: from the api get the data about the engine aswell not only tag number. need to show when printing */}
+          <div style={{ display: 'none' }}>
+            <OverviewEnginePrint
               engineData={engineData}
               extraEngineData={extraEngineData}
-              engineValues={engineValues}
+              engineInfo={engineInfo}
+              ref={printComponentRef}
             />
-            {/* TODO: from the api get the data about the engine aswell not only tag number. need to show when printing */}
-            <div style={{ display: 'none' }}>
-              <OverviewEnginePrint
-                engineData={engineData}
-                extraEngineData={extraEngineData}
-                engineInfo={engineInfo}
-                ref={printComponentRef}
-              />
-            </div>
-          </>
-        ) : (
-          <SSpinner animation="border">
-            <span>Loading...</span>
-          </SSpinner>
-        )}
-      </Sidebar>
+          </div>
+        </>
+      ) : (
+        <SSpinner animation="border">
+          <span>Loading...</span>
+        </SSpinner>
+      )}
     </Layout>
   );
 };

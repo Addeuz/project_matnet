@@ -1,6 +1,6 @@
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
-import { Col, Form, Row } from 'react-bootstrap';
+import { Col, Container, Form, Row } from 'react-bootstrap';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import axios from 'axios';
@@ -8,7 +8,6 @@ import { useReactToPrint } from 'react-to-print';
 import Head from 'next/head';
 import EditLimitValues from '../../../../components/Engine/LimitValues/EditLimitValues';
 import Layout from '../../../../components/Layout';
-import Sidebar from '../../../../components/Navigation/Sidebar';
 import DataTimeLine from './DataTimeline';
 
 import authHeader from '../../../../services/auth-header';
@@ -101,7 +100,7 @@ const AddDataToEngine = () => {
       <Head>
         <title>{dataPoint || ''}</title>
       </Head>
-      <Sidebar page="/">
+      <Container style={{ marginTop: '1rem' }}>
         {user &&
           (canEdit ||
             user.roles[0] === 'ROLE_ADMIN' ||
@@ -289,7 +288,7 @@ const AddDataToEngine = () => {
             <span>Loading...</span>
           </SSpinner>
         )}
-      </Sidebar>
+      </Container>
     </Layout>
   );
 };

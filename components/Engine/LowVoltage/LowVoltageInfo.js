@@ -2,7 +2,7 @@
 // props:
 //    engineInfo: information about the engine
 
-import { Col, Row, Button } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 import styled from 'styled-components';
 import { NoMarginBottomH6 } from '../../../styles/styled';
 
